@@ -1,0 +1,23 @@
+export const initialItemData = (owner_id = null) => ({
+  itemName: "",
+  selectedCategory_id: 0,
+  location: "",
+  description: "",
+  uri: null,
+  size: "",
+  visible: false,
+  selectedSize: "Medium",
+  group_id: 1,
+  categoriesFront: [],
+  uploading: false,
+  open: false,
+  value: null,
+  loading: false,
+  price: 0.0,
+  on_market_place: 0,
+  deleted: 0,
+  owner_id,
+  timestamp: null,
+  items: [],
+});
+

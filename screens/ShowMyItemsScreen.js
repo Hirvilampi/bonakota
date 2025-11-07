@@ -1,10 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { app } from "../services/config";
+import { getDatabase, ref, push, onValue, update, remove } from "firebase/database";
 
-export default function HomeScreen() {
+
+export default function ShowMyItemsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🚧 HomeScreen Under Construction 🚧</Text>
+      <Text style={styles.title}>🚧 ShowMyItemsScreen Under Construction 🚧</Text>
       <Text style={styles.subtitle}>
         This screen is currently being built.
       </Text>
