@@ -1,16 +1,16 @@
-import { ScrollView, Image, Text, TextInput, TouchableOpacity, View, Alert, alert } from 'react-native';
+import { ScrollView, Image, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
 import { useState } from 'react';
 import { signup } from "../services/auth"
-import { styles } from '../styles/RegisterStyles';
+import styles from '../styles/RegisterStyles';
 import { useNavigation } from '@react-navigation/native';
-import { saveUserData } from "..services/firebaseDataBase"
-import { auth } from '../services/Config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setLogLevel } from 'firebase/app';
-// import { Loader } form "./services/loadingIndicator";
+import { saveUserData } from "../services/firebaseDataBase";
+import Loader from "../components/Loader";
+
+import { auth } from '../services/config';
 
 
-const RegisterScreen = () => {
+
+export default function RegisterScreen() {
     const [email, setEmail] = useState("lampinen.timo@gmail.com");
     const [password, setPassword] = useState("testi123");
     const [username, setUsername] = useState("timolampinen");
@@ -38,13 +38,13 @@ const RegisterScreen = () => {
         } catch (error) {
             setLoading(false);
             if (error.code === 'auth/email-already-in-use') {
-                alert('The email address is already in use by another account.');
+                Alert.alert('The email address is already in use by another account.');
             } else if (error.code === 'auth/invalid-email') {
-                alert('The email address is not valid.');
+                Alert.alert('The email address is not valid.');
             } else if (error.code === 'auth/weak-password') {
-                alert('The password is too weak. Please choose a stronger password.');
+                Alert.alert('The password is too weak. Please choose a stronger password.');
             } else {
-                alert('Error during sign up: ' + error.message);
+                Alert.alert('Error during sign up', error.message);
             }
         }
     }
@@ -93,7 +93,7 @@ const RegisterScreen = () => {
                     onChangeText={setPassword}
                     secureTextEntry
                 />
-                {loading ? (<Loader />) : ( <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+                {loading ? (<Loader />) : (<TouchableOpacity style={styles.button} onPress={handleSignUp}>
                     <Text style={styles.buttonText}>Register</Text>
                 </TouchableOpacity>)}
                 <TouchableOpacity onPress={handleLogin}>
@@ -105,4 +105,3 @@ const RegisterScreen = () => {
     );
 };
 
-export default RegisterScreen;

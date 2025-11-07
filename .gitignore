@@ -43,3 +43,6 @@ yarn-error.*
 # firebase
 services/firebase.js
 services/ 
+FirebaseConfig.ts
+FirebaseConfig.js
+results/
