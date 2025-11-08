@@ -18,7 +18,7 @@ export default function AddItem() {
   const currentUser = auth.currentUser;
   if (currentUser) {
     const userId = currentUser.uid;
-    console.log("Current user ID:", userId);
+//    console.log("Current user ID:", userId);
     // Use userId for fetching data, personalizing UI, etc.
   } else {
     console.log("No user signed in.");
