@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import styles from '../styles/RegisterStyles';
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
-import TakePhotoQuick from "./TakePhotoQuick";
+import PhotoQuick from "./PhotoQuick";
 // Import Firebase Authentication if you're getting the user ID from there
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, push } from "firebase/database";
@@ -89,24 +89,24 @@ export default function AddItem() {
             </View>
             <View style={{ marginTop: 0, flexDirection: "row", gap: 10 }}>
               {/* first button - change or add image */}
-              <TakePhotoQuick
+              <PhotoQuick
                 label={itemData.uri ? "Change Image" : "Add Image"}
                 mode="addimage"
-                onDone={({ newUri, nameofitem, hascategory, hasdescription, haslocation, hassize, hasowner_id, hasitemid }) => {
+                onDone={({ newUri }) => {
                   updateItemData({
-                    uri: newUri, itemName: nameofitem, category_name: hascategory, location: haslocation, size: hassize
+                    uri: newUri
                   })
 
                 }}
               />
 
               {/* Another button - take photo or take new photo */}
-              <TakePhotoQuick
+              <PhotoQuick
                 label={itemData.uri ? "Take new photo" : "Take Photo"}
                 mode="takephoto"
-                onDone={({ newUri, nameofitem, hascategory, hasdescription, haslocation, hassize, hasowner_id, hasitemid }) => {
+                onDone={({ newUri}) => {
                   updateItemData({
-                    uri: newUri, itemName: nameofitem, category_name: hascategory, location: haslocation, size: hassize
+                    uri: newUri
                   })
                 }}
               />

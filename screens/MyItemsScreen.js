@@ -12,7 +12,7 @@ import * as SQLite from 'expo-sqlite';
 import { baseURL, app, auth, db } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
-    // Firestore-funktiot
+// Firestore-funktiot
 import { collection, getDocs } from 'firebase/firestore';
 import { getDatabase, ref, set, onValue } from 'firebase/database';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -28,82 +28,82 @@ export default function MyItemsScreen() {
     const [deletableList, setDeletableList] = useState([]);
     //   const [categories, setCategories] = useState([]);
     const { user } = "aaaaa";
-   // const name = user.username || user.emailAddresses;
+    // const name = user.username || user.emailAddresses;
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-   // const db = useSQLiteContext();
+    // const db = useSQLiteContext();
     const [recentItems, setRecentItems] = useState([]);
-  const [data, setData] = useState([]);
+    const [data, setData] = useState([]);
 
 
-  // Get the Authentication instance
-  const auth = getAuth();
-  const currentUser = auth.currentUser;
-  if (currentUser) {
-    const userId = currentUser.uid;
-    console.log("Current user ID:", userId);
-    // Use userId for fetching data, personalizing UI, etc.
-  } else {
-    console.log("No user signed in.");
-  }
-  const database = getDatabase(app);
-  const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
-  // const insets = useSafeAreaInsets();
+    // Get the Authentication instance
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+        const userId = currentUser.uid;
+        //    console.log("Current user ID:", userId);
+        // Use userId for fetching data, personalizing UI, etc.
+    } else {
+        console.log("No user signed in.");
+    }
+    const database = getDatabase(app);
+    const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
+    // const insets = useSafeAreaInsets();
 
-  const getItems = async () => {
-    const itemsRef = ref(database, 'items/');
- //   console.log("itemsref", itemsRef);
-    onValue(itemsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-  //      console.log("data", data);
- //       console.log("data values object", Object.values(data));
-        const datavalues = Object.values(data);
-        setItems(datavalues);
- //       console.log("items:", items);
-      } else {
-        setItems([]); // Handle the case when there are no items
-      }
-    })
-  }
+    const getItems = async () => {
+        const itemsRef = ref(database, 'items/');
+        //   console.log("itemsref", itemsRef);
+        onValue(itemsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                //      console.log("data", data);
+                //       console.log("data values object", Object.values(data));
+                const datavalues = Object.values(data);
+                setItems(datavalues);
+                //       console.log("items:", items);
+            } else {
+                setItems([]); // Handle the case when there are no items
+            }
+        })
+    }
 
-  useEffect(() => {
-    getItems();
-  }, []);
-
-  const handlePress = () => {
-    console.log("Refreshing items...");
-    getItems();
-  }
-  //
-  const RealtimeDbTestComponent = () => {
-    console.log("testing db on component");
     useEffect(() => {
-      const testWrite = async () => {
-        try {
-          await set(ref(database, 'test/hello'), 'world');
-          console.log("Realtime Database testikirjoitus onnistui!");
-        } catch (error) {
-          console.error("Realtime Database testikirjoitus epäonnistui:", error);
-        }
-      };
-  
-      testWrite();
+        getItems();
     }, []);
-  
-    return null; // Tai jokin yksinkertainen tekstikomponentti
-  };
 
-  useEffect(() => {
-    console.log("on useEffect hook");
-    <RealtimeDbTestComponent />
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "myCollection"));
-      const items = querySnapshot.docs.map(doc => doc.data());
-      setData(items);
+    const handlePress = () => {
+        console.log("Refreshing items...");
+        getItems();
+    }
+    //
+    const RealtimeDbTestComponent = () => {
+        console.log("testing db on component");
+        useEffect(() => {
+            const testWrite = async () => {
+                try {
+                    await set(ref(database, 'test/hello'), 'world');
+                    console.log("Realtime Database testikirjoitus onnistui!");
+                } catch (error) {
+                    console.error("Realtime Database testikirjoitus epäonnistui:", error);
+                }
+            };
+
+            testWrite();
+        }, []);
+
+        return null; // Tai jokin yksinkertainen tekstikomponentti
     };
-    fetchData();
-  }, []);
+
+    useEffect(() => {
+        console.log("on useEffect hook");
+        <RealtimeDbTestComponent />
+        const fetchData = async () => {
+            const querySnapshot = await getDocs(collection(db, "myCollection"));
+            const items = querySnapshot.docs.map(doc => doc.data());
+            setData(items);
+        };
+        fetchData();
+    }, []);
 
 
 
@@ -208,47 +208,48 @@ export default function MyItemsScreen() {
 
 
     return (
-        <ScrollView
-            style={{ backgroundColor: "#F8FBFA" }}
-            bounces={false}
-            overScrollMode="never"
-            contentContainerStyle={styles.scrollContainer}
-        >
-            <View style={styles.container}>
-                {/* 🔍 Search */}
-                <TextInput
-                    style={styles.input}
-                    placeholder="Search"
-                    placeholderTextColor="#52946B"
-                    onChangeText={setLookingfor}
-                    value={lookingfor}
-                />
-                <Button
-                    mode="text"
-                    buttonColor="#EAF2EC"
-                    textColor="#52946B"
-                    onPress={() => updateSearchList(lookingfor)}
-                >
-                    SEARCH
-                </Button>
-                  <Button 
-                  mode="text"
-                                      buttonColor="#EAF2EC"
-                    textColor="#52946B"
-           onPress={() =>handlePress()} >
-                    REFRESSAA
-                    </Button>
 
-                {/* Jos ei haeta → näytetään lohkot */}
-                {!lookingfor ? (
-                    <>
+        <View style={styles.container}>
+            {/* 🔍 Search */}
+            <TextInput
+                style={styles.input}
+                placeholder="Search"
+                placeholderTextColor="#52946B"
+                onChangeText={setLookingfor}
+                value={lookingfor}
+            />
+            <Button
+                mode="text"
+                buttonColor="#EAF2EC"
+                textColor="#52946B"
+                onPress={() => updateSearchList(lookingfor)}
+            >
+                SEARCH
+            </Button>
+            <Button
+                mode="text"
+                buttonColor="#EAF2EC"
+                textColor="#52946B"
+                onPress={() => handlePress()} >
+                REFRESSAA
+            </Button>
+
+            {/* Jos ei haeta → näytetään lohkot */}
+            {!lookingfor ? (
+                <>
+                    <ScrollView
+                        style={{ backgroundColor: "#F8FBFA" }}
+                        bounces={false}
+                        overScrollMode="never"
+                        contentContainerStyle={styles.scrollContainer}
+                    >
                         {/* 🏠 My Items */}
                         <View style={styles.section}>
-                                                        <Pressable
+                            <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen")}
                             >
-                            <Text style={styles.sectionTitle}>My Items</Text>
-            
+                                <Text style={styles.sectionTitle}>My Items</Text>
+
                             </Pressable>
                             <FlatList
                                 keyExtractor={(item, index) => index.toString()}
@@ -273,19 +274,11 @@ export default function MyItemsScreen() {
                                         )}
                                     </Pressable>
                                 )}
-                                
+
                             />
-                            <FlatList
-                                    data={items}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item }) =>
-                            
-                                      <Text style={{ fontSize: 18 }}>{item.itemName}, {item.description}</Text>
-                                    }
-                            
-                                  />
                         </View>
-{/* 
+                    </ScrollView>
+                    {/* 
                         {/* 🗂️ My Categories 
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>My Categories</Text>
@@ -354,25 +347,25 @@ export default function MyItemsScreen() {
                             </Pressable>
                         </View>
 */}
-                    </>
-                ) : (
-                    // 🔍 Hakutulos
-                    <FlatList
-                        keyExtractor={(item, index) => index.toString()}
-                        data={searchItems}
-                        contentContainerStyle={{ paddingBottom: 100 }}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                onPress={() => navigation.navigate("ShowItem", { item })}
-                                style={styles.itemboxrow}
-                            >
-                                <Image source={{ uri: item.uri }} style={styles.cameraimage} />
-                                <Text style={styles.itemTitle}>{item.itemName}</Text>
-                            </Pressable>
-                        )}
-                    />
-                )}
-            </View>
-        </ScrollView>
+                </>
+            ) : (
+                // 🔍 Hakutulos
+                <FlatList
+                    keyExtractor={(item, index) => index.toString()}
+                    data={searchItems}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    renderItem={({ item }) => (
+                        <Pressable
+                            onPress={() => navigation.navigate("ShowItem", { item })}
+                            style={styles.itemboxrow}
+                        >
+                            <Image source={{ uri: item.uri }} style={styles.cameraimage} />
+                            <Text style={styles.itemTitle}>{item.itemName}</Text>
+                        </Pressable>
+                    )}
+                />
+            )}
+        </View>
+
     );
 }

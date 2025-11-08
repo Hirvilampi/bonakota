@@ -15,6 +15,21 @@ const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+// testataan yhteys googleen
+/*
+  useEffect(() => {
+    const checkNetwork = async () => {
+      try {
+        const response = await fetch("https://www.google.com");
+        console.log("Network status:", response.status);
+      } catch (error) {
+        console.error("Network check failed:", error);
+      }
+    };
+    checkNetwork();
+  }, []);
+  */
+
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -60,7 +75,7 @@ const [country, setCountry] = useState("");
       />
 
       <TouchableOpacity
-        style={[styles.button, loading && { opacity: 0.7 }]}
+        style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
         onPress={handleLogin}
         disabled={loading}
       >
@@ -69,7 +84,9 @@ const [country, setCountry] = useState("");
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
+      <TouchableOpacity
+       style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
+      onPress={() => navigation.navigate("RegisterScreen")}>
         <Text style={styles.link}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
     </View>

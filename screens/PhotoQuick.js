@@ -4,16 +4,11 @@ import { Button } from "react-native-paper"
 import * as ImagePicker from "expo-image-picker";
 import { baseURL } from "../services/config";
 
-export default function TakePhotoQuick({ 
+export default function PhotoQuick({ 
   onDone, 
   label = "Take Photo", 
-  mode = "takephoto", 
   border = 5, padding = 5, 
-  margin = 10, 
-  hasname = "", hasdescription = "", 
-  haslocation = "", hassize = "", 
-  hasowner_id = "", 
-  hasitemid = null }) {
+  margin = 10, }) {
 
   const [uri, setUri] = useState(null);
   const [file, setFile] = useState(null);

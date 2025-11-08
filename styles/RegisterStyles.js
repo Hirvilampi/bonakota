@@ -124,6 +124,17 @@ export const styles = StyleSheet.create({
         paddingBottom: 250,
         backgroundColor: '#F8FBFA',
     },
+        loginregisterbutton: {
+        backgroundColor: '#EAF2EC',
+        color: '#0D1A12',
+        fontWeight: 'bold',
+        padding: 12,
+        margin: 7,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
 
 });
 
