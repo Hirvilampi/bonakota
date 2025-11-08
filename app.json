@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier" : "com.bonakota.app",
+      "bundleIdentifier": "com.bonakota.app",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
@@ -22,18 +22,22 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package"  : "com.galaxies.firebasE-THIS-SHOUD-BE-MY-IDENTIFIER"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.bonakota.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
-      ["expo-build-properties", {
-        "ios": {
-          "useFrameworks": "static"
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
-      }],
+      ],
       "@react-native-firebase/app",
       "@react-native-firebase/auth"
     ]
