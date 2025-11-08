@@ -18,17 +18,14 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { PaperProvider } from "react-native-paper";
 // import { SQLiteProvider } from './services/sqlite';
-import { auth } from "./services/config";
-import { onAuthStateChanged } from 'firebase/auth';
-import styles from "./styles/RegisterStyles";
 import ShowCategoryScreen from './screens/ShowCategoryScreen';
 import LocationScreen from './screens/LocationScreen';
+import LogOutButton from "./components/LogOutButton";
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
 
 export default function App() {
-
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
   const [initializing, setInitializing] = useState(true);
@@ -62,6 +59,7 @@ export default function App() {
     return (
       <Tab.Navigator theme={DefaultTheme}
         screenOptions={({ route }) => ({
+          headerRight: () => <LogOutButton />,
           tabBarIcon: ({ focused, color, size }) => {
             switch (route.name) {
               case 'MyItemsScreen':

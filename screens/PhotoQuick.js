@@ -73,7 +73,7 @@ export default function PhotoQuick({
 
   return (
     <View style={{ padding: padding }}>
-      {mode === "takephoto" ? (
+      {label === "Take Photo" ? (
         <Button loading={uploading} mode="contained" style={[styles.camerabutton, { borderRadius: border, margin: margin }]} onPress={takePhoto}>
           <Text style={styles.camerabuttontext}>{label}</Text>
         </Button>

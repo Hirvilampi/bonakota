@@ -11,7 +11,7 @@ import { getDatabase, ref, push } from "firebase/database";
 import { app } from "../services/config";
 
 export default function AddItem() {
-
+  const insets = useSafeAreaInsets();
  
   // Get the Authentication instance
   const auth = getAuth();
@@ -26,7 +26,6 @@ export default function AddItem() {
 
   const database = getDatabase(app);
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
-  const insets = useSafeAreaInsets();
 
   const handleSave = () => {
     updateItemData();
@@ -39,6 +38,7 @@ export default function AddItem() {
         console.log("Tiedot tallennettu onnistuneesti!");
         console.log("Uusi avain (push ID):", newRef.key);
         console.log("Tallenneetu data:", itemData);
+        clearItemData();
         // Voit tehdä tässä muita toimintoja, esim. näyttää käyttäjälle onnistumisviestin
         Alert.alert('Tallennus onnistui!', `Item ${itemData.itemName} tallennettu.`);
       })

@@ -264,6 +264,7 @@ export default function MyItemsScreen() {
                                     >
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName}</Text>
+                                        <Text style={styles.itemCategory}>{item.description}</Text>
                                         {categories?.length > 0 && (
                                             <Text style={styles.itemCategory}>
                                                 {categories.find(

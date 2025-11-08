@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     itemCategory: {
         fontSize: 13,
         color: "#52946B",
-        marginLeft: 4,
+        marginLeft: 0,
     },
     categoryButton: {
         height: 40,

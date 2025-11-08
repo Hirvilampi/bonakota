@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {  View, Text, TextInput, TouchableOpacity,  StyleSheet,  Alert,nput } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/config";
+import { signInWithEmailAndPassword, signInAnonymously, getAuth } from "firebase/auth";
+import { auth, app } from "../services/config";
 import styles from "../styles/RegisterStyles";
 
 // used https://www.youtube.com/watch?v=BsOik6ycGqk to get started
@@ -15,20 +15,20 @@ const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-// testataan yhteys googleen
-/*
-  useEffect(() => {
-    const checkNetwork = async () => {
+
+    // testataan firebase yhteys - tää ilmaoittaa vaan, että ei yhteyttä
+    useEffect(() => {
+    const testFirebase = async () => {
       try {
-        const response = await fetch("https://www.google.com");
-        console.log("Network status:", response.status);
-      } catch (error) {
-        console.error("Network check failed:", error);
+        const auth = getAuth(app);
+        await signInAnonymously(auth);
+        console.log("✅ Firebase-yhteys toimii ja auth vastasi!");
+      } catch (e) {
+        console.error("❌ Firebase virhe:", e.message);
       }
     };
-    checkNetwork();
+    testFirebase();
   }, []);
-  */
 
 
   const handleLogin = async () => {
@@ -50,6 +50,8 @@ const [country, setCountry] = useState("");
       setLoading(false);
     }
   };
+
+
 
     return (
     <View style={styles.container}>
