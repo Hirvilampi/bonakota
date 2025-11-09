@@ -48,7 +48,8 @@ export function useItemData(initialOwnerId = null) {
             price: 0.0,
             on_market_place: 0,
             deleted: 0,
-            owner_id,
+            // use the initialOwnerId passed to the hook (falls back to null)
+            owner_id: initialOwnerId,
             timestamp: null,
             items: [],
         });

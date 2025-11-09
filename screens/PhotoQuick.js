@@ -4,10 +4,10 @@ import { Button } from "react-native-paper"
 import * as ImagePicker from "expo-image-picker";
 import { baseURL } from "../services/config";
 
-export default function PhotoQuick({ 
-  onDone, 
-  label = "Take Photo", 
-  border = 5, padding = 5, 
+export default function PhotoQuick({
+  onDone,
+  label = "Take Photo",
+  border = 5, padding = 5,
   margin = 10, }) {
 
   const [uri, setUri] = useState(null);
@@ -20,6 +20,7 @@ export default function PhotoQuick({
 
   // function to launch the camera
   const takePhoto = async () => {
+    console.log("IN PHOTOQUICK!!!! - in take photo");
     setLoading(true);
     // Kysy kameran käyttöoikeus (iOS/Android)
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -38,8 +39,13 @@ export default function PhotoQuick({
       // If an image is selected (not cancelled), 
       // update the file state variable
       const newUri = result.assets[0].uri;
-      let nameofitem = hasname;
-      let hascategory;
+      setUri(newUri);
+        onDone?.({
+          newUri:   uri,
+          fileName: asset.fileName,
+          type: asset.type,
+          exif: asset.exif
+        });
     }
 
   };
@@ -48,6 +54,7 @@ export default function PhotoQuick({
   //the device's media library
   // https://www.geeksforgeeks.org/react-native/how-to-upload-and-preview-an-image-in-react-native/
   const pickImage = async () => {
+    console.log("IN PHOTOQUICK!!!! - in image picker");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       // If permission is denied, show an alert
@@ -59,12 +66,23 @@ export default function PhotoQuick({
     } else {
       // Launch the image library and get
       // the selected image
-      const result = await ImagePicker.launchImageLibraryAsync();
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaType.Images, // only images
+        allowsEditing: true, // Allow basic editing like cropping
+        aspect: [4, 3],// Aspect ratio for cropping
+        quality: 1, // Image quality (1 = highest)
+      });
       if (!result.canceled) {
         // update the file state variable
+        console.log(result);
         const newUri = result.assets[0].uri;
-        let nameofitem = hasname;
-        let hascategory;
+        setUri(newUri);
+        onDone?.({
+          newUri:   uri,
+          fileName: asset.fileName,
+          type: asset.type,
+          exif: asset.exif
+        });
       }
     }
   };

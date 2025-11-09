@@ -12,13 +12,13 @@ import { app } from "../services/config";
 
 export default function AddItem() {
   const insets = useSafeAreaInsets();
- 
+
   // Get the Authentication instance
   const auth = getAuth();
   const currentUser = auth.currentUser;
   if (currentUser) {
     const userId = currentUser.uid;
-//    console.log("Current user ID:", userId);
+    console.log("Current user ID:", userId);
     // Use userId for fetching data, personalizing UI, etc.
   } else {
     console.log("No user signed in.");
@@ -29,25 +29,25 @@ export default function AddItem() {
 
   const handleSave = () => {
     updateItemData();
-    console.log("Tallennusyritys itemdata",itemData)
+    console.log("Tallennusyritys itemdata", itemData)
     if (itemData.itemName) {
       console.log("meillä on itemData.itemName");
       push(ref(database, 'items/'), itemData)
-      .then((newRef) => {
-        // Tähän koodiin tullaan, jos kirjoitus palvelimelle onnistui
-        console.log("Tiedot tallennettu onnistuneesti!");
-        console.log("Uusi avain (push ID):", newRef.key);
-        console.log("Tallenneetu data:", itemData);
-        clearItemData();
-        // Voit tehdä tässä muita toimintoja, esim. näyttää käyttäjälle onnistumisviestin
-        Alert.alert('Tallennus onnistui!', `Item ${itemData.itemName} tallennettu.`);
-      })
-         .catch((error) => {
-        // Tähän koodiin tullaan, jos kirjoitus palvelimelle epäonnistui
-        console.error("Tietojen tallennus epäonnistui:", error);
-        // Voit näyttää käyttäjälle virheilmoituksen
-        Alert.alert('Virhe!', `Tallennus epäonnistui: ${error.message}`);
-         });
+        .then((newRef) => {
+          // Tähän koodiin tullaan, jos kirjoitus palvelimelle onnistui
+          console.log("Tiedot tallennettu onnistuneesti!");
+          console.log("Uusi avain (push ID):", newRef.key);
+          console.log("Tallenneetu data:", itemData);
+          clearItemData();
+          // Voit tehdä tässä muita toimintoja, esim. näyttää käyttäjälle onnistumisviestin
+          Alert.alert('Tallennus onnistui!', `Item ${itemData.itemName} tallennettu.`);
+        })
+        .catch((error) => {
+          // Tähän koodiin tullaan, jos kirjoitus palvelimelle epäonnistui
+          console.error("Tietojen tallennus epäonnistui:", error);
+          // Voit näyttää käyttäjälle virheilmoituksen
+          Alert.alert('Virhe!', `Tallennus epäonnistui: ${error.message}`);
+        });
 
     } else { Alert.alert('To save, item has to have name'); }
   }
@@ -94,7 +94,8 @@ export default function AddItem() {
                 mode="addimage"
                 onDone={({ newUri }) => {
                   updateItemData({
-                    uri: newUri
+                    uri: newUri,
+                    fileName: fileName
                   })
 
                 }}
@@ -104,9 +105,10 @@ export default function AddItem() {
               <PhotoQuick
                 label={itemData.uri ? "Take new photo" : "Take Photo"}
                 mode="takephoto"
-                onDone={({ newUri}) => {
+                onDone={({ newUri }) => {
                   updateItemData({
-                    uri: newUri
+                    uri: newUri,
+                    fileName: fileName
                   })
                 }}
               />
