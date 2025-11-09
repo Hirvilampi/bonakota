@@ -31,7 +31,7 @@ export default function PhotoQuick({
 
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
-      quality: 0.8,
+      quality: 0.7,
       exif: true,
     });
 
@@ -44,17 +44,16 @@ export default function PhotoQuick({
       const newUri = result.assets[0].uri;
       setUri(newUri);
         onDone?.({
-          newUri:   uri,
-          fileName: asset.fileName,
-          type: asset.type,
-          exif: asset.exif
+          newUri,
+          fileName: asset.fileName ?? null,
+          type: asset.type ?? null,
+          exif: asset.exif ?? null
         });
     }
 
   };
 
-  // Function to pick an image from 
-  //the device's media library
+  // Function to pick an image from the device's media library
   // https://www.geeksforgeeks.org/react-native/how-to-upload-and-preview-an-image-in-react-native/
   const pickImage = async () => {
     console.log("IN PHOTOQUICK!!!! - in image picker");
@@ -74,19 +73,20 @@ export default function PhotoQuick({
     // only images
         allowsEditing: true, // Allow basic editing like cropping
         aspect: [4, 3],// Aspect ratio for cropping
-        quality: 1, // Image quality (1 = highest)
+        quality: 0.7, // Image quality (1 = highest)
       });
-      console.log("result,",result);
+
       if (!result.canceled) {
         // update the file state variable
-        console.log(result);
+        console.log("result",result);
         const newUri = result.assets[0].uri;
+        console.log("newUri",newUri)
         setUri(newUri);
         onDone?.({
-          newUri:   uri,
-          fileName: asset.fileName,
-          type: asset.type,
-          exif: asset.exif
+          newUri,
+          fileName: asset.fileName ?? null,
+          type: asset.type ?? null,
+          exif: asset.exif ?? null
         });
       } else {
         Alert.alert("no result");

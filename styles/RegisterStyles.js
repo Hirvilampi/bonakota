@@ -54,8 +54,8 @@ export const styles = StyleSheet.create({
         marginRight: 10,
     },
     cameraimage: {
-        width: 80,
-        height: 80,
+        width: "100%",
+        height: "100%",
         borderRadius: 5,
         marginRight: 10,
     },
@@ -135,6 +135,19 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
+      camerabutton: {
+    backgroundColor: '#EAF2EC',
+    color: '#0D1A12',
+    fontWeight: 'bold',
+  },
+  camerabuttontext: {
+    backgroundColor: '#EAF2EC',
+    color: '#0D1A12',
+    fontWeight: 'bold',
+    padding: 10,
+    margin: 0,
+
+  },
 
 });
 

@@ -14,65 +14,107 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
 import { collection, getDocs } from 'firebase/firestore';
-import { getDatabase, ref, set, onValue } from 'firebase/database';
+import { getDatabase, ref, query, set, orderByChild, equalTo, onValue } from 'firebase/database';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
 
 export default function MyItemsScreen() {
-    const [activeLocation, setActiveLocation] = useState(null);
-    const [activeCategory, setActiveCategory] = useState(null);
     const [items, setItems] = useState([]);
     const [lookingfor, setLookingfor] = useState('');
     const [searchItems, setSearchItems] = useState([]);
-    const { categories } = useState([]);
-    const [deletableList, setDeletableList] = useState([]);
-    //   const [categories, setCategories] = useState([]);
-    const { user } = "aaaaa";
-    // const name = user.username || user.emailAddresses;
+    const [categories] = useState([]);
+    const [user_id, setUser_id] = useState(null);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-    // const db = useSQLiteContext();
-    const [recentItems, setRecentItems] = useState([]);
+
+
     const [data, setData] = useState([]);
 
 
     // Get the Authentication instance
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    if (currentUser) {
-        const userId = currentUser.uid;
-        //    console.log("Current user ID:", userId);
-        // Use userId for fetching data, personalizing UI, etc.
-    } else {
-        console.log("No user signed in.");
-    }
+
+    useEffect(() => {
+        if (currentUser) {
+            //   console.log("Current user ID:", currentUser.uid);
+            setUser_id(currentUser.uid);
+            console.log("Current user_ID:", user_id);
+        } else {
+            console.log("No user signed in.");
+        }
+    }, [currentUser]);
+    console.log("Current user_ID:", user_id);
+
     const database = getDatabase(app);
     const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
     // const insets = useSafeAreaInsets();
 
     const getItems = async () => {
+        console.log("haetaan itemit");
+        console.log("user_id:llä", user_id);
         const itemsRef = ref(database, 'items/');
-        //   console.log("itemsref", itemsRef);
-        onValue(itemsRef, (snapshot) => {
+
+        console.log("we have user id");
+        console.log("typeof user_id:", typeof user_id);
+        console.log("user_id:", JSON.stringify(user_id))
+        const userItemsQuery = query(itemsRef, orderByChild('owner_id'), equalTo(user_id));
+        onValue(userItemsQuery, (snapshot) => {
+            console.log("onValue - on käyty");
+
+//             if (snapshot.exists()) {
+//                 // Käytetään forEach-metodia, joka on DataSnapshot-spesifinen ja kätevä listoille
+//                 snapshot.forEach((childSnapshot) => {
+//                     const itemKey = childSnapshot.key;     // Jokaisen lapsen ID
+//                     const itemData = childSnapshot.val();  // Jokaisen lapsen tiedot
+
+// //                    console.log("Listan itemin ID:", itemKey);
+// //                    console.log("Listan itemin tiedot:", itemData);
+
+//                     //         itemsList.push({ id: itemKey, ...itemData }); // Lisätään ID osaksi item-objektia
+//                 });
+//             } else {
+//                 console.log("Ei itemeitä löytynyt /items-polusta.");
+//             }
+
             const data = snapshot.val();
+            //         const itemKey = snapshot.key; // firebasen itemID talteen - ei vielä käytössä
             if (data) {
                 //      console.log("data", data);
                 //       console.log("data values object", Object.values(data));
-                const datavalues = Object.values(data);
-                setItems(datavalues);
+                // const datavalues = Object.values(data);
+                // setItems(datavalues);
+                //              console.log(datavalues)
                 //       console.log("items:", items);
+
+                const itemsList = Object.entries(data).map(([id, item]) => ({
+                    id,
+                    ...item,
+                }));
+                setItems(itemsList);
+ //               console.log("------- TÄÄÄ ON SE LISTA -----",itemsList);
             } else {
                 setItems([]); // Handle the case when there are no items
             }
         })
+
     }
 
     useEffect(() => {
-        getItems();
-    }, []);
+        // const db = getDatabase();
+        // const refAll = ref(db, "items/");
+        // onValue(refAll, (snapshot) => {
+        //     console.log("Kaikki itemit:", snapshot.val());
+        // });
+
+        if (user_id) { // if user_id is not null, lets go and get this users items
+            getItems();
+        }
+    }, [user_id]);
 
     const handlePress = () => {
         console.log("Refreshing items...");
+        console.log("Haetaan itemit user_id:llä:", user_id);
         getItems();
     }
     //
@@ -87,123 +129,16 @@ export default function MyItemsScreen() {
                     console.error("Realtime Database testikirjoitus epäonnistui:", error);
                 }
             };
-
             testWrite();
         }, []);
-
         return null; // Tai jokin yksinkertainen tekstikomponentti
     };
 
-    useEffect(() => {
-        console.log("on useEffect hook");
-        <RealtimeDbTestComponent />
-        const fetchData = async () => {
-            const querySnapshot = await getDocs(collection(db, "myCollection"));
-            const items = querySnapshot.docs.map(doc => doc.data());
-            setData(items);
-        };
-        fetchData();
-    }, []);
-
-
-
 
     const updateList = async () => {
-        // look for items owned by this user from frontend sqlite
-
-        /*
-        try {
-            const list = await db.getAllAsync('SELECT * from myitems WHERE deleted=0 AND owner=?', [user]);
-            setItems(list);
-            console.log('loaded items from frontend SQLite');
-            const recentlist = await db.getAllAsync('SELECT * from myitems WHERE deleted=0 AND owner=? ORDER BY timestamp DESC LIMIT 10', [user]);
-            setRecentItems(recentlist);
-            console.log('recent', recentlist);
-        } catch (error) {
-            console.error('Could not get items', error);
-        }
-
-        // check if deleted items are on fronend sqlite and delete them fully from backend and frontend
-        const getrows = await db.getAllAsync('SELECT * from myitems WHERE deleted=1 AND owner=?', [user]);
-        console.log('deltable items !!!!!', getrows.lenght);
-        // start deleting process if there are deletable items
-        if (getrows.length > 0) {
-            console.log('found ', getrows.length, 'deletable items');
-            // fetch backend items to compare timestamps
-            let checkdeleteitem = null;
-            // loop through deletable items and compare timestamps
-            for (const itemdel of getrows) {
-                if (!itemdel.backend_id) {
-                    console.warn('Skip items without backend_id:', itemdel.id);
-                    continue;
-                }
-                console.log('checking deletable item front id:', itemdel.id, 'back id', itemdel.backend_id);
-                deleteItemBackendFrontend(itemdel.id, itemdel.backend_id);
-            }
-        }
-
-        */
-    }
-
-    const deleteItemBackendFrontend = async (itemdel_id, itemdelbackend_id) => {
-        //       console.log('Deleting item fully from backend sqlite with id:', itemdelid, ' using backend id:', itemdelbackend_id);
-
-        /*
-        console.log(' !!!!! dlelete started !!!!!!');
-        try {
-            const res = await fetch(`${baseURL}/items/${itemdelbackend_id}`, {
-                method: 'DELETE',
-            });
-
-            if (res.ok) {
-                await db.runAsync('DELETE FROM myitems WHERE id=? AND owner=?', [itemdel_id, user]);
-                console.log('deleted both backend and frontend', itemdel_id);
-            } else {
-                const txt = await res.text().catch(() => '');
-                console.warn('Backend delete failed, not touching local', res.status, txt);
-            }
-        } catch (error) {
-            console.log('error deletin item', error);
-        }
-            */
     }
 
     const updateSearchList = async (lookingfor) => {
-        /*
-        try {
-            const term = `%${(lookingfor ?? '').trim()}%`;
-            // Etsi useista sarakkeista: name, description, owner, location, size
-            const query = `
-      SELECT * FROM myitems
-      WHERE LOWER(name)        LIKE LOWER(?)
-         OR LOWER(description) LIKE LOWER(?)
-         OR LOWER(owner)       LIKE LOWER(?)
-         OR LOWER(location)    LIKE LOWER(?)
-         OR LOWER(size)        LIKE LOWER(?)
-      ORDER BY id DESC
-    `;
-            const params = [term, term, term, term, term];
-            const list = await db.getAllAsync(query, params);
-            setSearchItems(list);
-            console.log('found on search:', searchItems);
-        } catch (error) {
-            console.error('Could not get items', error);
-        }
-            */
-    }
-
-    const deleteItem = async (id) => {
-
-        /*
-        try {
-            await db.runAsync('DELETE FROM myitems WHERE id=?', id);
-            await updateList();
-        }
-        catch (error) {
-            console.error('Could not delete item', error);
-        }
-
-        */
     }
 
 
@@ -246,7 +181,7 @@ export default function MyItemsScreen() {
                         {/* 🏠 My Items */}
                         <View style={styles.section}>
                             <Pressable
-                                onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen")}
+                                onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen") ?? console.log("No parent navigator found")}
                             >
                                 <Text style={styles.sectionTitle}>My Items</Text>
 
@@ -259,12 +194,13 @@ export default function MyItemsScreen() {
                                 contentContainerStyle={{ paddingRight: 20 }}
                                 renderItem={({ item }) => (
                                     <Pressable
-                                        onPress={() => navigation.navigate("ShowItem", { item })}
+                                        onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
                                         style={styles.itembox}
                                     >
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
+                                        <Text style={styles.itemCategory}>{item.key}</Text>
                                         {categories?.length > 0 && (
                                             <Text style={styles.itemCategory}>
                                                 {categories.find(
@@ -351,20 +287,23 @@ export default function MyItemsScreen() {
                 </>
             ) : (
                 // 🔍 Hakutulos
-                <FlatList
-                    keyExtractor={(item, index) => index.toString()}
-                    data={searchItems}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    renderItem={({ item }) => (
-                        <Pressable
-                            onPress={() => navigation.navigate("ShowItem", { item })}
-                            style={styles.itemboxrow}
-                        >
-                            <Image source={{ uri: item.uri }} style={styles.cameraimage} />
-                            <Text style={styles.itemTitle}>{item.itemName}</Text>
-                        </Pressable>
-                    )}
-                />
+                <>
+                    <Text>Hakutulos</Text>
+                    <FlatList
+                        keyExtractor={(item, index) => index.toString()}
+                        data={searchItems}
+                        contentContainerStyle={{ paddingBottom: 100 }}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+                                style={styles.itemboxrow}
+                            >
+                                <Image source={{ uri: item.uri }} style={styles.cameraimage} />
+                                <Text style={styles.itemTitle}>{item.itemName}</Text>
+                            </Pressable>
+                        )}
+                    />
+                </>
             )}
         </View>
 

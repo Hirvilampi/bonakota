@@ -4,6 +4,7 @@ import { useState } from "react";
 // if you submit initialOwnerId that will be the owner id. Otherwise it will be null
 export function useItemData(initialOwnerId = null) {
     const [itemData, setItemData] = useState({
+        item_id: null,
         itemName: "",
         description: "",
         uri: null,
@@ -25,12 +26,15 @@ export function useItemData(initialOwnerId = null) {
 
     // used for saving item data olioon
     const updateItemData = (updates) => {
+        console.log("updating data");
         setItemData((prev) => ({ ...prev, ...updates }));
+        console.log("data updated, ehkä??");
     }
 
    // used for clearing item data from olio
     const clearItemData = () => {
         setItemData({
+            item_id: null,
             itemName: "",
             selectedCategory_id: 0,
             location: "",
