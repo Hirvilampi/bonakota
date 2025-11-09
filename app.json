@@ -14,27 +14,39 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier" : "com.galaxies.firebase-THIS-SHOUD-BE-MY-IDENTIFIER"
+      "bundleIdentifier": "com.bonakota.app",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package"  : "com.galaxies.firebasE-THIS-SHOUD-BE-MY-IDENTIFIER"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.bonakota.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
-      ["expo-build-properties", {
-        "ios": {
-          "useFrameworks": "static"
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
-      }],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "The app accesses your camera to let you share images with your friends."
+        }
+      ],
+
+      "expo-sqlite"
     ]
   }
 }

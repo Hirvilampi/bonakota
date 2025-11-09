@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {  View, Text, TextInput, TouchableOpacity,  StyleSheet,  Alert,nput } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/config";
+import { signInWithEmailAndPassword, signInAnonymously, getAuth } from "firebase/auth";
+import { auth, app } from "../services/config";
 import styles from "../styles/RegisterStyles";
 
 // used https://www.youtube.com/watch?v=BsOik6ycGqk to get started
@@ -14,6 +14,21 @@ const [city, setCity] = useState("");
 const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+
+    // testataan firebase yhteys - tää ilmaoittaa vaan, että ei yhteyttä
+    useEffect(() => {
+    const testFirebase = async () => {
+      try {
+        const auth = getAuth(app);
+        await signInAnonymously(auth);
+        console.log("✅ Firebase-yhteys toimii ja auth vastasi!");
+      } catch (e) {
+        console.error("❌ Firebase virhe:", e.message);
+      }
+    };
+    testFirebase();
+  }, []);
 
 
   const handleLogin = async () => {
@@ -35,6 +50,8 @@ const [country, setCountry] = useState("");
       setLoading(false);
     }
   };
+
+
 
     return (
     <View style={styles.container}>
@@ -60,7 +77,7 @@ const [country, setCountry] = useState("");
       />
 
       <TouchableOpacity
-        style={[styles.button, loading && { opacity: 0.7 }]}
+        style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
         onPress={handleLogin}
         disabled={loading}
       >
@@ -69,7 +86,9 @@ const [country, setCountry] = useState("");
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
+      <TouchableOpacity
+       style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
+      onPress={() => navigation.navigate("RegisterScreen")}>
         <Text style={styles.link}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
     </View>

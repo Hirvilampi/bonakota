@@ -46,3 +46,6 @@ services/
 FirebaseConfig.ts
 FirebaseConfig.js
 results/
+
+google-services.json
+GoogleService-Info.plist

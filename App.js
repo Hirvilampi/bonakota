@@ -12,23 +12,21 @@ import AddItemScreen from "./screens/AddItemScreen";
 import MarketScreen from "./screens/MarketScreen";
 import GroupsScreen from "./screens/GroupsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import ShowItem from "./screens/ShowItem";
+import ShowItemScreen from "./screens/ShowItemScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { PaperProvider } from "react-native-paper";
 // import { SQLiteProvider } from './services/sqlite';
-import { auth } from "./services/config";
-import { onAuthStateChanged } from 'firebase/auth';
-import styles from "./styles/RegisterStyles";
 import ShowCategoryScreen from './screens/ShowCategoryScreen';
 import LocationScreen from './screens/LocationScreen';
+import LogOutButton from "./components/LogOutButton";
+import ShowMyItemsScreen from "./screens/ShowMyItemsScreen";
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
 
 export default function App() {
-
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
   const [initializing, setInitializing] = useState(true);
@@ -62,23 +60,19 @@ export default function App() {
     return (
       <Tab.Navigator theme={DefaultTheme}
         screenOptions={({ route }) => ({
+          headerRight: () => <LogOutButton />,
           tabBarIcon: ({ focused, color, size }) => {
             switch (route.name) {
-              case 'MyItemsScreen':
+              case 'My Items':
                 return <Foundation name="home" size={size} color={color} />;
-
               case 'Add Item':
                 return <Octicons name="diff-added" size={size} color={color} />;
-
               case 'Market':
                 return <Ionicons name="storefront-outline" size={size} color={color} />;
-
               case 'Groups':
                 return <Ionicons name="people" size={size} color={color} />;
-
               case 'Profile':
                 return <Ionicons name="person" size={size} color={color} />;
-
               default:
                 return null;
             }
@@ -98,7 +92,7 @@ export default function App() {
             backgroundColor: "#F8FBFA",
             height: 80,
             paddingBottom: 10,
-            paddignTop: 10,
+            paddingTop: 10,
           },
           tabBarItemStyle: {
             paddingVertical: 15,
@@ -110,7 +104,7 @@ export default function App() {
           tabBarInactiveTintColor: "#52946B",
         })}
       >
-        <Tab.Screen name="MyItemsScreen" component={MyItemsScreen} />
+        <Tab.Screen name="My Items" component={MyItemsScreen} />
         <Tab.Screen name="Add Item" component={AddItemScreen} />
         <Tab.Screen name="Market" component={MarketScreen} />
         <Tab.Screen name="Groups" component={GroupsScreen} />
@@ -120,13 +114,48 @@ export default function App() {
     );
   }
 
-
-
   return (
     //  <SQLiteProvider>
     <PaperProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          initialRouteName={user ? "Back" : "LoginScreen"}
+          screenOptions={{ headerRight: () => <LogOutButton /> }}
+        >
+          {/* Always-register detail screens so they can be navigated to from nested navigators */}
+          <Stack.Screen
+            name="ShowItemScreen"
+            component={ShowItemScreen}
+            options={{
+              title: 'Edit item',
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="LocationScreen"
+            component={LocationScreen}
+            options={{
+              title: 'Locations',
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="ShowCategory"
+            component={ShowCategoryScreen}
+            options={{
+              title: 'Categories',
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="ShowMyItemsScreen"
+            component={ShowMyItemsScreen}
+            options={{
+              title: 'My Items',
+              headerBackTitleVisible: false,
+            }}
+          />
+
           {user ? (
             <>
               <Stack.Screen
@@ -134,54 +163,14 @@ export default function App() {
                 component={Tabs}
                 options={{ headerShown: false }}
               />
-              <Stack.Screen
-                name="ShowItem"
-                component={ShowItem}
-                options={{
-                  title: 'Edit item',        // haluamasi otsikko
-                  headerBackTitleVisible: false,
-                  // jos haluat ilman yläreunan headeria:
-                  // headerShown: false,
-                  // tai modaalina iOS-tyyliin:
-                  // presentation: 'modal',
-                }} />
-                              <Stack.Screen
-                name="ShowItem"
-                component={LocationScreen}
-                options={{
-                  title: 'Locations',        // haluamasi otsikko
-                  headerBackTitleVisible: false,
-                  // jos haluat ilman yläreunan headeria:
-                  // headerShown: false,
-                  // tai modaalina iOS-tyyliin:
-                  // presentation: 'modal',
-                }} />
-              <Stack.Screen
-                name="ShowItem"
-                component={ShowCategoryScreen}
-                options={{
-                  title: 'ShowItem',        // haluamasi otsikko
-                  headerBackTitleVisible: false,
-                  // jos haluat ilman yläreunan headeria:
-                  // headerShown: false,
-                  // tai modaalina iOS-tyyliin:
-                  // presentation: 'modal',
-                }} />
-
-
             </>
           ) : (
             <>
               <Stack.Screen name="LoginScreen" component={LoginScreen} />
               <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-               <Stack.Screen
-                name="MainTabs"
-                component={Tabs}
-                options={{ headerShown: false }}
-              />
+              <Stack.Screen name="MainTabs" component={Tabs} options={{ headerShown: false }} />
             </>
           )}
-
 
         </Stack.Navigator>
       </NavigationContainer>

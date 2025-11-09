@@ -4,16 +4,11 @@ import { Button } from "react-native-paper"
 import * as ImagePicker from "expo-image-picker";
 import { baseURL } from "../services/config";
 
-export default function TakePhotoQuick({ 
-  onDone, 
-  label = "Take Photo", 
-  mode = "takephoto", 
-  border = 5, padding = 5, 
-  margin = 10, 
-  hasname = "", hasdescription = "", 
-  haslocation = "", hassize = "", 
-  hasowner_id = "", 
-  hasitemid = null }) {
+export default function PhotoQuick({
+  onDone,
+  label = "Take Photo",
+  border = 5, padding = 5,
+  margin = 10, }) {
 
   const [uri, setUri] = useState(null);
   const [file, setFile] = useState(null);
@@ -25,6 +20,7 @@ export default function TakePhotoQuick({
 
   // function to launch the camera
   const takePhoto = async () => {
+    console.log("IN PHOTOQUICK!!!! - in take photo");
     setLoading(true);
     // Kysy kameran käyttöoikeus (iOS/Android)
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -35,24 +31,32 @@ export default function TakePhotoQuick({
 
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
-      quality: 0.8,
+      quality: 0.7,
       exif: true,
     });
+
+    console.log("result",result.uri);
+    console.log("tuliko result, tuliko uri??");
 
     if (!result.canceled) {
       // If an image is selected (not cancelled), 
       // update the file state variable
       const newUri = result.assets[0].uri;
-      let nameofitem = hasname;
-      let hascategory;
+      setUri(newUri);
+        onDone?.({
+          newUri,
+          fileName: asset.fileName ?? null,
+          type: asset.type ?? null,
+          exif: asset.exif ?? null
+        });
     }
 
   };
 
-  // Function to pick an image from 
-  //the device's media library
+  // Function to pick an image from the device's media library
   // https://www.geeksforgeeks.org/react-native/how-to-upload-and-preview-an-image-in-react-native/
   const pickImage = async () => {
+    console.log("IN PHOTOQUICK!!!! - in image picker");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       // If permission is denied, show an alert
@@ -64,12 +68,28 @@ export default function TakePhotoQuick({
     } else {
       // Launch the image library and get
       // the selected image
-      const result = await ImagePicker.launchImageLibraryAsync();
+      console.log("trying to open library image async");
+      const result = await ImagePicker.launchImageLibraryAsync({
+    // only images
+        allowsEditing: true, // Allow basic editing like cropping
+        aspect: [4, 3],// Aspect ratio for cropping
+        quality: 0.7, // Image quality (1 = highest)
+      });
+
       if (!result.canceled) {
         // update the file state variable
+        console.log("result",result);
         const newUri = result.assets[0].uri;
-        let nameofitem = hasname;
-        let hascategory;
+        console.log("newUri",newUri)
+        setUri(newUri);
+        onDone?.({
+          newUri,
+          fileName: asset.fileName ?? null,
+          type: asset.type ?? null,
+          exif: asset.exif ?? null
+        });
+      } else {
+        Alert.alert("no result");
       }
     }
   };
@@ -78,7 +98,7 @@ export default function TakePhotoQuick({
 
   return (
     <View style={{ padding: padding }}>
-      {mode === "takephoto" ? (
+      {label === "Take Photo" ? (
         <Button loading={uploading} mode="contained" style={[styles.camerabutton, { borderRadius: border, margin: margin }]} onPress={takePhoto}>
           <Text style={styles.camerabuttontext}>{label}</Text>
         </Button>

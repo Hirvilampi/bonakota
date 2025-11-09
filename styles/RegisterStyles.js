@@ -54,8 +54,8 @@ export const styles = StyleSheet.create({
         marginRight: 10,
     },
     cameraimage: {
-        width: 80,
-        height: 80,
+        width: "100%",
+        height: "100%",
         borderRadius: 5,
         marginRight: 10,
     },
@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     itemCategory: {
         fontSize: 13,
         color: "#52946B",
-        marginLeft: 4,
+        marginLeft: 0,
     },
     categoryButton: {
         height: 40,
@@ -124,6 +124,30 @@ export const styles = StyleSheet.create({
         paddingBottom: 250,
         backgroundColor: '#F8FBFA',
     },
+        loginregisterbutton: {
+        backgroundColor: '#EAF2EC',
+        color: '#0D1A12',
+        fontWeight: 'bold',
+        padding: 12,
+        margin: 7,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
+      camerabutton: {
+    backgroundColor: '#EAF2EC',
+    color: '#0D1A12',
+    fontWeight: 'bold',
+  },
+  camerabuttontext: {
+    backgroundColor: '#EAF2EC',
+    color: '#0D1A12',
+    fontWeight: 'bold',
+    padding: 10,
+    margin: 0,
+
+  },
 
 });
 
