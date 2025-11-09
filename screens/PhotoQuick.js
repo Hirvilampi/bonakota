@@ -35,6 +35,9 @@ export default function PhotoQuick({
       exif: true,
     });
 
+    console.log("result",result.uri);
+    console.log("tuliko result, tuliko uri??");
+
     if (!result.canceled) {
       // If an image is selected (not cancelled), 
       // update the file state variable
@@ -66,12 +69,14 @@ export default function PhotoQuick({
     } else {
       // Launch the image library and get
       // the selected image
+      console.log("trying to open library image async");
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images, // only images
+    // only images
         allowsEditing: true, // Allow basic editing like cropping
         aspect: [4, 3],// Aspect ratio for cropping
         quality: 1, // Image quality (1 = highest)
       });
+      console.log("result,",result);
       if (!result.canceled) {
         // update the file state variable
         console.log(result);
@@ -83,6 +88,8 @@ export default function PhotoQuick({
           type: asset.type,
           exif: asset.exif
         });
+      } else {
+        Alert.alert("no result");
       }
     }
   };
