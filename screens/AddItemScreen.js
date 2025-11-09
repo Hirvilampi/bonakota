@@ -200,15 +200,12 @@ export default function AddItem() {
               value={itemData.size}
             />
 
-            {/*
+
             <View style={{ zIndex: 1000, width: '90%', marginVertical: 10, position: 'relative', zIndex: 10, }}>
-              <CategoryPicker
-                category_id={category_id}
-                setCategory_id={setCategory_id}
-              />
+              <Text>Category valinta tähän</Text>
             </View>
 
-*/}
+
 
             <TextInput
               placeholder='Location'

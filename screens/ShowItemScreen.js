@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Alert, ScrollView, Pressable } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useSQLiteContext } from 'expo-sqlite';
-import { useFocusEffect, useNavigation, NavigationContainer } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, NavigationContainer, getParent } from '@react-navigation/native';
 import { TextInput } from "react-native-paper";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { app } from "../services/config";
@@ -27,12 +27,12 @@ export default function ShowItemScreen() {
     if (currentUser) {
       //   console.log("Current user ID:", currentUser.uid);
       setUser_id(currentUser.uid);
- //     console.log("Current user_ID:", user_id);
+      //     console.log("Current user_ID:", user_id);
     } else {
- //     console.log("No user signed in.");
+      //     console.log("No user signed in.");
     }
   }, [currentUser]);
-// console.log("Current user_ID:", user_id);
+  // console.log("Current user_ID:", user_id);
 
   const database = getDatabase(app);
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
@@ -47,17 +47,19 @@ export default function ShowItemScreen() {
   }, [params]);
 
 
-  const deleteItem = async (id) => {
-    try {
-      // update locacally deleted = 1, meaning it is locally deleted, but not from backend, 
-      // after deletion from backend deleted=2 and it can be deleted fully
-      await db.runAsync('UPDATE myitems SET deleted = ? WHERE id=?', [1, id]);
-      await updateItemInfo();
-      navigation.goBack();
-    }
-    catch (error) {
-      console.error('Could not delete item', error);
-    }
+  const deleteItem = async () => {
+    console.log('trying to delete item from firebase');
+    if (itemData.id) {
+      console.log("meillä on poistettavalle itemData.itemName id:llä", itemData.itemName, itemData.id);
+      const itemRef = ref(database, `items/${itemData.id}`);
+      try {
+        await remove(itemRef);
+        console.log("Item poistettu onnistuneesti:", itemData.id);
+        Alert.alert("Poistettu", `Item ${itemData.itemName} poistettu.`);
+        clearItemData();
+        navigation.navigate('MainTabs', { screen: 'My Items' });
+      } catch (error) { Alert.alert("virhe poistettaessa"); }
+    } else { Alert.alert('To delete, item has to have id') };
   }
 
   const getTimeStamp = async () => {
@@ -78,15 +80,15 @@ export default function ShowItemScreen() {
       update(itemRef, itemData)
         .then(() => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle onnistui
- //         console.log("Tiedot tallennettu onnistuneesti!");
- //         console.log("Tallenneetu data:", itemData);
-          // Voit tehdä tässä muita toimintoja, esim. näyttää käyttäjälle onnistumisviestin
+          //         console.log("Tiedot tallennettu onnistuneesti!");
+          //         console.log("Tallenneetu data:", itemData);
+
           Alert.alert('Tallennus onnistui!', `Item ${itemData.itemName} tallennettu.`);
           clearItemData();
         })
         .catch((error) => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle epäonnistui
- //         console.error("Tietojen tallennus epäonnistui:", error);
+          //         console.error("Tietojen tallennus epäonnistui:", error);
           // Voit näyttää käyttäjälle virheilmoituksen
           Alert.alert('Virhe!', `Tallennus epäonnistui: ${error.message}`);
         });
@@ -95,7 +97,7 @@ export default function ShowItemScreen() {
 
   }
 
-  const confirmDelete = (itemid) => {
+  const confirmDelete = () => {
     Alert.alert(
       'Delete item',
       '',
@@ -107,7 +109,7 @@ export default function ShowItemScreen() {
         },
         {
           text: 'Yes',
-          onPress: () => { console.log('Delete id', itemid); deleteItem(itemid); },
+          onPress: () => { console.log('Delete executing'); deleteItem(); },
           style: 'destructive'
         }
       ],
@@ -115,9 +117,6 @@ export default function ShowItemScreen() {
     );
   };
 
-  useFocusEffect(
-    React.useCallback(() => { updateItemInfo() }, [])
-  );
 
   const toggleMarketPlace = () => {
     updateItemData({
@@ -245,7 +244,7 @@ export default function ShowItemScreen() {
               },
             ]}
             onPress={() => {
-              confirmDelete(thisitem.id);
+              confirmDelete();
             }}>
             <Text style={{ color: '#0D1A12', fontSize: 16, fontWeight: 'bold' }} >Delete</Text>
           </Pressable>
