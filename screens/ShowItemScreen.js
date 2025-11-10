@@ -42,7 +42,7 @@ export default function ShowItemScreen() {
   useEffect(() => {
     if (params?.item) {
       updateItemData(params.item);
-      //     console.log("item updated",params.item);
+      console.log("item updated", params.item);
     }
   }, [params]);
 
@@ -137,11 +137,12 @@ export default function ShowItemScreen() {
     >
       <View style={styles.container}>
         <View style={styles.itembox}>
-          {itemData.uri ? (
-            <>
-              <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
-            </>
-          ) : null}
+          {itemData.uri && itemData.uri.startsWith('file')
+            ? <Text style={{ color: 'gray' }}>Paikallinen kuva, ei ladattavissa</Text>
+            : itemData.uri
+              ? <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
+              : null
+          }
         </View>
         <TextInput
           mode="flat"
@@ -189,7 +190,7 @@ export default function ShowItemScreen() {
             keyboardType="numeric"
             value={itemData.price}
             placeholder="price"
-            onChangeText={text => updateItemData({ price: text })}
+            onChangeText={text => updateItemData({ price: Number(text) || 0 })}
           />
         </View>
 
