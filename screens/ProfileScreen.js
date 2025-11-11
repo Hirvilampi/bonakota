@@ -5,12 +5,12 @@ import { useState, useEffect } from 'react';
 import { getDatabase, push, ref, onValue } from 'firebase/database';
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { app } from "../services/config";
+import { app, auth, database } from "../services/config";
 
 export default function ProfileScreen() {
   const [items, setItems] = useState([]);
   // Get the Authentication instance
-  const auth = getAuth();
+//  const auth = getAuth();
   const currentUser = auth.currentUser;
   if (currentUser) {
     const userId = currentUser.uid;
@@ -19,7 +19,7 @@ export default function ProfileScreen() {
   } else {
     console.log("No user signed in.");
   }
-  const database = getDatabase(app);
+//  const database = getDatabase(app);
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
   // const insets = useSafeAreaInsets();
 

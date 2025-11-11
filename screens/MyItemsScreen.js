@@ -9,7 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import { useSQLiteContext } from 'expo-sqlite';
 import * as SQLite from 'expo-sqlite';
 // import Toast from "react-native-toast-message";
-import { baseURL, app, auth, db } from '../services/config';
+import { app, auth, db, database } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
@@ -32,7 +32,7 @@ export default function MyItemsScreen() {
 
 
     // Get the Authentication instance
-    const auth = getAuth();
+ //   const auth = getAuth();
     const currentUser = auth.currentUser;
 
     useEffect(() => {
@@ -46,7 +46,8 @@ export default function MyItemsScreen() {
     }, [currentUser]);
     console.log("Current user_ID:", user_id);
 
-    const database = getDatabase(app);
+
+  //  const database = getDatabase(app);
     const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
     // const insets = useSafeAreaInsets();
 
@@ -61,32 +62,8 @@ export default function MyItemsScreen() {
         const userItemsQuery = query(itemsRef, orderByChild('owner_id'), equalTo(user_id));
         onValue(userItemsQuery, (snapshot) => {
             console.log("onValue - on käyty");
-
-//             if (snapshot.exists()) {
-//                 // Käytetään forEach-metodia, joka on DataSnapshot-spesifinen ja kätevä listoille
-//                 snapshot.forEach((childSnapshot) => {
-//                     const itemKey = childSnapshot.key;     // Jokaisen lapsen ID
-//                     const itemData = childSnapshot.val();  // Jokaisen lapsen tiedot
-
-// //                    console.log("Listan itemin ID:", itemKey);
-// //                    console.log("Listan itemin tiedot:", itemData);
-
-//                     //         itemsList.push({ id: itemKey, ...itemData }); // Lisätään ID osaksi item-objektia
-//                 });
-//             } else {
-//                 console.log("Ei itemeitä löytynyt /items-polusta.");
-//             }
-
             const data = snapshot.val();
-            //         const itemKey = snapshot.key; // firebasen itemID talteen - ei vielä käytössä
             if (data) {
-                //      console.log("data", data);
-                //       console.log("data values object", Object.values(data));
-                // const datavalues = Object.values(data);
-                // setItems(datavalues);
-                //              console.log(datavalues)
-                //       console.log("items:", items);
-
                 const itemsList = Object.entries(data).map(([id, item]) => ({
                     id,
                     ...item,
@@ -101,12 +78,6 @@ export default function MyItemsScreen() {
     }
 
     useEffect(() => {
-        // const db = getDatabase();
-        // const refAll = ref(db, "items/");
-        // onValue(refAll, (snapshot) => {
-        //     console.log("Kaikki itemit:", snapshot.val());
-        // });
-
         if (user_id) { // if user_id is not null, lets go and get this users items
             getItems();
         }

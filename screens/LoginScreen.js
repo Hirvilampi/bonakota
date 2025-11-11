@@ -1,12 +1,23 @@
 import React, {useState, useEffect} from "react";
-import {  View, Text, TextInput, TouchableOpacity,  StyleSheet,  Alert,nput } from "react-native";
-import { signInWithEmailAndPassword, signInAnonymously, getAuth } from "firebase/auth";
+import {  View, Text, TextInput, TouchableOpacity,  StyleSheet,  Alert } from "react-native";
+import { signInWithEmailAndPassword, signInAnonymously, signOut } from "firebase/auth";
 import { auth, app } from "../services/config";
 import styles from "../styles/RegisterStyles";
+import {firstuser} from "../services/myinfo";
+ import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 // used https://www.youtube.com/watch?v=BsOik6ycGqk to get started
 
 export default function LoginScreen ({navigation}) {
+  //   useEffect(() => {
+  //   const auth = getAuth();
+  //   signOut(auth).catch(() => {
+  //     console.log("Sign-out failed or user already signed out.");
+  //   });
+  // }, []);
+
+
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
 const [email, setEmail] = useState("");
@@ -14,21 +25,41 @@ const [city, setCity] = useState("");
 const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+ 
 
     // testataan firebase yhteys - tää ilmaoittaa vaan, että ei yhteyttä
     useEffect(() => {
     const testFirebase = async () => {
       try {
-        const auth = getAuth(app);
         await signInAnonymously(auth);
         console.log("✅ Firebase-yhteys toimii ja auth vastasi!");
+        await signOut(auth);
       } catch (e) {
         console.error("❌ Firebase virhe:", e.message);
       }
     };
     testFirebase();
   }, []);
+
+// testataan async-storagen yhteys
+useEffect(() => {
+  const testStorage = async () => {
+    try {
+      await AsyncStorage.setItem("testKey", "works!");
+      const val = await AsyncStorage.getItem("testKey");
+      console.log("🔍 AsyncStorage toimii:", val);
+    } catch (e) {
+      console.error("🚨 AsyncStorage ei toimi:", e);
+    }
+  };
+  testStorage();
+}, []);
+
+
+  const setLoginTimo = () =>{
+    setEmail(firstuser.email);
+    setPassword(firstuser.password);
+  }
 
 
   const handleLogin = async () => {
@@ -39,6 +70,7 @@ const [country, setCountry] = useState("");
 
     setLoading(true);
     try {
+
       await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in:", email);
       // siirry eteenpäin, esim. omaan päänäkymään:
@@ -50,7 +82,6 @@ const [country, setCountry] = useState("");
       setLoading(false);
     }
   };
-
 
 
     return (
@@ -86,10 +117,21 @@ const [country, setCountry] = useState("");
         </Text>
       </TouchableOpacity>
 
+
       <TouchableOpacity
        style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
       onPress={() => navigation.navigate("RegisterScreen")}>
         <Text style={styles.link}>Don't have an account? Sign up</Text>
+      </TouchableOpacity>
+
+            <TouchableOpacity
+        style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
+        onPress={setLoginTimo}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? "Logging in..." : "set Timo"}
+        </Text>
       </TouchableOpacity>
     </View>
   );

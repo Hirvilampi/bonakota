@@ -22,6 +22,7 @@ export function useItemData(initialOwnerId = null) {
         new_owner: "",
         old_owner: "",
         receipt_image: null,
+        downloadURL: null,
     });
 
     // used for saving item data olioon
@@ -56,6 +57,7 @@ export function useItemData(initialOwnerId = null) {
             owner_id: initialOwnerId,
             timestamp: null,
             items: [],
+            downloadURL: null,
         });
     };
 

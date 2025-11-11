@@ -6,7 +6,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect, useNavigation, NavigationContainer, getParent } from '@react-navigation/native';
 import { TextInput } from "react-native-paper";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { app } from "../services/config";
+import { app, database, auth } from "../services/config";
 import { getDatabase, ref, push, onValue, update, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { useItemData, updateItemData, itemData } from "../config/ItemDataState";
@@ -19,7 +19,7 @@ export default function ShowItemScreen() {
   console.log(" ---- Show ITEM -----");
 
   // Get the Authentication instance
-  const auth = getAuth();
+//  const auth = getAuth();
   const currentUser = auth.currentUser;
 
 
@@ -32,9 +32,10 @@ export default function ShowItemScreen() {
       //     console.log("No user signed in.");
     }
   }, [currentUser]);
+  
   // console.log("Current user_ID:", user_id);
 
-  const database = getDatabase(app);
+  
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
 
   const navigation = useNavigation();
