@@ -8,30 +8,83 @@ import PhotoQuick from "./PhotoQuick";
 // Import Firebase Authentication if you're getting the user ID from there
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, push } from "firebase/database";
-import { app } from "../services/config";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+import { app, storage, database, db, auth,  } from "../services/config";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as FileSystem from 'expo-file-system';
+
+
 
 export default function AddItem() {
   const insets = useSafeAreaInsets();
   const [uploading, setUploading] = useState(false);
+  const [user_id, setUser_id] = useState(null);
 
   // Get the Authentication instance
-  const auth = getAuth();
+//  const auth = getAuth();
   const currentUser = auth.currentUser;
-  if (currentUser) {
-    const userId = currentUser.uid;
-    console.log("Current user ID:", userId);
-    // Use userId for fetching data, personalizing UI, etc.
-  } else {
-    console.log("No user signed in.");
-  }
-
-  const database = getDatabase(app);
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
 
-  const handleSave = () => {
-    updateItemData();
+  useEffect(() => {
+    if (currentUser) {
+      //   console.log("Current user ID:", currentUser.uid);
+      setUser_id(currentUser.uid);
+      console.log("Current user_ID:", user_id);
+    } else {
+      console.log("No user signed in.");
+    }
+  }, [currentUser]);
+
+
+  // upload image to firebase storage
+  async function uploadImageAsync(uri) {
+    if (!uri) { return null };
+    setUploading(true);
+    try {
+      const response = await fetch(uri);
+      if (!response.ok) {
+        // Jos fetch ei onnistunut, heitä oma virhe tarkemmalla tiedolla
+        throw new Error(`Failed to fetch image from URI: ${uri}. Status: ${response.status}`);
+      }
+      const blob = await response.blob();
+      console.log("Blobin tyyppi:", blob.type, "Blobin koko:", blob.size); // Varmista, että nämä ovat järkeviä arvoja
+      const filename = `${user_id}/${Date.now()}.jpg`;
+      const imgRef = storageRef(storage, filename);
+      console.log("Trying upload with", { uri, filename, user_id });
+      await uploadBytes(imgRef, blob);
+      const downloadURL = await getDownloadURL(imgRef);
+      console.log("Picture loaded to storage:", downloadURL);
+      return downloadURL;
+    } catch (error) {
+      console.error("Firebase Storage virhe tapahtui:");
+      console.error("Virhekoodi (error.code):", error.code);     // Esim. 'storage/unauthorized'
+      console.error("Virheviesti (error.message):", error.message); // Esim. 'User does not have permission...'
+      console.error("Virhetyyppi (error.name):", error.name);   // Yleensä 'FirebaseStorageError'
+      console.error("Koko virheobjekti:", error);                 // Tulostaa kaikki tiedot, mukaan lukien stack tracen
+      Alert.alert("Problem loading picture to firebase storage", error.message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  const getTimeStamp = () => {
+    const now = new Date();
+    console.log('newtimestamp', now.toISOString().split('.')[0]);
+    return now.toISOString().split('.')[0];
+  }
+
+
+  // save to firebase
+  const handleSave = async () => {
+    if (!user_id) { return };
+    let dloadURL = null;
+    if (itemData.uri) {
+      dloadURL = await uploadImageAsync(itemData.uri);
+    }
+    updateItemData({ downloadURL: dloadURL, timestamp: getTimeStamp() });
     console.log("Tallennusyritys itemdata", itemData);
     const assedID = itemData.assedId;
     if (itemData.itemName) {
@@ -52,9 +105,9 @@ export default function AddItem() {
           // Voit näyttää käyttäjälle virheilmoituksen
           Alert.alert('Virhe!', `Tallennus epäonnistui: ${error.message}`);
         });
-
     } else { Alert.alert('To save, item has to have name'); }
   }
+
 
 
   const pickImage = async (pick) => {
@@ -64,9 +117,7 @@ export default function AddItem() {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         // If permission is denied, show an alert
-        Alert.alert(
-          "Permission Denied", `Sorry, we need library permission to upload images.`
-        );
+        Alert.alert("Permission Denied", "Sorry, we need library permission to upload images.");
       } else {
         // Launch the image library and getthe selected image
         console.log("trying to open library image async");
@@ -117,7 +168,7 @@ export default function AddItem() {
     } else {
       Alert.alert("no result");
     }
-  };
+  }
 
 
   return (

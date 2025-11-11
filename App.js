@@ -22,6 +22,8 @@ import ShowCategoryScreen from './screens/ShowCategoryScreen';
 import LocationScreen from './screens/LocationScreen';
 import LogOutButton from "./components/LogOutButton";
 import ShowMyItemsScreen from "./screens/ShowMyItemsScreen";
+ 
+
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -32,29 +34,8 @@ export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
 
-  // Handle user state changes
-  /*
-  const onAuthStateChangedHandler = (u) => {
-    setUser(u);
-    if (initializing) {
-      setInitializing(false);
-    }
-  };
+ 
 
-
-//  useEffect(() => {
-//    const unsubscribe = onAuthStateChanged(auth, onAuthStateChangedHandler);
-//    return unsubscribe;
-//  }, []);
-
-  if (initializing) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-  */
 
   function Tabs() {
     return (
@@ -179,6 +160,5 @@ export default function App() {
 
   );
 }
-
 
 

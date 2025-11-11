@@ -5,7 +5,6 @@ import styles from '../styles/RegisterStyles';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserData } from "../services/firebaseDataBase";
 import Loader from "../components/Loader";
-
 import { auth } from '../services/config';
 
 
