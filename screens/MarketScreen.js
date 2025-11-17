@@ -4,10 +4,8 @@ import { View, Text, FlatList, StyleSheet, Image, Pressable, TextInput, Alert, S
 import { useFocusEffect, useNavigation, NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from "react-native-paper";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import { useItemsActions, useItemsData } from "../ItemContext";
 // import { useSQLiteContext } from 'expo-sqlite';
-import * as SQLite from 'expo-sqlite';
 // import Toast from "react-native-toast-message";
 import { app, auth, db, database } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,8 +13,7 @@ import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
 import { collection, getDocs } from 'firebase/firestore';
 import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue } from 'firebase/database';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
+
 
 export default function MarketScreen() {
   const [itemsOnMarket, setItemsOnMarket] = useState([]);
@@ -49,7 +46,7 @@ export default function MarketScreen() {
     console.log("haetaan itemit, jotka on asetettu marketplazelle");
     console.log("user_id:llä", user_id);
     const itemsRef = ref(database, 'items/');
-    const marketItemsQuery = query(itemsRef, orderByChild('on_market_place'), equalTo(1));
+    const marketItemsQuery = query(itemsRef, orderByChild('on_market_place'), equalTo("1"));
 
       try {
         console.log("!! TYING TO GET ON MARKET ITEMS !!")
@@ -77,7 +74,7 @@ export default function MarketScreen() {
         }
 
       } catch (error) {
-        Alert.alert("Error getting on market items", error);
+        Alert.alert("Error getting on market items", error?.message ?? String(error) ?? '');
       }
     
     //         onValue(userItemsQuery, (snapshot) => {
@@ -136,7 +133,7 @@ export default function MarketScreen() {
           contentContainerStyle={{ paddingRight: 20 }}
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+              onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
               style={styles.itembox}
             >
               <Image source={{ uri: item.uri }} style={styles.showimage} />
@@ -166,7 +163,7 @@ export default function MarketScreen() {
         contentContainerStyle={{ paddingRight: 20 }}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+            onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
             style={styles.itembox}
           >
             <Image source={{ uri: item.uri }} style={styles.showimage} />

@@ -22,8 +22,9 @@ import ShowCategoryScreen from './screens/ShowCategoryScreen';
 import LocationScreen from './screens/LocationScreen';
 import LogOutButton from "./components/LogOutButton";
 import ShowMyItemsScreen from "./screens/ShowMyItemsScreen";
- 
-
+import FirestoreTest from './screens/FirestoreTest';
+import MarketItemScreen from './screens/MarketItemScreen';
+import ChatScreen from './screens/ChatScreen';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -34,7 +35,7 @@ export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
 
- 
+
 
 
   function Tabs() {
@@ -136,7 +137,23 @@ export default function App() {
               headerBackTitleVisible: false,
             }}
           />
-
+          <Stack.Screen
+            name="MarketItemScreen"
+            component={MarketItemScreen}
+            options={{
+              title: 'See item on market',
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="ChatScreen"
+            component={ChatScreen}
+            options={{
+              title: 'Chat screen',
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen name="FirestoreTest" component={FirestoreTest} />
           {user ? (
             <>
               <Stack.Screen
