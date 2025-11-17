@@ -188,11 +188,12 @@ export default function ShowItemScreen() {
           <TextInput
             mode="flat"
             style={[styles.input, { width: '40%' }]}
-            keyboardType="numeric"
-            value={itemData.price}
+            keyboardType={'numeric'}
+            value={String(itemData.price ?? '')}
             placeholder="price"
-            onChangeText={text => updateItemData({ price: Number(text) || 0 })}
+            onChangeText={text => updateItemData({ price: text })}
           />
+          <Text style={styles.text}>€</Text>
         </View>
 
 
