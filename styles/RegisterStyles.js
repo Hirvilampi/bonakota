@@ -54,8 +54,8 @@ export const styles = StyleSheet.create({
         marginRight: 10,
     },
     cameraimage: {
-        width: "100%",
-        height: "100%",
+        width: 250,
+        height: 250,
         borderRadius: 5,
         marginRight: 10,
     },

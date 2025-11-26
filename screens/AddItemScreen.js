@@ -38,150 +38,37 @@ export default function AddItem() {
     return unsub;
   }, []);
 
+  async function uploadImage(uri) {
+    console.log("uploadImage");
+    setUploading(true);
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
 
-  // async function fileUriToBase64(uri) {
-  //   const response = await fetch(uri);
-  //   const blob = await response.blob();
+      const filename = `${user_id ?? "missing-user"}/${Date.now()}.jpg`;
+      const imgRef = storageRef(storage, filename);
 
-  //   return await new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => resolve(reader.result.split(',')[1]);  // ilman "data:*"
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(blob);
-  //   });
-  // }
-
-  // const getBase64 = async (imageUri) => {
-  //   const manipResult = await manipulateAsync(
-  //     imageUri,
-  //     [],
-  //     {
-  //       compress: 0.2,
-  //       format: SaveFormat.PNG,
-  //       base64: true,
-  //     }
-  //   );
-  //   return manipResult.base64;
-  // };
-
-  // upload image to firebase storage
-  // async function uploadImageAsync(uri) {
-  //   if (!uri) { return null };
-  //   setUploading(true);
-
-  //   try {
-  //     const response = await fetch(uri);
-  //     const blob = await response.blob();
-
-  //     const filename = `${user_id}/${Date.now()}.jpg`;
-  //     const imgRef = storageRef(storage, filename);
-  //     console.log("Trying to upload blob to:", filename);
-
-  //     await uploadBytes(imgRef, blob);
-  //     console.log("ohi uploadBytesin. !!! HUHHUHH VIHDOIN !!!!")
-  //     if (blob.close()) {
-  //       blob.close();
-  //     }
-
-  //     console.log("Awaiting download url");
-  //     const downloadURL = await getDownloadURL(imgRef);
-  //     console.log("Pic loaded to storage image URL:", downloadURL);
-  //     return downloadURL;
-  //   } catch (error) {
-  //     Alert.alert("ei saatana onnistu", error);
-  //     return null;
-  //   } finally {
-  //     setUploading(false);
-  //   }
-
-
-  //   //     try {
-  //   //       // get Base64 formatted string
-  //   //       const base64 = await getBase64(uri);
-
-  //   //       const filename = `${user_id}/${Date.now()}.jpg`;
-  //   //       const imgRef = storageRef(storage, filename);
-  //   //       console.log("Trying upload base64 to:", {filename});
-
-  //   //       await uploadString(imgRef, base64, 'base64', {contentType: "image/png",}).then((snapshot) => {
-  //   //         console.log('Uploaded a base64 string!');
-  //   //       });
-
-  //   //       // Odota lataustehtävän valmistumista
-  //   //  //     await uploadTask; // Tämä odottaa, että koko latausprosessi on valmis (tai epäonnistuu)
-
-  //   //       console.log("awaiting downloadurl");
-  //   //       const downloadURL = await getDownloadURL(imgRef);
-  //   //       console.log("Picture loaded to storage image URL:", downloadURL);
-  //   //       return downloadURL;
-  //   //     } catch (error) {
-  //   //       console.error("Firebase Storage virhe tapahtui");
-  //   //       // console.error("Virhekoodi (error.code):", error.code);     // Esim. 'storage/unauthorized'
-  //   //       // console.error("Virheviesti (error.message):", error.message); // Esim. 'User does not have permission...'
-  //   //       // console.error("Virhetyyppi (error.name):", error.name);   // Yleensä 'FirebaseStorageError'
-  //   //       console.error("Koko virheobjekti:", error);                 // Tulostaa kaikki tiedot, mukaan lukien stack tracen
-  //   //       Alert.alert("Problem loading picture to firebase storage", error.message);
-  //   //       return null;
-  //   //     } finally {
-  //   //       setUploading(false);
-  //   //     }
-  // }
-async function uploadAsBase64(uri) {
-  console.log("uploadAsBase64");
-  console.log("userId:",user_id);
-  try {
-    const compressed = await manipulateAsync(
-      uri,
-      [{ resize: { width: 800 } }],
-      { compress: 0.7, format: SaveFormat.JPEG, base64: true }
-    );
-    console.log("uploadAsBase64 2");
-    if (!compressed?.base64) throw new Error("No base64 from manipulator");
-
-    const filename = `${user_id ?? "missing-user"}/${Date.now()}.jpg`;
-    const imgRef = storageRef(storage, filename);
-
-    console.log("uploadAsBase64 3", filename);
-    await uploadString(imgRef, compressed.base64, "base64", {
-      contentType: "image/jpeg",
-    });
-    console.log("uploadAsBase64 4");
-    return await getDownloadURL(imgRef);
-  } catch (err) {
-    console.log("uploadAsBase64 error", err);
-    throw err;
+      console.log("uploadImage uploading", filename);
+      await uploadBytes(imgRef, blob);
+      const url = await getDownloadURL(imgRef);
+      console.log("uploadImage done",url);
+      return url;
+    } catch (err) {
+      console.log("uploadImage error", err);
+      console.log("uploadImage error details", {
+        code: err?.code,
+        message: err?.message,
+        customData: err?.customData,
+        serverResponse: err?.serverResponse,
+        uri,
+      });
+      Alert.alert("Image upload failed", err?.message ?? "Unknown error");
+      return null;
+    } finally {
+      setUploading(false);
+    }
   }
-}
-async function uploadImage(uri) {
-  console.log("uploadImage");
-  setUploading(true);
-  try {
-    const response = await fetch(uri);
-    const blob = await response.blob();
 
-    const filename = `${user_id ?? "missing-user"}/${Date.now()}.jpg`;
-    const imgRef = storageRef(storage, filename);
-
-    console.log("uploadImage uploading", filename);
-    await uploadBytes(imgRef, blob);
-    const url = await getDownloadURL(imgRef);
-    console.log("uploadImage done");
-    return url;
-  } catch (err) {
-    console.log("uploadImage error", err);
-    console.log("uploadImage error details", {
-      code: err?.code,
-      message: err?.message,
-      customData: err?.customData,
-      serverResponse: err?.serverResponse,
-      uri,
-    });
-    Alert.alert("Image upload failed", err?.message ?? "Unknown error");
-    return null;
-  } finally {
-    setUploading(false);
-  }
-}
   const getTimeStamp = () => {
     const now = new Date();
     console.log('newtimestamp', now.toISOString().split('.')[0]);
@@ -201,7 +88,7 @@ async function uploadImage(uri) {
     if (itemData.uri) {
       console.log("tallennusfunktio 3");
       dloadURL = await uploadImage(itemData.uri);
-      console.log("tallennusfunktio 4");
+      console.log("tallennusfunktio 4", dloadURL);
     }
     //  updateItemData({ downloadURL: dloadURL, timestamp: getTimeStamp() });
     console.log("Tallennusyritys");
