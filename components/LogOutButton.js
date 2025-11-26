@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconButton } from 'react-native-paper';
 import { getAuth, signOut } from 'firebase/auth';
-import { useNavigation } from 'expo-router';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
 export default function LogOutButton() {
     const auth = getAuth();
@@ -11,7 +11,7 @@ export default function LogOutButton() {
     signOut(auth)
         .then(() => {
             console.log("user signed out");
-            navigation.navigate("LoginScreen");
+            navigation.dispatch(CommonActions.reset({index:0, routes: [{name: 'LoginScreen'}]}));
         })
         .catch((error) => {
             console.error("Error signing out", error);

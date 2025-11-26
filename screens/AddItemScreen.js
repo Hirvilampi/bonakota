@@ -3,17 +3,16 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Image, TextIn
 import { Button } from 'react-native-paper';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import styles from '../styles/RegisterStyles';
-import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
-import PhotoQuick from "./PhotoQuick";
+import { useItemData } from "../config/ItemDataState";
 // Import Firebase Authentication if you're getting the user ID from there
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, push } from "firebase/database";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import { initializeApp } from "firebase/app";
-import { app, storage, database, db, auth,  } from "../services/config";
+import { ref as storageRef, uploadString, getDownloadURL, uploadBytes } from "firebase/storage";
+import { app, storage, database, db, auth, } from "../services/config";
 import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect } from "react";
-import * as FileSystem from 'expo-file-system';
+import { doc, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 
 
@@ -23,47 +22,47 @@ export default function AddItem() {
   const [user_id, setUser_id] = useState(null);
 
   // Get the Authentication instance
-//  const auth = getAuth();
+  //  const auth = getAuth();
   const currentUser = auth.currentUser;
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
 
   useEffect(() => {
-    if (currentUser) {
-      //   console.log("Current user ID:", currentUser.uid);
-      setUser_id(currentUser.uid);
-      console.log("Current user_ID:", user_id);
-    } else {
-      console.log("No user signed in.");
-    }
-  }, [currentUser]);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user?.uid) {
+        setUser_id(user.uid);
+      } else {
+        setUser_id(null);
+        console.log("No user signed in.");
+      }
+    });
+    return unsub;
+  }, []);
 
-
-  // upload image to firebase storage
-  async function uploadImageAsync(uri) {
-    if (!uri) { return null };
+  async function uploadImage(uri) {
+    console.log("uploadImage");
     setUploading(true);
     try {
       const response = await fetch(uri);
-      if (!response.ok) {
-        // Jos fetch ei onnistunut, heitä oma virhe tarkemmalla tiedolla
-        throw new Error(`Failed to fetch image from URI: ${uri}. Status: ${response.status}`);
-      }
       const blob = await response.blob();
-      console.log("Blobin tyyppi:", blob.type, "Blobin koko:", blob.size); // Varmista, että nämä ovat järkeviä arvoja
-      const filename = `${user_id}/${Date.now()}.jpg`;
+
+      const filename = `${user_id ?? "missing-user"}/${Date.now()}.jpg`;
       const imgRef = storageRef(storage, filename);
-      console.log("Trying upload with", { uri, filename, user_id });
+
+      console.log("uploadImage uploading", filename);
       await uploadBytes(imgRef, blob);
-      const downloadURL = await getDownloadURL(imgRef);
-      console.log("Picture loaded to storage:", downloadURL);
-      return downloadURL;
-    } catch (error) {
-      console.error("Firebase Storage virhe tapahtui:");
-      console.error("Virhekoodi (error.code):", error.code);     // Esim. 'storage/unauthorized'
-      console.error("Virheviesti (error.message):", error.message); // Esim. 'User does not have permission...'
-      console.error("Virhetyyppi (error.name):", error.name);   // Yleensä 'FirebaseStorageError'
-      console.error("Koko virheobjekti:", error);                 // Tulostaa kaikki tiedot, mukaan lukien stack tracen
-      Alert.alert("Problem loading picture to firebase storage", error.message);
+      const url = await getDownloadURL(imgRef);
+      console.log("uploadImage done",url);
+      return url;
+    } catch (err) {
+      console.log("uploadImage error", err);
+      console.log("uploadImage error details", {
+        code: err?.code,
+        message: err?.message,
+        customData: err?.customData,
+        serverResponse: err?.serverResponse,
+        uri,
+      });
+      Alert.alert("Image upload failed", err?.message ?? "Unknown error");
       return null;
     } finally {
       setUploading(false);
@@ -79,29 +78,42 @@ export default function AddItem() {
 
   // save to firebase
   const handleSave = async () => {
-    if (!user_id) { return };
+    console.log("tallennusfunktio");
+    if (!user_id) {
+      console.log("No user_id, aborting save");
+      return;
+    };
+    console.log("tallennusfunktio 2");
     let dloadURL = null;
     if (itemData.uri) {
-      dloadURL = await uploadImageAsync(itemData.uri);
+      console.log("tallennusfunktio 3");
+      dloadURL = await uploadImage(itemData.uri);
+      console.log("tallennusfunktio 4", dloadURL);
     }
-    updateItemData({ downloadURL: dloadURL, timestamp: getTimeStamp() });
-    console.log("Tallennusyritys itemdata", itemData);
+    //  updateItemData({ downloadURL: dloadURL, timestamp: getTimeStamp() });
+    console.log("Tallennusyritys");
     const assedID = itemData.assedId;
-    if (itemData.itemName) {
+    const finalData = {
+      ...itemData,
+      downloadURL: dloadURL,
+      timestamp: getTimeStamp(),
+    };
+
+    if (finalData.itemName) {
       console.log("meillä on itemData.itemName");
-      push(ref(database, 'items/'), itemData)
+      push(ref(database, 'items/'), finalData)
         .then((newRef) => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle onnistui
           console.log("Tiedot tallennettu onnistuneesti!");
-          console.log("Uusi avain (push ID):", newRef.key);
-          console.log("Tallenneetu data:", itemData);
+          //          console.log("Uusi avain (push ID):", newRef.key);
+          //          console.log("Tallenneetu data:", itemData);
           clearItemData();
           // Voit tehdä tässä muita toimintoja, esim. näyttää käyttäjälle onnistumisviestin
           Alert.alert('Tallennus onnistui!', `Item ${itemData.itemName} tallennettu.`);
         })
         .catch((error) => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle epäonnistui
-          console.error("Tietojen tallennus epäonnistui:", error);
+          //       console.error("Tietojen tallennus epäonnistui:", error);
           // Voit näyttää käyttäjälle virheilmoituksen
           Alert.alert('Virhe!', `Tallennus epäonnistui: ${error.message}`);
         });
@@ -112,6 +124,7 @@ export default function AddItem() {
 
   const pickImage = async (pick) => {
     console.log("IN PICK IMAGE");
+    let result;
     if (pick === "library") {
       console.log("LIBRARY SELECTION");
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -121,20 +134,20 @@ export default function AddItem() {
       } else {
         // Launch the image library and getthe selected image
         console.log("trying to open library image async");
-        const result = await ImagePicker.launchImageLibraryAsync({
+        result = await ImagePicker.launchImageLibraryAsync({
           allowsEditing: true, // Allow basic editing like cropping
           aspect: [4, 3],// Aspect ratio for cropping
           quality: 0.7, // Image quality (1 = highest)
         });
-        if (!result.canceled) {
-          // update the file state variable
-          console.log("result", result);
-          const newUri = result.assets[0].uri;
-          console.log("newUri", newUri)
-          updateItemData({ uri: newUri });
-        } else {
-          Alert.alert("no result");
-        }
+        // if (!result.canceled) {
+        //   // update the file state variable
+        //   console.log("result", result);
+        //   const newUri = result.assets[0].uri;
+        //   console.log("newUri", newUri)
+        //   updateItemData({ uri: newUri });
+        // } else {
+        //   Alert.alert("no result");
+        // }
       }
     } else {
       console.log("CAMERA MODE");
@@ -144,20 +157,12 @@ export default function AddItem() {
         Alert.alert("Kameran käyttöoikeus tarvitaan.");
         return;
       }
-      const result = await ImagePicker.launchCameraAsync({
+      result = await ImagePicker.launchCameraAsync({
         allowsEditing: false,
         quality: 0.7,
         exif: true,
       });
-      if (!result.canceled) {
-        // update the file state variable
-        console.log("result", result);
-        const newUri = result.assets[0].uri;
-        console.log("newUri", newUri)
-        updateItemData({ uri: newUri });
-      } else {
-        Alert.alert("no result");
-      }
+
     }
     if (!result.canceled) {
       // update the file state variable

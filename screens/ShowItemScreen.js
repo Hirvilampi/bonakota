@@ -19,7 +19,7 @@ export default function ShowItemScreen() {
   console.log(" ---- Show ITEM -----");
 
   // Get the Authentication instance
-//  const auth = getAuth();
+  //  const auth = getAuth();
   const currentUser = auth.currentUser;
 
 
@@ -32,10 +32,10 @@ export default function ShowItemScreen() {
       //     console.log("No user signed in.");
     }
   }, [currentUser]);
-  
+
   // console.log("Current user_ID:", user_id);
 
-  
+
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
 
   const navigation = useNavigation();
@@ -125,6 +125,10 @@ export default function ShowItemScreen() {
     });
   }
 
+        
+          <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
+
+
 
   return (
     <ScrollView
@@ -138,12 +142,13 @@ export default function ShowItemScreen() {
     >
       <View style={styles.container}>
         <View style={styles.itembox}>
-          {itemData.uri && itemData.uri.startsWith('file')
-            ? <Text style={{ color: 'gray' }}>Paikallinen kuva, ei ladattavissa</Text>
-            : itemData.uri
-              ? <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
-              : null
-          }
+          {itemData?.uri ? (
+            <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
+          ) : (
+            <Text style={{ color: 'gray' }}>Paikallinen kuva, ei ladattavissa</Text>
+          )}
+
+
         </View>
         <TextInput
           mode="flat"
@@ -188,11 +193,12 @@ export default function ShowItemScreen() {
           <TextInput
             mode="flat"
             style={[styles.input, { width: '40%' }]}
-            keyboardType="numeric"
-            value={itemData.price}
+            keyboardType={'numeric'}
+            value={String(itemData.price ?? '')}
             placeholder="price"
-            onChangeText={text => updateItemData({ price: Number(text) || 0 })}
+            onChangeText={text => updateItemData({ price: text })}
           />
+          <Text style={styles.text}>€</Text>
         </View>
 
 

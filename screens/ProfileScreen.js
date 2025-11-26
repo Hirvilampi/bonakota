@@ -6,9 +6,11 @@ import { getDatabase, push, ref, onValue } from 'firebase/database';
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app, auth, database } from "../services/config";
+import { useNavigation } from "expo-router";
 
 export default function ProfileScreen() {
   const [items, setItems] = useState([]);
+  const navigation = useNavigation();
   // Get the Authentication instance
 //  const auth = getAuth();
   const currentUser = auth.currentUser;
@@ -49,6 +51,9 @@ export default function ProfileScreen() {
     getItems();
   }
 
+  const handlePressFirestoreTest = () => {
+    navigation.navigate("FirestoreTest");
+  }
 
   return (
     <View style={[styles.container, { flex: 1 }]}>
@@ -56,6 +61,7 @@ export default function ProfileScreen() {
       <Text style={styles.subtitle}>
         This screen is currently being built.
       </Text>
+      <Button title="Testaa FireStore" onPress={handlePressFirestoreTest} />
       <Button title="REFESSAA" onPress={handlePress} />
       <FlatList
         data={items}
