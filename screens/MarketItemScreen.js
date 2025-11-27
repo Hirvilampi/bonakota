@@ -42,7 +42,7 @@ export default function MarketItemScreen() {
     }, [params]);
 
     const chatWithUser = async () => {
-        const itemchattitle = "About "+itemData.itemName;
+        const itemchattitle = "About " + itemData.itemName;
         const chatti_id = itemData.itemName + new Date().toISOString().split('.')[0];
         navigation.navigate("ChatScreen", {
             chatId: chatti_id,
@@ -65,12 +65,11 @@ export default function MarketItemScreen() {
         >
             <View style={styles.container}>
                 <View style={styles.itembox}>
-                    {itemData.uri && itemData.uri.startsWith('file')
-                        ? <Text style={{ color: 'gray' }}>Paikallinen kuva, ei ladattavissa</Text>
-                        : itemData.uri
-                            ? <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
-                            : null
-                    }
+                    {itemData?.downloadURL ? (
+                        <Image source={{ uri: itemData.downloadURL }} style={styles.cameraimage} />
+                    ) : (
+                        <Text style={{ color: 'gray' }}>No picture available</Text>
+                    )}
                 </View>
                 <Text>Item: {itemData.itemName}</Text>
                 <Text>Description: {itemData.description}</Text>
