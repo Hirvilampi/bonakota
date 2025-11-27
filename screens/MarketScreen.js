@@ -42,65 +42,36 @@ export default function MarketScreen() {
   //  const database = getDatabase(app);
   // tää kaatoi koko homman aiemmin const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
 
-  const getItems = async () => {
+  const getItemsOnMarket = async () => {
     console.log("haetaan itemit, jotka on asetettu marketplazelle");
     console.log("user_id:llä", user_id);
     const itemsRef = ref(database, 'items/');
-    const marketItemsQuery = query(itemsRef, orderByChild('on_market_place'), equalTo("1"));
-
-      try {
-        console.log("!! TYING TO GET ON MARKET ITEMS !!")
-        const snapshot1 = await get(marketItemsQuery);
-        console.log("GOT QUERY");
-        if (snapshot1.exists()) {
-          console.log("!! SNAPSHOT 1 SAATU");
-          const data = snapshot1.val();
-          if (data) {
-            const itemsList = Object.entries(data).map(([id, item]) => ({
-              id,
-              ...item,
-            }
-
-            ));
-            console.log("itemslist", itemsList);
-            const filteredListNoUsersItems = itemsList.filter(item => item.owner_id !== user_id);
-            const filteredListMyItems = itemsList.filter(item => item.owner_id == user_id);
-            setAllMarketItems(itemsList);
-            setItemsOnMarket(filteredListNoUsersItems);
-            setOwnItemsOnMarket(filteredListMyItems);
-          } else {
-            setItemsOnMarket([]);
-          }
-        }
-
-      } catch (error) {
-        Alert.alert("Error getting on market items", error?.message ?? String(error) ?? '');
+    const marketItemsQuery = query(itemsRef, orderByChild('on_market_place'), equalTo(1));
+    const kaavin = onValue(marketItemsQuery, async (snapshot) => {
+      console.log("Market On value");
+      const data = snapshot.val();
+//      console.log("=== MARKETTIDATA ===",data);
+      const marketList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
+//      console.log("-- MARKETTILISTA --",marketList);
+      const filteredListNoUsersItems = marketList.filter(item => item.owner_id !== user_id);
+      const filteredListMyItems = marketList.filter(item => item.owner_id == user_id);
+      setAllMarketItems(marketList);
+      setItemsOnMarket(filteredListNoUsersItems);
+      if (filteredListNoUsersItems.length > 0) {
+        console.log("Loaded on market items");
       }
-    
-    //         onValue(userItemsQuery, (snapshot) => {
-    //             console.log("onValue - on käyty");
-    //             const data = snapshot.val();
-    //             if (data) {
-    //                 const itemsList = Object.entries(data).map(([id, item]) => ({
-    //                     id,
-    //                     ...item,
-    //                 }));
-    //                 setItemsOnMarket(itemsList);
-    //  //               console.log("------- TÄÄÄ ON SE LISTA -----",itemsList);
-    //             } else {
-    //                 setItemsOnMarket([]); // Handle the case when there are no items
-    //             }
-    //         })
-
+      setOwnItemsOnMarket(filteredListMyItems);
+    })
   }
 
   useEffect(() => {
     if (user_id) { // if user_id is not null, lets go and get this users items
-      getItems();
+      getItemsOnMarket();
     }
   }, [user_id]);
 
   const updateSearchList = async (lookingfor) => {
+    
   }
 
   return (
@@ -123,10 +94,46 @@ export default function MarketScreen() {
         SEARCH
       </Button>
       {!lookingfor ? (
-        allMarketItems?.length > 0 ? ( 
+        allMarketItems?.length > 0 ? (
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            data={itemsOnMarket}
+            vertical
+            showsVerticalScrollIndicator
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 20 }}
+            renderItem={({ item }) => (
+              
+              <Pressable
+                onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
+                style={styles.itembox}
+              >
+                <View style={{flexDirection: "row", padding: 5,}}>
+                <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
+                <View>
+                <Text style={styles.itemTitle}>{item.itemName}</Text>
+                <Text style={styles.itemCategory}>{item.description}</Text>
+                <Text style={styles.itemCategory}>{item.price} €</Text>
+                <Text style={styles.itemCategory}>{item.key}</Text>
+                {categories?.length > 0 && (
+                  <Text style={styles.itemCategory}>
+                    {categories.find(
+                      (cat) => cat.value == String(item.category_id)
+                    )?.label || ""}
+                  </Text>
+                )}
+</View>
+                </View>
+              </Pressable>
+              
+            )}
+          />
+        ) : (<Text>No items to show</Text>)
+
+      ) : (
         <FlatList
           keyExtractor={(item, index) => index.toString()}
-          data={allMarketItems}
+          data={itemsOnMarket}
           vertical
           showsVerticalScrollIndicator
           showsHorizontalScrollIndicator={false}
@@ -139,7 +146,7 @@ export default function MarketScreen() {
               <Image source={{ uri: item.uri }} style={styles.showimage} />
               <Text style={styles.itemTitle}>{item.itemName}</Text>
               <Text style={styles.itemCategory}>{item.description}</Text>
-              <Text style={styles.itemCategory}>{item.price}</Text>
+              <Text style={styles.itemCategory}>price: {item.price} €</Text>
               <Text style={styles.itemCategory}>{item.key}</Text>
               {categories?.length > 0 && (
                 <Text style={styles.itemCategory}>
@@ -150,38 +157,8 @@ export default function MarketScreen() {
               )}
             </Pressable>
           )}
+
         />
-        ) : (<Text>No items to show</Text>)
-
-      ) : (
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        data={itemsOnMarket}
-        vertical
-        showsVerticalScrollIndicator
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingRight: 20 }}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
-            style={styles.itembox}
-          >
-            <Image source={{ uri: item.uri }} style={styles.showimage} />
-            <Text style={styles.itemTitle}>{item.itemName}</Text>
-            <Text style={styles.itemCategory}>{item.description}</Text>
-            <Text style={styles.itemCategory}>price: {item.price}</Text>
-            <Text style={styles.itemCategory}>{item.key}</Text>
-            {categories?.length > 0 && (
-              <Text style={styles.itemCategory}>
-                {categories.find(
-                  (cat) => cat.value == String(item.category_id)
-                )?.label || ""}
-              </Text>
-            )}
-          </Pressable>
-        )}
-
-      />
       )}
 
     </View>

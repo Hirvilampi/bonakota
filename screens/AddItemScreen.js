@@ -38,6 +38,8 @@ export default function AddItem() {
     return unsub;
   }, []);
 
+
+  // loads image to firebase storage
   async function uploadImage(uri) {
     console.log("uploadImage");
     setUploading(true);
