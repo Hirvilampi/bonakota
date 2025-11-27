@@ -83,12 +83,13 @@ export default function MyItemsScreen() {
             for (const item of itemsList) {
                 const localUri = item.uri; // jos tämä on file://
                 const remoteUri = item.downloadURL || item.uri; // remote fallback
-                const exists = await fileExists(localUri);
+                const exists = await fileExists(localUri); // file exists tarkastaa onko lokaalia tiedostoa olemassa
                 if (!exists && remoteUri?.startsWith('http')) {
                     const newLocal = await downloadImage(remoteUri);
                     updateItemData({ ...item, uri: newLocal });
                     setItems((prev) => prev.map((it) => it.id === item.id ? { ...it, uri: newLocal, timestamp: getTimeStamp() } : it));
                     // päivitä listaan/DB:hen, esim. setItems(... tai kirjoita databaseen)
+                    // tähän  lisätään, jos juuri tällä kuvalla ei ole paikallista kuvaa, myöhempää kuvan hakua varten
                     setUpdateItems((prev) => [...prev, { ...item, uri: newLocal, timestamp: getTimeStamp() }]);
 
                 }
@@ -100,27 +101,27 @@ export default function MyItemsScreen() {
         }
     }
 
-
     const getTimeStamp = () => {
         return new Date().toISOString().split('.')[0];
     }
 
+    // save the pics from backend
     const saveChangedToFirebase = async () => {
         try {
+            // updates jaotellaan tiedot muotoon, jota firebase update komennolla ymmärtää
             const updates = updateItems.reduce((acc, item) => {
                 acc[`items/${item.id}`] = item;      // tai valitse vain päivitettävät kentät
                 return acc;
             }, {});
             console.log("updates", updates);
-            await update(ref(database), updates);
+            await update(ref(database), updates); // updatetaan olemassa olevat tiedot
             console.log('updated info to firebase');
         } catch (e) {
             console.log('save to firebase error', e);
         }
     }
 
-
-
+    // we are using this to get image from storage
     async function downloadImage(uri) {
         setDownloading(true);
         try {
@@ -158,15 +159,9 @@ export default function MyItemsScreen() {
         getItems();
 
     }
-    //
-
-
-    const updateList = async () => {
-    }
-
+    
     const updateSearchList = async (lookingfor) => {
     }
-
 
     return (
 
