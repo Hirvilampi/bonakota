@@ -12,7 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 
 
 
@@ -39,12 +39,31 @@ export default function AddItem() {
   }, []);
 
 
+  // makes image smaller before sending to backend
+  async function compressImage(uri) {
+    try {
+      const context = ImageManipulator.manipulate(uri);
+      context.resize({ width: 800 });
+      const image = await context.renderAsync();
+      const result = await image.saveAsync({ compress: 0.7, format: SaveFormat.JPEG });
+      context?.release?.();
+      image?.release?.();
+      console.log('Compressed image URI', result.uri);
+      return result.uri;
+    }
+    catch (e) {
+      console.log("manipulation error - getting normal size image", e);
+      return uri; // fall back to original
+    }
+  }
+
   // loads image to firebase storage
   async function uploadImage(uri) {
     console.log("uploadImage");
     setUploading(true);
     try {
-      const response = await fetch(uri);
+      const compressedUri = await compressImage(uri);
+      const response = await fetch(compressedUri);
       const blob = await response.blob();
 
       const filename = `${user_id ?? "missing-user"}/${Date.now()}.jpg`;
@@ -53,7 +72,7 @@ export default function AddItem() {
       console.log("uploadImage uploading", filename);
       await uploadBytes(imgRef, blob);
       const url = await getDownloadURL(imgRef);
-      console.log("uploadImage done",url);
+      console.log("uploadImage done", url);
       return url;
     } catch (err) {
       console.log("uploadImage error", err);
@@ -85,10 +104,10 @@ export default function AddItem() {
       console.log("No user_id, aborting save");
       return;
     };
-    console.log("tallennusfunktio 2");
+    //   console.log("tallennusfunktio 2");
     let dloadURL = null;
     if (itemData.uri) {
-      console.log("tallennusfunktio 3");
+      //      console.log("tallennusfunktio 3");
       dloadURL = await uploadImage(itemData.uri);
       console.log("tallennusfunktio 4", dloadURL);
     }
