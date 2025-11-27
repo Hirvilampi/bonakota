@@ -159,12 +159,26 @@ export default function MyItemsScreen() {
         getItems();
 
     }
-    
+
+// filtteröidään listasta lookingfor stringin mukaan
     const updateSearchList = async (lookingfor) => {
+        const looking = lookingfor.toLowerCase();
+        const result = items.filter(item =>
+            item.itemName?.toLowerCase().includes(looking) ||
+            item.description?.toLowerCase().includes(looking) ||
+            item.category_name?.toLowerCase().includes(looking) ||
+            item.location?.toLowerCase().includes(looking) 
+        );
+ //       console.log(result);
+        setSearchItems(result);
     }
 
-    return (
+    useEffect(() => {
+        updateSearchList(lookingfor);
+    }, [lookingfor]);
 
+
+    return (
         <View style={styles.container}>
             {/* 🔍 Search */}
             <TextInput
@@ -178,16 +192,8 @@ export default function MyItemsScreen() {
                 mode="text"
                 buttonColor="#EAF2EC"
                 textColor="#52946B"
-                onPress={() => updateSearchList(lookingfor)}
-            >
-                SEARCH
-            </Button>
-            <Button
-                mode="text"
-                buttonColor="#EAF2EC"
-                textColor="#52946B"
                 onPress={() => handlePress()} >
-                REFRESSAA
+                REFRESS
             </Button>
 
             {/* Jos ei haeta → näytetään lohkot */}

@@ -70,9 +70,22 @@ export default function MarketScreen() {
     }
   }, [user_id]);
 
-  const updateSearchList = async (lookingfor) => {
-    
-  }
+// filtteröidään listasta lookingfor stringin mukaan
+    const updateSearchList = async (lookingfor) => {
+        const looking = lookingfor.toLowerCase();
+        const result = itemsOnMarket.filter(item =>
+            item.itemName?.toLowerCase().includes(looking) ||
+            item.description?.toLowerCase().includes(looking) ||
+            item.category_name?.toLowerCase().includes(looking) ||
+            item.location?.toLowerCase().includes(looking) 
+        );
+        console.log(result);
+        setSearchItems(result);
+    }
+
+    useEffect(() => {
+        updateSearchList(lookingfor);
+    }, [lookingfor]);
 
   return (
     <View style={styles.container}>
@@ -131,9 +144,10 @@ export default function MarketScreen() {
         ) : (<Text>No items to show</Text>)
 
       ) : (
+        <>
         <FlatList
           keyExtractor={(item, index) => index.toString()}
-          data={itemsOnMarket}
+          data={searchItems}
           vertical
           showsVerticalScrollIndicator
           showsHorizontalScrollIndicator={false}
@@ -143,7 +157,7 @@ export default function MarketScreen() {
               onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
               style={styles.itembox}
             >
-              <Image source={{ uri: item.uri }} style={styles.showimage} />
+              <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
               <Text style={styles.itemTitle}>{item.itemName}</Text>
               <Text style={styles.itemCategory}>{item.description}</Text>
               <Text style={styles.itemCategory}>price: {item.price} €</Text>
@@ -159,6 +173,7 @@ export default function MarketScreen() {
           )}
 
         />
+        </>
       )}
 
     </View>
