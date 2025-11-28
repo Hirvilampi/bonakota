@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
 import { collection, getDocs } from 'firebase/firestore';
-import { getDatabase, ref, query, set, orderByChild, equalTo, onValue, update } from 'firebase/database';
+import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
 
@@ -27,7 +27,8 @@ export default function MyItemsScreen() {
     const [recentItems, setRecentItems] = useState([]);
     const [lookingfor, setLookingfor] = useState('');
     const [searchItems, setSearchItems] = useState([]);
-    const [categories] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [locations, setLocations] = useState([]);
     const [user_id, setUser_id] = useState(null);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
@@ -37,7 +38,6 @@ export default function MyItemsScreen() {
 
 
     // Get the Authentication instance
-    //   const auth = getAuth();
     const currentUser = auth.currentUser;
 
     useEffect(() => {
@@ -95,10 +95,39 @@ export default function MyItemsScreen() {
 
                 }
             }
+            // tehdään olemassaolevat kategoriat listaksi
+            const itemcategories = (itemsList.map(item => item.category_name));
+            const uniquecategories = [...new Set((itemsList.map(item => item.category_name)))];
+            setCategories(uniquecategories);
+            const uniquelocations = [...new Set((itemsList.map(item => item.location)))];
+            setLocations(uniquelocations);
+            console.log("!! MY LOCATIONS !! ", uniquelocations);
         });
         if (updateItems.length > 0) {
             console.log("Let's save to firebase");
             await saveChangedToFirebase();
+        }
+        
+    }
+
+    const getCategories = async () => {
+        try {
+            const catRef = ref(database, 'categories');
+            const snapshot = await get(catRef);
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+//                console.log("Ladattiin kategoriat",data);
+                const globalCategories = Object.entries(data).map(([key, value]) => ({
+                    key, ...value
+                }));
+//                console.log("Muutettiin arrayksi",globalCategories);
+                return globalCategories;
+            } else {
+                console.log("No data available");
+                return null;
+            }
+        } catch (e) {
+            console.error("Error fecthing categories", error);
         }
     }
 
@@ -130,9 +159,14 @@ export default function MyItemsScreen() {
             console.log('downloaded image from storage');
             return url;
         } catch (error) {
-            console.log('File getInfo failed', e);
+            console.log('File getInfo failed', error);
             return false;
         }
+    }
+
+    const loadAllCategories = async () => {
+        const cats = await getCategories();
+  //      setCategories(cats);
     }
 
     useEffect(() => {
@@ -153,6 +187,7 @@ export default function MyItemsScreen() {
         if (user_id) { // if user_id is not null, lets go and get this users items
             getItems();
         }
+        loadAllCategories();
     }, [user_id]);
 
     useEffect(() => {
@@ -247,6 +282,66 @@ export default function MyItemsScreen() {
                             />
                         </View>
 
+                         {/* 📍 My Locations */}
+                        <View style={styles.section}>
+                            <Pressable
+                                onPress={() => navigation.navigate("LocationScreen", {})}
+                            >
+                                <Text style={styles.sectionTitle}>My Locations</Text>
+                                </Pressable>
+                              <FlatList
+                                keyExtractor={(item, index) => item.value?.toString() || item.key}
+                                data={locations}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                renderItem={({ item }) => (
+                                    <View style={styles.itemboxrow}>
+                                        <Button
+                                            mode="text"
+                                            buttonColor="#EAF2EC"
+                                            textColor="#52946B"
+                                            style={styles.categoryButton}
+                                            contentStyle={styles.categoryContent}
+                                            labelStyle={styles.categoryLabel}
+                                            onPress={() =>
+                                                navigation.navigate("ShowCategory", { category: item })
+                                            }
+                                        >
+                                           {item}
+                                        </Button>
+                                    </View>
+                                )}
+                            />
+                        </View>
+
+                        {/* 🗂️ My Categories */}
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>My Categories</Text>
+                            <FlatList
+                                keyExtractor={(item) => item.value?.toString() || item.key}
+                                data={categories}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                renderItem={({ item }) => (
+                                    <View style={styles.itemboxrow}>
+                                        <Button
+                                            mode="text"
+                                            buttonColor="#EAF2EC"
+                                            textColor="#52946B"
+                                            style={styles.categoryButton}
+                                            contentStyle={styles.categoryContent}
+                                            labelStyle={styles.categoryLabel}
+                                            onPress={() =>
+                                                navigation.navigate("ShowCategory", { category: item })
+                                            }
+                                        >
+                                           <Text>yks</Text> {item.name}
+                                        </Button>
+                                    </View>
+                                )}
+                            />
+                        </View>
+
                         {/* 🏠 My Items */}
                         <View style={styles.section}>
                             <Pressable
@@ -274,7 +369,7 @@ export default function MyItemsScreen() {
                                             <Text style={styles.itemCategory}>
                                                 {categories.find(
                                                     (cat) => cat.value == String(item.category_id)
-                                                )?.label || ""}
+                                                )?.label || "no category"}
                                             </Text>
 
                                         )}
@@ -284,48 +379,7 @@ export default function MyItemsScreen() {
                             />
                         </View>
                     </ScrollView>
-                    {/* 
-                        {/* 🗂️ My Categories 
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>My Categories</Text>
-                            <FlatList
-                                keyExtractor={(item) => item.value?.toString() || item.key}
-                                data={categories}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                renderItem={({ item }) => (
-                                    <View style={styles.itemboxrow}>
-                                        <Button
-                                            mode="text"
-                                            buttonColor="#EAF2EC"
-                                            textColor="#52946B"
-                                            style={styles.categoryButton}
-                                            contentStyle={styles.categoryContent}
-                                            labelStyle={styles.categoryLabel}
-                                            onPress={() =>
-                                                navigation.navigate("ShowCategory", { category: item })
-                                            }
-                                        >
-                                            {item.label}
-                                        </Button>
-                                    </View>
-                                )}
-                            />
-                        </View>
 
-
-
-
-                        {/* 📍 My Locations 
-                        <View style={styles.section}>
-                            <Pressable
-                                onPress={() => navigation.navigate("LocationScreen", {})}
-                            >
-                                <Text style={styles.sectionTitle}>My Locations</Text>
-                                <Text style={[styles.sectionTitle, { color: 'red' }]}>under construction</Text>
-                            </Pressable>
-                        </View>
-*/}
                 </>
             ) : (
                 // 🔍 Hakutulos

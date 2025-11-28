@@ -25,6 +25,7 @@ import ShowMyItemsScreen from "./screens/ShowMyItemsScreen";
 import FirestoreTest from './screens/FirestoreTest';
 import MarketItemScreen from './screens/MarketItemScreen';
 import ChatScreen from './screens/ChatScreen';
+import { CategoryProvider } from './context/CategoryContext';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -98,6 +99,7 @@ export default function App() {
 
   return (
     //  <SQLiteProvider>
+    <CategoryProvider>
     <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator
@@ -173,6 +175,7 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
+    </CategoryProvider>
     // </SQLiteProvider>
 
   );

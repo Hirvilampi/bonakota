@@ -13,6 +13,8 @@ import { useState, useEffect } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
+import { useCategories } from "../context/CategoryContext";
+import CategoryPicker from "../components/CategoryPicker";
 
 
 
@@ -20,6 +22,12 @@ export default function AddItem() {
   const insets = useSafeAreaInsets();
   const [uploading, setUploading] = useState(false);
   const [user_id, setUser_id] = useState(null);
+  const { categories, loading } = useCategories();
+  const [category_id, setCategory_id] = useState();
+
+  if (loading || !categories) {
+    return <Text>Loading categories...</Text>
+  }
 
   // Get the Authentication instance
   //  const auth = getAuth();
@@ -279,7 +287,10 @@ export default function AddItem() {
 
 
             <View style={{ zIndex: 1000, width: '90%', marginVertical: 10, position: 'relative', zIndex: 10, }}>
-              <Text>Category valinta tähän</Text>
+              <CategoryPicker
+                category_id={itemData.category_id}
+                setCategory_id={(val) => updateItemData({ category_id: val })}
+              />
             </View>
 
 
