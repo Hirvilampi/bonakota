@@ -24,6 +24,7 @@ import { useItemData, clearItemData, updateItemData } from "../config/ItemDataSt
 
 export default function MyItemsScreen() {
     const [items, setItems] = useState([]);
+    const [recentItems, setRecentItems] = useState([]);
     const [lookingfor, setLookingfor] = useState('');
     const [searchItems, setSearchItems] = useState([]);
     const [categories] = useState([]);
@@ -134,6 +135,12 @@ export default function MyItemsScreen() {
         }
     }
 
+    useEffect(() => {
+        setRecentItems(
+            (items || []).slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        );
+    }, [items]);
+
     const saveImage = async (uri) => {
         const perm = await MediaLibrary.requestPermissionsAsync();
         if (!perm.granted) return;
@@ -157,19 +164,19 @@ export default function MyItemsScreen() {
         console.log("Refreshing items...");
         console.log("Haetaan itemit user_id:llä:", user_id);
         getItems();
-
+        //        console.log('==== ITEMS ====', items);
     }
 
-// filtteröidään listasta lookingfor stringin mukaan
+    // filtteröidään listasta lookingfor stringin mukaan
     const updateSearchList = async (lookingfor) => {
         const looking = lookingfor.toLowerCase();
         const result = items.filter(item =>
             item.itemName?.toLowerCase().includes(looking) ||
             item.description?.toLowerCase().includes(looking) ||
             item.category_name?.toLowerCase().includes(looking) ||
-            item.location?.toLowerCase().includes(looking) 
+            item.location?.toLowerCase().includes(looking)
         );
- //       console.log(result);
+        //       console.log(result);
         setSearchItems(result);
     }
 
@@ -205,6 +212,41 @@ export default function MyItemsScreen() {
                         overScrollMode="never"
                         contentContainerStyle={styles.scrollContainer}
                     >
+                        {/* 🕓 Recent Items */}
+                        <View style={styles.section}>
+                            <Pressable
+                                onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen") ?? console.log("No parent navigator found")}
+                            >
+                                <Text style={styles.sectionTitle}>Recent Items</Text>
+                            </Pressable>
+                            <FlatList
+                                keyExtractor={(item, index) => item.id.toString()}
+                                data={recentItems}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{ paddingRight: 20 }}
+                                renderItem={({ item }) => (
+                                    <Pressable
+                                        onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+                                        style={styles.itembox}
+                                    >
+                                        <Image source={{ uri: item.uri }} style={styles.showimage} />
+                                        <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
+                                        <Text style={styles.itemCategory}>{item.description}</Text>
+                                        <Text style={styles.itemCategory}>{item.key}</Text>
+                                        {categories?.length > 0 && (
+                                            <Text style={styles.itemCategory}>
+                                                {categories.find(
+                                                    (cat) => cat.value == String(item.category_id)
+                                                )?.label || ""}
+                                            </Text>
+
+                                        )}
+                                    </Pressable>
+                                )}
+                            />
+                        </View>
+
                         {/* 🏠 My Items */}
                         <View style={styles.section}>
                             <Pressable
@@ -225,7 +267,7 @@ export default function MyItemsScreen() {
                                         style={styles.itembox}
                                     >
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
-                                        <Text style={styles.itemTitle}>{item.itemName}</Text>
+                                        <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
                                         <Text style={styles.itemCategory}>{item.key}</Text>
                                         {categories?.length > 0 && (
@@ -272,34 +314,7 @@ export default function MyItemsScreen() {
                         </View>
 
 
-                        {/* 🕓 Recent Items 
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Recent Items</Text>
-                            <FlatList
-                                keyExtractor={(item) => item.id.toString()}
-                                data={recentItems}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{ paddingRight: 20 }}
-                                renderItem={({ item }) => (
-                                    <Pressable
-                                        onPress={() => navigation.navigate("ShowItem", { item })}
-                                        style={styles.itembox}
-                                    >
-                                        <Image source={{ uri: item.image }} style={styles.showimage} />
-                                        <Text style={styles.itemTitle}>{item.name}</Text>
-                                        {categories?.length > 0 && (
-                                            <Text style={styles.itemCategory}>
-                                                {categories.find(
-                                                    (cat) => cat.value == String(item.category_id)
-                                                )?.label || ""}
-                                            </Text>
 
-                                        )}
-                                    </Pressable>
-                                )}
-                            />
-                        </View>
 
                         {/* 📍 My Locations 
                         <View style={styles.section}>
