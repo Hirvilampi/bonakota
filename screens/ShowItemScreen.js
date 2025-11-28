@@ -11,7 +11,8 @@ import { getDatabase, ref, push, onValue, update, remove } from "firebase/databa
 import { getAuth } from "firebase/auth";
 import { useItemData, updateItemData, itemData } from "../config/ItemDataState";
 import styles from '../styles/RegisterStyles';
-
+import { useCategories } from "../context/CategoryContext";
+import CategoryPicker from "../components/CategoryPicker";
 
 export default function ShowItemScreen() {
   const { params } = useRoute();
@@ -21,7 +22,12 @@ export default function ShowItemScreen() {
   // Get the Authentication instance
   //  const auth = getAuth();
   const currentUser = auth.currentUser;
+  const { categories, loading } = useCategories();
+  const [category_id, setCategory_id] = useState();
 
+  if (loading || !categories) {
+    return <Text>Loading categories...</Text>
+  }
 
   useEffect(() => {
     if (currentUser) {
@@ -35,9 +41,7 @@ export default function ShowItemScreen() {
 
   // console.log("Current user_ID:", user_id);
 
-
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
-
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -46,7 +50,6 @@ export default function ShowItemScreen() {
       console.log("item updated", params.item);
     }
   }, [params]);
-
 
   const deleteItem = async () => {
     console.log('trying to delete item from firebase');
@@ -86,6 +89,7 @@ export default function ShowItemScreen() {
 
           Alert.alert('Tallennus onnistui!', `Item ${itemData.itemName} tallennettu.`);
           clearItemData();
+          navigation.navigate('MainTabs', { screen: 'My Items' });
         })
         .catch((error) => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle epäonnistui
@@ -95,7 +99,6 @@ export default function ShowItemScreen() {
         });
 
     } else { Alert.alert('To save, item has to have name'); }
-
   }
 
   const confirmDelete = () => {
@@ -118,17 +121,13 @@ export default function ShowItemScreen() {
     );
   };
 
-
   const toggleMarketPlace = () => {
     updateItemData({
       on_market_place: itemData.on_market_place === 0 ? 1 : 0
     });
   }
 
-        
-          <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
-
-
+  <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
 
   return (
     <ScrollView
@@ -169,9 +168,14 @@ export default function ShowItemScreen() {
           onChangeText={text => updateItemData({ description: text })}
         />
 
-        <View style={{ zIndex: 1000, width: '90%', marginVertical: 5 }}>
-          <Text>Category here</Text>
+
+        <View style={{ zIndex: 1000, width: '90%', marginVertical: 5, position: 'relative', zIndex: 10, }}>
+          <CategoryPicker
+            category_id={itemData.category_id}
+            setCategory_id={(val) => updateItemData({ category_id: val })}
+          />
         </View>
+
         <TextInput
           mode="flat"
           style={[styles.input]}
@@ -262,116 +266,3 @@ export default function ShowItemScreen() {
     </ScrollView>
   );
 }
-
-// const styles = StyleSheet.create({
-//   button: {
-//     borderRadius: 25,
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     paddingTop: 10,
-//     paddingRight: 20,
-//   },
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#F8FBFA',
-//     alignItems: 'center',
-//     justifyContent: 'flex-start',
-//     paddingTop: 20,
-//   },
-//   text: {
-//     color: "#52946B",
-//     fontSize: 15,
-//     padding: 5,
-//   },
-//   cameraimage: {
-//     aspectRatio: 1.5,
-//     height: '200',
-//     resizeMode: 'contain',
-//     borderRadius: 5,
-//     marginRight: 10,
-//     zIndex: 0,
-//   },
-//   itembox: {
-//     alignItems: 'center',
-//   },
-//   textinput: {
-//     width: '90%',
-//     fontSize: 15,
-//     backgroundColor: '#EAF2EC', // kevyt vihertävä tausta esim.
-//     color: '#52946B',
-//     marginVertical: 6,
-//     alignSelf: 'center',
-//   },
-//   input: {
-//     height: 45,
-//     backgroundColor: '#EAF2EC',
-//     borderWidth: 0,
-//     paddingHorizontal: 10,
-//     color: '#52946B', // Text color
-//     width: '90%',
-//     marginVertical: 4,
-//     borderRadius: 5,
-//   },
-//   inputdescription: {
-//     height: 70,
-//     backgroundColor: '#EAF2EC',
-//     borderWidth: 0,
-//     paddingHorizontal: 10,
-//     color: '#52946B', // Text color
-//     width: '90%',
-
-//     justifyContent: 'space-around',
-//     margin: 4,
-//     borderTopLeftRadius: 5,
-//     borderTopRightRadius: 5,
-//     borderBottomLeftRadius: 5,
-//     borderBottomRightRadius: 5,
-//     textAlignVertical: 'top',
-//   },
-//   dropdown: {
-//     backgroundColor: '#EAF2EC',
-//     borderColor: '#52946B',
-//     borderWidth: 0,
-//     borderRadius: 8,
-//     minHeight: 45,
-//   },
-//   dropdownContainer: {
-//     backgroundColor: '#F8FBFA',
-//     borderColor: '#52946B',
-//     borderWidth: 1,
-//     borderRadius: 8,
-//   },
-//   dropdownText: {
-//     fontSize: 16,
-//     color: '#52946B',
-//   },
-//   dropdownPlaceholder: {
-//     color: '#777',
-//     fontStyle: 'italic',
-//   },
-//   dropdownItemContainer: {
-//     paddingVertical: 10,
-//   },
-//   dropdownItemLabel: {
-//     color: '#333',
-//     fontSize: 16,
-//   },
-//   dropdownSelectedItemLabel: {
-//     fontWeight: 'bold',
-//     color: '#52946B',
-//   },
-//   dropdownArrow: {
-//     tintColor: '#52946B',
-//   },
-//   dropdownTick: {
-//     tintColor: '#52946B',
-//   },
-//   scrollContainer: {
-//     flexGrow: 1,
-//     paddingHorizontal: 12,
-//     paddingBottom: 220,
-
-//   },
-// });

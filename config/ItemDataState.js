@@ -32,6 +32,10 @@ export function useItemData(initialOwnerId = null) {
         console.log("data updated, ehkä??");
     }
 
+    const recentItemData = () => {
+        
+    }
+
    // used for clearing item data from olio
     const clearItemData = () => {
         setItemData({
