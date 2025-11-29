@@ -7,12 +7,13 @@ import { useFocusEffect, useNavigation, NavigationContainer, getParent } from '@
 import { TextInput } from "react-native-paper";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { app, database, auth } from "../services/config";
-import { getDatabase, ref, push, onValue, update, remove } from "firebase/database";
+import { getDatabase, ref, get, push, onValue, update, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { useItemData, updateItemData, itemData } from "../config/ItemDataState";
 import styles from '../styles/RegisterStyles';
 import { collection, addDoc } from "firebase/firestore";
 import { openChat } from "../components/openChat";
+import { getFirstName } from "../components/getFirstName";
 
 
 export default function MarketItemScreen() {
@@ -33,7 +34,9 @@ export default function MarketItemScreen() {
     }, [currentUser]);
 
     const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
-
+    const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
+    const [ownerFirstName, setOwnerFirstName] = useState(null);
+    
     useEffect(() => {
         if (params?.item) {
             updateItemData(params.item);
@@ -41,16 +44,65 @@ export default function MarketItemScreen() {
         }
     }, [params]);
 
+    // Hae nimet Firestoresta
+    useEffect(() => {
+        if (!user_id) return;
+        getFirstName(user_id).then(setCurrentUserFirstName).catch((e) => console.log("get current user first name error", e));
+    }, [user_id]);
+
+    useEffect(() => {
+        if (!itemData.owner_id) return;
+        getFirstName(itemData.owner_id).then(setOwnerFirstName).catch((e) => console.log("get owner first name error", e));
+    }, [itemData.owner_id]);
+
+    useEffect(() => {
+        const id = itemData.id ?? itemData.item_id;
+        if (!id || itemData.downloadURL) return;
+        //        fetchDownloadURL(itemId).then(url => updateItemData({ downloadURL: url }));
+        const fetchItem = async () => {
+            try {
+                console.log('Had no photo- trying to get all info');
+                const snap = await get(ref(database, `items/${id}`));
+                if (snap.exists()) {
+                    updateItemData(snap.val());
+                }
+            } catch (e) {
+                console.error("Error fetching download URL", e);
+            }
+        }
+        fetchItem();
+    }, [itemData.downloadURL]);
+
     const chatWithUser = async () => {
-        const itemchattitle = "About " + itemData.itemName;
-        const chatti_id = itemData.itemName + new Date().toISOString().split('.')[0];
+        console.log('sending you to chatscreen - hopefully');
+        const title = `About ${itemData.itemName}`;
+        console.log('about title', title);
+        const itemId = itemData.id ?? itemData.item_id;
+        const ownerId = itemData.owner_id;
+
+        if (!user_id || !ownerId || !itemId) {
+            console.log('Missing ids', { user_id, ownerId, itemId });
+            return;
+        }
+
+        // hae olemassa oleva tai luo uusi
+        const chatId = await openChat(
+            user_id,
+            itemData.owner_id,
+            itemId,
+            itemData.itemName,
+            currentUserFirstName,
+            ownerFirstName
+        );
+        console.log('sit navigoidaan chatscreeniin');
         navigation.navigate("ChatScreen", {
-            chatId: chatti_id,
+            chatId,
+            title,
             otherUserId: itemData.owner_id,
-            itemId: item.id,
-            title: itemchattitle,
+            itemId,
+            itemName: itemData.itemName,
+            item: itemData,
         })
-        const chat = await openChat(user_id, itemData.owner_id, itemData.item_id);
     }
 
     return (
@@ -76,10 +128,7 @@ export default function MarketItemScreen() {
                 <Text>Size: {itemData.size}</Text>
                 <Text>Category: {itemData.category}</Text>
                 <Text>Price: {itemData.price}</Text>
-                <Text>User: user-here</Text>
-
-
-
+                <Text>Owner: {itemData.owner_id}</Text>
 
                 <View style={{ flexDirection: 'row' }} >
                     <Pressable
@@ -116,5 +165,3 @@ export default function MarketItemScreen() {
         </ScrollView>
     );
 }
-
-

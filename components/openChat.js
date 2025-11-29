@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { db } from "../services/config";
 
-export async function openChat(userA, userB, itemId) {
+export async function openChat(userA, userB, itemId, itemName, userAName, userBName) {
     const chatsRef = collection(db, "chats");
 
     // check if there are previous chats between the two users
@@ -23,6 +23,11 @@ export async function openChat(userA, userB, itemId) {
     const chatDoc = await addDoc(chatsRef, {
         members: [userA, userB],
         itemId,
+        itemName,
+        memberNames: {
+            [userA]: userAName ?? null,
+            [userB]: userBName ?? null,
+        },
         createdAt: Date.now()
     });
 

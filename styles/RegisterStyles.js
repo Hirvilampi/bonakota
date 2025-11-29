@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 18,
     },
-        inputdescription: {
+    inputdescription: {
         height: 120,
         backgroundColor: '#EAF2EC',
         borderWidth: 0,
@@ -106,7 +106,7 @@ export const styles = StyleSheet.create({
         borderBottomRightRadius: 5,
         textAlignVertical: 'top',
     },
-        cameraviewadditem: {
+    cameraviewadditem: {
         backgroundColor: '#F8FBFA',
         borderWidth: 1,
         borderStyle: 'dashed',
@@ -118,14 +118,14 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'relative',
     },
-        scrollContaineradditem: {
+    scrollContaineradditem: {
         flexGrow: 1,
         justifyContent: 'flex-start',
         paddingHorizontal: 12,
         paddingBottom: 250,
         backgroundColor: '#F8FBFA',
     },
-        loginregisterbutton: {
+    loginregisterbutton: {
         backgroundColor: '#EAF2EC',
         color: '#0D1A12',
         fontWeight: 'bold',
@@ -136,19 +136,23 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
-      camerabutton: {
-    backgroundColor: '#EAF2EC',
-    color: '#0D1A12',
-    fontWeight: 'bold',
-  },
-  camerabuttontext: {
-    backgroundColor: '#EAF2EC',
-    color: '#0D1A12',
-    fontWeight: 'bold',
-    padding: 10,
-    margin: 0,
+    camerabutton: {
+        backgroundColor: '#EAF2EC',
+        color: '#0D1A12',
+        fontWeight: 'bold',
+    },
+    camerabuttontext: {
+        backgroundColor: '#EAF2EC',
+        color: '#0D1A12',
+        fontWeight: 'bold',
+        padding: 10,
+        margin: 0,
 
-  },
+    },
+    gridContainer: {
+        padding: 10,
+        justifyContent: 'center',
+    },
 
 });
 
