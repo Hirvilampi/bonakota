@@ -204,6 +204,7 @@ export default function AddItem() {
     }
   }
 
+          //  setCategory_id={(val) => updateItemData({ category_id: val })}
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F8FBFA' }}>
@@ -289,7 +290,10 @@ export default function AddItem() {
             <View style={{ zIndex: 1000, width: '90%', marginVertical: 10, position: 'relative', zIndex: 10, }}>
               <CategoryPicker
                 category_id={itemData.category_id}
-                setCategory_id={(val) => updateItemData({ category_id: val })}
+                onChangeCategory={({ id, name}) =>
+                updateItemData({ category_id: id, category_name: name})
+                }
+     
               />
             </View>
 

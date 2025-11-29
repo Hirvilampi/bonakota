@@ -98,7 +98,9 @@ export default function MyItemsScreen() {
             // tehdään olemassaolevat kategoriat listaksi
             const itemcategories = (itemsList.map(item => item.category_name));
             const uniquecategories = [...new Set((itemsList.map(item => item.category_name)))];
+            console.log("!! MY CATEGORIES !!", uniquecategories);
             setCategories(uniquecategories);
+            // tehdään itemien lokaatiosta lista omista lokaatiosta
             const uniquelocations = [...new Set((itemsList.map(item => item.location)))];
             setLocations(uniquelocations);
             console.log("!! MY LOCATIONS !! ", uniquelocations);
@@ -107,7 +109,7 @@ export default function MyItemsScreen() {
             console.log("Let's save to firebase");
             await saveChangedToFirebase();
         }
-        
+
     }
 
     const getCategories = async () => {
@@ -116,11 +118,11 @@ export default function MyItemsScreen() {
             const snapshot = await get(catRef);
             if (snapshot.exists()) {
                 const data = snapshot.val();
-//                console.log("Ladattiin kategoriat",data);
+                //                console.log("Ladattiin kategoriat",data);
                 const globalCategories = Object.entries(data).map(([key, value]) => ({
                     key, ...value
                 }));
-//                console.log("Muutettiin arrayksi",globalCategories);
+                //                console.log("Muutettiin arrayksi",globalCategories);
                 return globalCategories;
             } else {
                 console.log("No data available");
@@ -166,7 +168,7 @@ export default function MyItemsScreen() {
 
     const loadAllCategories = async () => {
         const cats = await getCategories();
-  //      setCategories(cats);
+        //      setCategories(cats);
     }
 
     useEffect(() => {
@@ -268,29 +270,24 @@ export default function MyItemsScreen() {
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
-                                        <Text style={styles.itemCategory}>{item.key}</Text>
-                                        {categories?.length > 0 && (
+                                        <Text style={styles.itemCategory}>{item.key}</Text>             
                                             <Text style={styles.itemCategory}>
-                                                {categories.find(
-                                                    (cat) => cat.value == String(item.category_id)
-                                                )?.label || ""}
-                                            </Text>
-
-                                        )}
+                                                {item.category_name || "no category"}
+                                            </Text>             
                                     </Pressable>
                                 )}
                             />
                         </View>
 
-                         {/* 📍 My Locations */}
+                        {/* 📍 My Locations */}
                         <View style={styles.section}>
                             <Pressable
                                 onPress={() => navigation.navigate("LocationScreen", {})}
                             >
                                 <Text style={styles.sectionTitle}>My Locations</Text>
-                                </Pressable>
-                              <FlatList
-                                keyExtractor={(item, index) => item.value?.toString() || item.key}
+                            </Pressable>
+                            <FlatList
+                                keyExtractor={(item, index) => index.toString()}
                                 data={locations}
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
@@ -307,7 +304,7 @@ export default function MyItemsScreen() {
                                                 navigation.navigate("ShowCategory", { category: item })
                                             }
                                         >
-                                           {item}
+                                            {item}
                                         </Button>
                                     </View>
                                 )}
@@ -335,7 +332,7 @@ export default function MyItemsScreen() {
                                                 navigation.navigate("ShowCategory", { category: item })
                                             }
                                         >
-                                           <Text>yks</Text> {item.name}
+                                            <Text>{item}</Text> 
                                         </Button>
                                     </View>
                                 )}
@@ -365,14 +362,9 @@ export default function MyItemsScreen() {
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
                                         <Text style={styles.itemCategory}>{item.key}</Text>
-                                        {categories?.length > 0 && (
                                             <Text style={styles.itemCategory}>
-                                                {categories.find(
-                                                    (cat) => cat.value == String(item.category_id)
-                                                )?.label || "no category"}
-                                            </Text>
-
-                                        )}
+                                                {item.category_name || "no category"}
+                                            </Text>   
                                     </Pressable>
                                 )}
 

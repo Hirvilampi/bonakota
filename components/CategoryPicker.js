@@ -3,7 +3,7 @@ import { View, ActivityIndicator } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useCategories } from "../context/CategoryContext"; 
 
-export default function CategoryPicker({ category_id, setCategory_id }) {
+export default function CategoryPicker({ category_id, onChangeCategory, setCategory_id }) {
     const { categories, loading } = useCategories(); // käytetty context
 
     const [open, setOpen] = useState(false);
@@ -23,13 +23,15 @@ export default function CategoryPicker({ category_id, setCategory_id }) {
             label: obj.name,
             value: key     
         }));
-
+console.log('-- KATEGORIAT --',arr);
         setItems(arr);
     }, [categories]);
 
     if (loading || !categories) {
         return <ActivityIndicator size="small" color="#52946B" />;
     }
+
+   // setCategory_id(newVal); // päivitä parentille
 
     return (
         <View style={{ zIndex: 1000, width: "100%", marginVertical: 10 }}>
@@ -41,7 +43,9 @@ export default function CategoryPicker({ category_id, setCategory_id }) {
                 setValue={(callback) => {
                     const newVal = callback(value);
                     setValue(newVal);
-                    setCategory_id(newVal); // päivitä parentille
+                    const selected = items.find(i => i.value === newVal);
+                    onChangeCategory?.({ id:newVal, name: selected?.label ?? ""}); // parenttiin päivittyy niin id, kuin nimi
+                
                 }}
                 placeholder="Choose category"
                 listMode="SCROLLVIEW"
