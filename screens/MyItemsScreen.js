@@ -102,12 +102,12 @@ export default function MyItemsScreen() {
             // tehdään olemassaolevat kategoriat listaksi
             const itemcategories = (itemsList.map(item => item.category_name));
             const uniquecategories = [...new Set((itemsList.map(item => item.category_name)))];
-            console.log("!! MY CATEGORIES !!", uniquecategories);
+ //           console.log("!! MY CATEGORIES !!", uniquecategories);
             setCategories(uniquecategories);
             // tehdään itemien lokaatiosta lista omista lokaatiosta
             const uniquelocations = [...new Set((itemsList.map(item => item.location)))];
             setLocations(uniquelocations);
-            console.log("!! MY LOCATIONS !! ", uniquelocations);
+ //           console.log("!! MY LOCATIONS !! ", uniquelocations);
         });
         if (updateItems.length > 0) {
             console.log("Let's save to firebase");
@@ -213,9 +213,9 @@ export default function MyItemsScreen() {
     }, []);
 
     // logiin messaget, jos ne muuttuu
-    useEffect(() => {
-        console.log('### MESSAGES ###', messages);
-    }, [messages]);
+    // useEffect(() => {
+    //     console.log('### MESSAGES ###', messages);
+    // }, [messages]);
 
     const handlePress = () => {
         console.log("Refreshing items...");
@@ -333,7 +333,12 @@ export default function MyItemsScreen() {
 
                         {/* 🗂️ My Categories */}
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>My Categories</Text>
+                                                        <Pressable
+                                onPress={() => navigation.getParent()?.navigate("ShowMyCategories", { categories }) ?? console.log("No parent navigator found")}
+                            >
+                                <Text style={styles.sectionTitle}>My Categories</Text>
+                            </Pressable>
+                            
                             <FlatList
                                 keyExtractor={(item, index) => index?.toString()}
                                 data={categories}
@@ -359,7 +364,7 @@ export default function MyItemsScreen() {
                             />
                         </View>
 
-                        {/* 🏠 My Items */}
+                        {/* My Items */}
                         <View style={styles.section}>
                             <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen", { items }) ?? console.log("No parent navigator found")}
@@ -391,6 +396,7 @@ export default function MyItemsScreen() {
                             />
                         </View>
 
+{/* Chats */}
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>Chats</Text>
                             <FlatList
