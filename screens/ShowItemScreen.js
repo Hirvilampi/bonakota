@@ -170,10 +170,12 @@ export default function ShowItemScreen() {
 
 
         <View style={{ zIndex: 1000, width: '90%', marginVertical: 5, position: 'relative', zIndex: 10, }}>
-          <CategoryPicker
-            category_id={itemData.category_id}
-            setCategory_id={(val) => updateItemData({ category_id: val })}
-          />
+              <CategoryPicker
+                category_id={itemData.category_id}
+                onChangeCategory={({ id, name}) =>
+                updateItemData({ category_id: id, category_name: name})
+                }
+              />
         </View>
 
         <TextInput
