@@ -42,15 +42,16 @@ export default function MarketItemScreen() {
     }, [params]);
 
     const chatWithUser = async () => {
-        const itemchattitle = "About " + itemData.itemName;
-        const chatti_id = itemData.itemName + new Date().toISOString().split('.')[0];
+        const title = `About ${itemData.itemName}`;
+        const itemID = itemData.id ?? itemData.item_id;
+       // hae olemassa oleva tai luo uusi
+        const chatId = await openChat(user_id, itemData.owner_id ?? itemData.item_id);
         navigation.navigate("ChatScreen", {
-            chatId: chatti_id,
+            chatId,
             otherUserId: itemData.owner_id,
-            itemId: item.id,
-            title: itemchattitle,
+            itemId,
+            title,
         })
-        const chat = await openChat(user_id, itemData.owner_id, itemData.item_id);
     }
 
     return (
