@@ -65,6 +65,10 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         marginRight: 8,
     },
+    itembox: {
+        alignItems: "center",
+        marginRight: 8,
+    },
     itemTitle: {
         fontSize: 13,
         fontWeight: "bold",
@@ -82,6 +86,13 @@ export const styles = StyleSheet.create({
     },
     categoryContent: {
         height: 40,
+        paddingVertical: 0,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    categoryContentWide: {
+        height: 40,
+        width: "100%",
         paddingVertical: 0,
         alignItems: "center",
         justifyContent: "center",

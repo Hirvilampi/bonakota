@@ -9,8 +9,8 @@ export default function ShowMyItemsScreen() {
     const { params } = useRoute();
     const items = params?.items ?? [];
         const navigation = useNavigation();
-    console.log(" // ITEMS //");
-    console.log(items);
+    console.log(" // MY ITEMS //");
+ //   console.log(items);
 
   return (
         <View style={styles.container}>
