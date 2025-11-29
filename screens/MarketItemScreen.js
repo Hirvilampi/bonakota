@@ -76,10 +76,7 @@ export default function MarketItemScreen() {
                 <Text>Size: {itemData.size}</Text>
                 <Text>Category: {itemData.category}</Text>
                 <Text>Price: {itemData.price}</Text>
-                <Text>User: user-here</Text>
-
-
-
+                <Text>Owner: {itemData.owner_id}</Text>
 
                 <View style={{ flexDirection: 'row' }} >
                     <Pressable
