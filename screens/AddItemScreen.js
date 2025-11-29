@@ -16,15 +16,13 @@ import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { useCategories } from "../context/CategoryContext";
 import CategoryPicker from "../components/CategoryPicker";
 
-
-
 export default function AddItem() {
   const insets = useSafeAreaInsets();
   const [uploading, setUploading] = useState(false);
   const [user_id, setUser_id] = useState(null);
   const { categories, loading } = useCategories();
   const [category_id, setCategory_id] = useState();
-
+  const HEADER_HEIGHT = 80;
   if (loading || !categories) {
     return <Text>Loading categories...</Text>
   }
@@ -149,8 +147,6 @@ export default function AddItem() {
     } else { Alert.alert('To save, item has to have name'); }
   }
 
-
-
   const pickImage = async (pick) => {
     console.log("IN PICK IMAGE");
     let result;
@@ -168,15 +164,6 @@ export default function AddItem() {
           aspect: [4, 3],// Aspect ratio for cropping
           quality: 0.7, // Image quality (1 = highest)
         });
-        // if (!result.canceled) {
-        //   // update the file state variable
-        //   console.log("result", result);
-        //   const newUri = result.assets[0].uri;
-        //   console.log("newUri", newUri)
-        //   updateItemData({ uri: newUri });
-        // } else {
-        //   Alert.alert("no result");
-        // }
       }
     } else {
       console.log("CAMERA MODE");
@@ -204,14 +191,14 @@ export default function AddItem() {
     }
   }
 
-          //  setCategory_id={(val) => updateItemData({ category_id: val })}
+  //  setCategory_id={(val) => updateItemData({ category_id: val })}
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F8FBFA' }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? insets.top : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? insets.top + HEADER_HEIGHT: HEADER_HEIGHT}
       >
         <ScrollView
           style={{ flex: 1, backgroundColor: '#F8FBFA' }}
@@ -286,18 +273,14 @@ export default function AddItem() {
               value={itemData.size}
             />
 
-
             <View style={{ zIndex: 1000, width: '90%', marginVertical: 10, position: 'relative', zIndex: 10, }}>
               <CategoryPicker
                 category_id={itemData.category_id}
-                onChangeCategory={({ id, name}) =>
-                updateItemData({ category_id: id, category_name: name})
+                onChangeCategory={({ id, name }) =>
+                  updateItemData({ category_id: id, category_name: name })
                 }
-     
               />
             </View>
-
-
 
             <TextInput
               placeholder='Location'
