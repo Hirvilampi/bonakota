@@ -21,6 +21,8 @@ import { collection, getDocs } from 'firebase/firestore';
 import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
+import { fetchUserChats } from "../components/fetchUserChats";
+import { listenToUserChats } from "../components/listenToUserChats";
 
 export default function MyItemsScreen() {
     const [items, setItems] = useState([]);
@@ -35,6 +37,7 @@ export default function MyItemsScreen() {
     const [downloading, setDownloading] = useState(false);
     const [data, setData] = useState([]);
     const [updateItems, setUpdateItems] = useState([]);
+    const [messages, setMessages] = useState([]);
 
 
     // Get the Authentication instance
@@ -175,27 +178,43 @@ export default function MyItemsScreen() {
         setRecentItems(
             (items || []).slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         );
+
     }, [items]);
 
-    const saveImage = async (uri) => {
-        const perm = await MediaLibrary.requestPermissionsAsync();
-        if (!perm.granted) return;
-
-        await MediaLibrary.saveToLibraryAsync(uri);
-        console.log("Saved!");
-    };
-
     useEffect(() => {
-        if (user_id) { // if user_id is not null, lets go and get this users items
-            getItems();
-        }
+        if (!user_id) return;
+        getItems();
         loadAllCategories();
+
+        console.log('haetaan kerran chat messaged');
     }, [user_id]);
 
+    useEffect(() => {
+        if (!user_id) return;
+        console.log('haetaan kerran chat messaged');
+        //     const chats = listenToUserChats(user_id);
+        fetchUserChats(user_id).then(setMessages).catch(console.log);
+
+        console.log('pistetään kuuntelija hommiiin');
+        console.log('chatit', messages);
+        // realtime-kuuntelu
+        const unsub = listenToUserChats(user_id, chats => setMessages(chats));
+        console.log(" ### MESSAGES ###");
+        console.log(messages);
+        return () => unsub?.();
+
+    }, [user_id]);
+
+    // jos auth muuttuu, niin reagoidaan?
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => setUser_id(user?.uid ?? null));
         return unsub;
     }, []);
+
+    // logiin messaget, jos ne muuttuu
+    useEffect(() => {
+        console.log('### MESSAGES ###', messages);
+    }, [messages]);
 
     const handlePress = () => {
         console.log("Refreshing items...");
@@ -270,10 +289,10 @@ export default function MyItemsScreen() {
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
-                                        <Text style={styles.itemCategory}>{item.key}</Text>             
-                                            <Text style={styles.itemCategory}>
-                                                {item.category_name || "no category"}
-                                            </Text>             
+                                        <Text style={styles.itemCategory}>{item.key}</Text>
+                                        <Text style={styles.itemCategory}>
+                                            {item.category_name || "no category"}
+                                        </Text>
                                     </Pressable>
                                 )}
                             />
@@ -315,7 +334,7 @@ export default function MyItemsScreen() {
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>My Categories</Text>
                             <FlatList
-                                keyExtractor={(item) => item.value?.toString() || item.key}
+                                keyExtractor={(item, index) => index?.toString()}
                                 data={categories}
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
@@ -332,7 +351,7 @@ export default function MyItemsScreen() {
                                                 navigation.navigate("ShowCategory", { category: item })
                                             }
                                         >
-                                            <Text>{item}</Text> 
+                                            <Text>{item}</Text>
                                         </Button>
                                     </View>
                                 )}
@@ -362,14 +381,54 @@ export default function MyItemsScreen() {
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
                                         <Text style={styles.itemCategory}>{item.key}</Text>
-                                            <Text style={styles.itemCategory}>
-                                                {item.category_name || "no category"}
-                                            </Text>   
+                                        <Text style={styles.itemCategory}>
+                                            {item.category_name || "no category"}
+                                        </Text>
                                     </Pressable>
                                 )}
 
                             />
                         </View>
+
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>Chats</Text>
+                            <FlatList
+                                data={messages}
+                                keyExtractor={item => item.id}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{ paddingRight: 20 }}
+                                renderItem={({ item }) => {
+                                    const chatItem = items.find((it) => it.id === item.itemId || it.item_id === item.itemId);
+                                    const otherUserId = item.members.find((m) => m !== user_id);
+                                    return (
+                                        <Button
+                                            mode="text"
+                                            buttonColor="#EAF2EC"
+                                            textColor="#52946B"
+                                            style={styles.categoryButton}
+                                            contentStyle={styles.categoryContent}
+                                            labelStyle={styles.categoryLabel}
+                                            onPress={() =>
+                                                navigation.navigate("ChatScreen", {
+                                                    chatId: item.id,
+                                                    itemId: item.itemId,
+                                                    itemName: item.itemName,
+                                                    title: item.itemName ?? "Chat",
+                                                    otherUserId,
+                                                    item: chatItem,
+                                                })
+                                            }
+                                        >
+                                            <Text>{item.itemName ?? item.itemId}</Text>
+                                        </Button>
+                                    );
+                                }}
+                            />
+
+                        </View>
+
+
                     </ScrollView>
 
                 </>
