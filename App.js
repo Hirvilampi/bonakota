@@ -18,6 +18,7 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { PaperProvider } from "react-native-paper";
 // import { SQLiteProvider } from './services/sqlite';
+import ShowMyCategoriesScreen from './screens/ShowMYCategoriesScreen';
 import ShowCategoryScreen from './screens/ShowCategoryScreen';
 import LocationScreen from './screens/LocationScreen';
 import LogOutButton from "./components/LogOutButton";
@@ -26,6 +27,7 @@ import FirestoreTest from './screens/FirestoreTest';
 import MarketItemScreen from './screens/MarketItemScreen';
 import ChatScreen from './screens/ChatScreen';
 import { CategoryProvider } from './context/CategoryContext';
+import ShowMYCategoriesScreen from './screens/ShowMYCategoriesScreen';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -144,6 +146,14 @@ export default function App() {
             component={MarketItemScreen}
             options={{
               title: 'See item on market',
+              headerBackTitleVisible: false,
+            }}
+          />
+            <Stack.Screen
+            name="ShowMyCategories"
+            component={ShowMYCategoriesScreen}
+            options={{
+              title: 'My Categories',
               headerBackTitleVisible: false,
             }}
           />
