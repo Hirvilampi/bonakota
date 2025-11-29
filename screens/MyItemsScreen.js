@@ -84,6 +84,7 @@ export default function MyItemsScreen() {
             const data = snapshot.val();
             const itemsList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
             setItems(itemsList);
+            updateItemData(itemsList);
             for (const item of itemsList) {
                 const localUri = item.uri; // jos tämä on file://
                 const remoteUri = item.downloadURL || item.uri; // remote fallback
@@ -361,7 +362,7 @@ export default function MyItemsScreen() {
                         {/* 🏠 My Items */}
                         <View style={styles.section}>
                             <Pressable
-                                onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen") ?? console.log("No parent navigator found")}
+                                onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen", { items }) ?? console.log("No parent navigator found")}
                             >
                                 <Text style={styles.sectionTitle}>My Items</Text>
 

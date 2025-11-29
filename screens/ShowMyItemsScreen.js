@@ -1,38 +1,50 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { app } from "../services/config";
-import { getDatabase, ref, push, onValue, update, remove } from "firebase/database";
+import { View, Text, FlatList, Pressable, Image } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import styles from "../styles/RegisterStyles";
+import {  useNavigation } from '@react-navigation/native';
 
 
 export default function ShowMyItemsScreen() {
+    const { params } = useRoute();
+    const items = params?.items ?? [];
+        const navigation = useNavigation();
+    console.log(" // ITEMS //");
+    console.log(items);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🚧 ShowMyItemsScreen Under Construction 🚧</Text>
-      <Text style={styles.subtitle}>
-        This screen is currently being built.
-      </Text>
-    </View>
+        <View style={styles.container}>
+            {/* 🔍 Search 
+                <TextInput
+                    style={styles.input}
+                    placeholder="Search"
+                    placeholderTextColor="#52946B"
+                    onChangeText={setLookingfor}
+                    value={lookingfor}
+                /> */}
+            {/* Jos ei haeta → näytetään lohkot */}
+
+            <FlatList
+                keyExtractor={(item) => item.id.toString()}
+                data={items}
+                numColumns={2}
+                renderItem={({ item }) => (
+                    <Pressable
+                        onPress={() => navigation.navigate("ShowItemScreen", { item })}
+                        style={styles.itemboxrow}
+                    >
+                        <View style={{padding: 5}}>
+                            <Image source={{ uri: item.uri }} style={[styles.cameraimage, {width: "150", height: "150"}]} />
+                            <Text style={styles.itemTitle}>{item.itemName}</Text>
+                            <Text style={styles.itemCategory}>{item.description}</Text>
+                        </View>
+                    </Pressable>
+                )}
+                contentContainerStyle={[styles.gridContainer, { paddingBottom: 100 }]}
+                ListEmptyComponent={<Text style={{ color: "#777" }}>No items yet.</Text>}
+            />
+
+        </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8FBFA",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#52946B",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#0D1A12",
-    textAlign: "center",
-  },
-});
