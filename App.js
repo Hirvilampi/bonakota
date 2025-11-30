@@ -29,6 +29,7 @@ import ChatScreen from './screens/ChatScreen';
 import { CategoryProvider } from './context/CategoryContext';
 import ShowMYCategoriesScreen from './screens/ShowMYCategoriesScreen';
 import ShowMyLocationsScreen from './screens/ShowMyLocationsScreen';
+import YourMarketItemsScreen from './screens/YourMarketItemsScreen';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -171,6 +172,14 @@ export default function App() {
               component={ChatScreen}
               options={{
                 title: 'Chat screen',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="YourMarketItems"
+              component={YourMarketItemsScreen}
+              options={{
+                title: 'Your Items On Market',
                 headerBackTitleVisible: false,
               }}
             />

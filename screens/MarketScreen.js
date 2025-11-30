@@ -50,9 +50,9 @@ export default function MarketScreen() {
     const kaavin = onValue(marketItemsQuery, async (snapshot) => {
       console.log("Market On value");
       const data = snapshot.val();
-//      console.log("=== MARKETTIDATA ===",data);
+      //      console.log("=== MARKETTIDATA ===",data);
       const marketList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
-//      console.log("-- MARKETTILISTA --",marketList);
+      //      console.log("-- MARKETTILISTA --",marketList);
       const filteredListNoUsersItems = marketList.filter(item => item.owner_id !== user_id);
       const filteredListMyItems = marketList.filter(item => item.owner_id == user_id);
       setAllMarketItems(marketList);
@@ -70,22 +70,24 @@ export default function MarketScreen() {
     }
   }, [user_id]);
 
-// filtteröidään listasta lookingfor stringin mukaan
-    const updateSearchList = async (lookingfor) => {
-        const looking = lookingfor.toLowerCase();
-        const result = itemsOnMarket.filter(item =>
-            item.itemName?.toLowerCase().includes(looking) ||
-            item.description?.toLowerCase().includes(looking) ||
-            item.category_name?.toLowerCase().includes(looking) ||
-            item.location?.toLowerCase().includes(looking) 
-        );
-        console.log(result);
-        setSearchItems(result);
-    }
+  // filtteröidään listasta lookingfor stringin mukaan
+  const updateSearchList = async (lookingfor) => {
+    const looking = lookingfor.toLowerCase();
+    const result = itemsOnMarket.filter(item =>
+      item.itemName?.toLowerCase().includes(looking) ||
+      item.description?.toLowerCase().includes(looking) ||
+      item.category_name?.toLowerCase().includes(looking) ||
+      item.location?.toLowerCase().includes(looking)
+    );
+ //   console.log(result);
+    setSearchItems(result);
+  }
 
-    useEffect(() => {
-        updateSearchList(lookingfor);
-    }, [lookingfor]);
+  useEffect(() => {
+    updateSearchList(lookingfor);
+  }, [lookingfor]);
+
+
 
   return (
     <View style={styles.container}>
@@ -98,14 +100,17 @@ export default function MarketScreen() {
         onChangeText={setLookingfor}
         value={lookingfor}
       />
-      <Button
-        mode="text"
-        buttonColor="#EAF2EC"
-        textColor="#52946B"
-        onPress={() => updateSearchList(lookingfor)}
-      >
-        SEARCH
-      </Button>
+      <View styles={{ padding: 50, }}>
+        <Button
+          mode="text"
+          buttonColor="#EAF2EC"
+          textColor="#52946B"
+          onPress={() => navigation.navigate("YourMarketItems", { items: ownItemsOnMarket })}
+        >
+          <Text style={{ fontWeight: "bold" }}> YOUR ITEMS ON MARKET</Text>
+        </Button>
+      </View>
+
       {!lookingfor ? (
         allMarketItems?.length > 0 ? (
           <FlatList
@@ -114,19 +119,53 @@ export default function MarketScreen() {
             vertical
             showsVerticalScrollIndicator
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingRight: 20 }}
+            contentContainerStyle={{ paddingRight: 20, paddingTop:10, }}
             renderItem={({ item }) => (
-              
+
               <Pressable
                 onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
                 style={styles.itembox}
               >
-                <View style={{flexDirection: "row", padding: 5,}}>
+                <View style={{ flexDirection: "row", padding: 5, }}>
+                  <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
+                  <View>
+                    <Text style={styles.itemTitle}>{item.itemName}</Text>
+                    <Text style={styles.itemCategory}>{item.description}</Text>
+                    <Text style={styles.itemCategory}>{item.price} €</Text>
+                    <Text style={styles.itemCategory}>{item.key}</Text>
+                    {categories?.length > 0 && (
+                      <Text style={styles.itemCategory}>
+                        {categories.find(
+                          (cat) => cat.value == String(item.category_id)
+                        )?.label || ""}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              </Pressable>
+
+            )}
+          />
+        ) : (<Text>No items to show</Text>)
+
+      ) : (
+        <>
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            data={searchItems}
+            vertical
+            showsVerticalScrollIndicator
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 20 }}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
+                style={styles.itembox}
+              >
                 <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
-                <View>
                 <Text style={styles.itemTitle}>{item.itemName}</Text>
                 <Text style={styles.itemCategory}>{item.description}</Text>
-                <Text style={styles.itemCategory}>{item.price} €</Text>
+                <Text style={styles.itemCategory}>price: {item.price} €</Text>
                 <Text style={styles.itemCategory}>{item.key}</Text>
                 {categories?.length > 0 && (
                   <Text style={styles.itemCategory}>
@@ -135,44 +174,10 @@ export default function MarketScreen() {
                     )?.label || ""}
                   </Text>
                 )}
-</View>
-                </View>
               </Pressable>
-              
             )}
+
           />
-        ) : (<Text>No items to show</Text>)
-
-      ) : (
-        <>
-        <FlatList
-          keyExtractor={(item, index) => index.toString()}
-          data={searchItems}
-          vertical
-          showsVerticalScrollIndicator
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingRight: 20 }}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
-              style={styles.itembox}
-            >
-              <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
-              <Text style={styles.itemTitle}>{item.itemName}</Text>
-              <Text style={styles.itemCategory}>{item.description}</Text>
-              <Text style={styles.itemCategory}>price: {item.price} €</Text>
-              <Text style={styles.itemCategory}>{item.key}</Text>
-              {categories?.length > 0 && (
-                <Text style={styles.itemCategory}>
-                  {categories.find(
-                    (cat) => cat.value == String(item.category_id)
-                  )?.label || ""}
-                </Text>
-              )}
-            </Pressable>
-          )}
-
-        />
         </>
       )}
 
