@@ -1,18 +1,17 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Alert, ScrollView, Pressable } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import { useSQLiteContext } from 'expo-sqlite';
-import { useFocusEffect, useNavigation, NavigationContainer, getParent } from '@react-navigation/native';
-import { TextInput } from "react-native-paper";
+import { useRoute, useFocusEffect, useNavigation, NavigationContainer, getParent } from '@react-navigation/native';
+import { Button, TextInput } from "react-native-paper";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { app, database, auth } from "../services/config";
-import { getDatabase, ref, push, onValue, update, remove } from "firebase/database";
+import { getDatabase, ref, push, onValue, update, remove, query, equalTo, orderByChild } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { useItemData, updateItemData, itemData } from "../config/ItemDataState";
 import styles from '../styles/RegisterStyles';
 import { useCategories } from "../context/CategoryContext";
 import CategoryPicker from "../components/CategoryPicker";
+import LocationPicker from "../components/LocationPicker";
 
 export default function ShowItemScreen() {
   const { params } = useRoute();
@@ -23,7 +22,9 @@ export default function ShowItemScreen() {
   //  const auth = getAuth();
   const currentUser = auth.currentUser;
   const { categories, loading } = useCategories();
+  const [ location, setLocation] = useState();
   const [category_id, setCategory_id] = useState();
+  const [ locations, setLocations ] = useState(); 
 
   if (loading || !categories) {
     return <Text>Loading categories...</Text>
@@ -47,9 +48,52 @@ export default function ShowItemScreen() {
   useEffect(() => {
     if (params?.item) {
       updateItemData(params.item);
+      setLocation(params.item.location);
       console.log("item updated", params.item);
     }
   }, [params]);
+
+    useFocusEffect(
+      useCallback(() => {
+        if (!user_id) return;
+        console.log("haetaan userin itemit ja eristetään niistä lokaatiot:");
+        const itemsRef = ref(database, "items/");
+        const q = query(itemsRef, orderByChild("owner_id"), equalTo(user_id));
+        const unsubscribe = onValue(q, snap => {
+          const data = snap.val();
+          const list = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
+          const uniquelocations = [...new Set((list.map(item => item.location)))];
+          const hardcodedlocations = [
+            "Carage",
+            "Living Room",
+            "Kitchen",
+            "Walk-in closet",
+            "Kids room",
+            "Study",
+            "Attic",
+            "Basement",
+            "Hall",
+            "Master Bedroom"
+          ];
+          const combinedlocations = [
+            ...uniquelocations,
+            ...hardcodedlocations.filter(loc => !uniquelocations.includes(loc))
+          ];
+          setLocations(
+            combinedlocations.map(loc => ({
+              label: loc,
+              value: loc,
+            })));
+        });
+        return () => unsubscribe();
+      }, [user_id])
+    );
+  
+    useEffect(() => {
+      if (location !== itemData.location) {
+        updateItemData({location});
+      }
+    }, [location, itemData.location]);
 
   const deleteItem = async () => {
     console.log('trying to delete item from firebase');
@@ -75,6 +119,7 @@ export default function ShowItemScreen() {
 
   const saveItem = async () => {
     console.log('trying to save item');
+    updateItemData({getTimeStamp});
     const userRef = ref(database, 'users/' + user_id);
     console.log("Tallennusyritys itemdata", itemData);
     console.log("userRef - käyttäjän polku", userRef);
@@ -178,13 +223,19 @@ export default function ShowItemScreen() {
               />
         </View>
 
-        <TextInput
-          mode="flat"
-          style={[styles.input]}
-          value={itemData.location}
-          label="location"
-          onChangeText={text => updateItemData({ location: text })}
-        />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', width: '90%' }}>
+              <TextInput
+                placeholder='Location'
+                placeholderTextColor="#52946B"
+                style={styles.inputLocation}
+                onChangeText={(text) => {
+                  setLocation(text);
+                  updateItemData({ location: text });
+                }}
+                value={itemData.location ?? location ?? ""}
+              />
+              <LocationPicker locations={locations} location={location} setLocation={setLocation} minheight='35' />
+            </View>
         <TextInput
           mode="flat"
           style={[styles.input]}
@@ -195,10 +246,14 @@ export default function ShowItemScreen() {
 
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 }} >
+          <Button style={[styles.tomarketbutton, {}]} onPress={toggleMarketPlace}>
+            {itemData.on_market_place === 0 ? "SELL" : "DON'T SELL"}
+           
+            </Button>
           <Text style={styles.text} onPress={toggleMarketPlace} >On Market Place: {itemData.on_market_place ? "Yes" : "No"} </Text>
           <TextInput
             mode="flat"
-            style={[styles.input, { width: '40%' }]}
+            style={[styles.input, { width: '20%' }]}
             keyboardType={'numeric'}
             value={String(itemData.price ?? '')}
             placeholder="price"
@@ -207,7 +262,7 @@ export default function ShowItemScreen() {
           <Text style={styles.text}>€</Text>
         </View>
 
-
+            {/* Save ja Delete napit */}
         <View style={{ flexDirection: 'row' }} >
           <Pressable
             style={({ pressed }) => [

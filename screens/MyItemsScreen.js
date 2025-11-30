@@ -290,19 +290,18 @@ export default function MyItemsScreen() {
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
-                                        <Text style={styles.itemCategory}>{item.key}</Text>
-                                        <Text style={styles.itemCategory}>
+                               {/*          <Text style={styles.itemCategory}>
                                             {item.category_name || "no category"}
-                                        </Text>
+                                        </Text> */}
                                     </Pressable>
                                 )}
                             />
                         </View>
 
                         {/* 📍 My Locations */}
-                        <View style={styles.section}>
+                        <View style={styles.sectionIons}>
                             <Pressable
-                                onPress={() => navigation.navigate("LocationScreen", {})}
+                                onPress={() => navigation.getParent()?.navigate("ShowMyLocations", { locations })}
                             >
                                 <Text style={styles.sectionTitle}>My Locations</Text>
                             </Pressable>
@@ -321,7 +320,7 @@ export default function MyItemsScreen() {
                                             contentStyle={styles.categoryContent}
                                             labelStyle={styles.categoryLabel}
                                             onPress={() =>
-                                                navigation.navigate("ShowCategory", { category: item })
+                                                navigation.navigate("ShowLocation", { location: item })
                                             }
                                         >
                                             {item}
@@ -332,7 +331,7 @@ export default function MyItemsScreen() {
                         </View>
 
                         {/* 🗂️ My Categories */}
-                        <View style={styles.section}>
+                        <View style={styles.sectionIons}>
                                                         <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyCategories", { categories }) ?? console.log("No parent navigator found")}
                             >
@@ -386,10 +385,9 @@ export default function MyItemsScreen() {
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
-                                        <Text style={styles.itemCategory}>{item.key}</Text>
-                                        <Text style={styles.itemCategory}>
+                               {/*          <Text style={styles.itemCategory}>
                                             {item.category_name || "no category"}
-                                        </Text>
+                                        </Text> */}
                                     </Pressable>
                                 )}
 

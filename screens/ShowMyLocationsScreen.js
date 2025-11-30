@@ -6,12 +6,12 @@ import styles from "../styles/RegisterStyles";
 import { useNavigation } from '@react-navigation/native';
 
 
-export default function ShowMYCategoriesScreen() {
+export default function ShowMyLocationsScreen() {
     const { params } = useRoute();
-    const categories = params.categories ?? [];
+    const locationNames = params?.locations ?? [];
     const navigation = useNavigation();
-    console.log(" // SHOW CATEGORIES //");
-    console.log(categories);
+    console.log(" // MY LOCATIONS //");
+    console.log(locationNames);
 
     return (
         <View style={styles.container}>
@@ -27,9 +27,9 @@ export default function ShowMYCategoriesScreen() {
 
             <FlatList
                 keyExtractor={(item, index) => index.toString()}
-                data={categories}
+                data={locationNames}
                 renderItem={({ item }) => (
-                    <View style={{width: "100%", padding: 5,}}>
+                    <View style={{ padding: 5 }}>
                         <Button
                             mode="text"
                             buttonColor="#EAF2EC"
@@ -38,19 +38,20 @@ export default function ShowMYCategoriesScreen() {
                             contentStyle={styles.categoryContentWide}
                             labelStyle={styles.categoryLabel}
                             onPress={() =>
-                                navigation.navigate("ShowCategory", { category: item })
+                                navigation.navigate("ShowLocation", { location: item })
                             }
                         >
-                            <Text style={{ fontWeight: "bold" }}>{item}</Text>
+                            <Text style={{ fontWeight: "bold" }}>
+                                {item}
+                            </Text>
                         </Button>
                     </View>
+
                 )}
-                contentContainerStyle={ { paddingBottom: 100 }}
-                ListEmptyComponent={<Text style={{ color: "#777" }}>No categories.</Text>}
+                contentContainerStyle={[styles.gridContainer, { paddingBottom: 100 }]}
+                ListEmptyComponent={<Text style={{ color: "#777" }}>No items yet.</Text>}
             />
 
         </View>
     );
 }
-
-

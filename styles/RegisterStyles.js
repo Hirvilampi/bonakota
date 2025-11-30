@@ -29,7 +29,13 @@ export const styles = StyleSheet.create({
     section: {
         alignSelf: "stretch",
         marginLeft: 20,
-        marginBottom: 10,
+        marginBottom: 5,
+        marginTop: 5,
+    },
+        sectionIons: {
+        alignSelf: "stretch",
+        marginLeft: 20,
+        marginBottom: 25,
         marginTop: 5,
     },
     sectionTitle: {
@@ -108,7 +114,6 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10,
         color: '#52946B', // Text color
         width: '90%',
-        alignItems: 'center',
         justifyContent: 'space-around',
         margin: 10,
         borderTopLeftRadius: 5,
@@ -172,7 +177,7 @@ export const styles = StyleSheet.create({
         maxWidth: 500,
         paddingTop: 0, 
     },
-        camerabuttontext: {
+   camerabuttontext: {
         backgroundColor: '#EAF2EC',
         color: '#52946B',
         fontWeight: 'bold',
@@ -182,7 +187,29 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
-
+    inputLocation: {
+        height: 40,
+        backgroundColor: '#EAF2EC',
+        borderWidth: 0,
+        paddingHorizontal: 10,
+        color: '#52946B', // Text color
+        width: '80%',
+        justifyContent: 'space-around',
+        margin: 0,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
+        tomarketbutton: {
+        backgroundColor: 'lightgreen',
+        color: 'white',
+        fontWeight: 'bold',
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
 });
 
 export default styles;
