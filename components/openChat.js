@@ -1,5 +1,6 @@
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { db } from "../services/config";
+// https://www.freecodecamp.org/news/building-a-real-time-chat-app-with-reactjs-and-firebase/
 
 export async function openChat(userA, userB, itemId, itemName, userAName, userBName) {
     const chatsRef = collection(db, "chats");

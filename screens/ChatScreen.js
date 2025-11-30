@@ -16,6 +16,8 @@ export default function ChatScreen({ route }) {
   const user_id = auth.currentUser.uid;
   const HEADER_HEIGHT = 80;
 
+// https://www.freecodecamp.org/news/building-a-real-time-chat-app-with-reactjs-and-firebase/
+
   if (!chatId) {
     return <Text>Missing chat</Text>;
   }
@@ -52,7 +54,6 @@ export default function ChatScreen({ route }) {
       <View style={{ flex: 1, padding: 10 }}>
         {/*  Muokataan tämä myöhemmin, että siis pääsee myös katsomaan tietoja suoraan - tämähän toimii muuten, mutta kuvaa ei näy
         
-     
         <Pressable
           onPress={() => navigation.navigate("MarketItemScreen", item ? { item } : { itemId })}
           style={{ marginBottom: 12 }}

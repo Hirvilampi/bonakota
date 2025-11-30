@@ -11,7 +11,6 @@ import { app, storage, database, db, auth, } from "../services/config";
 import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { doc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { useCategories } from "../context/CategoryContext";

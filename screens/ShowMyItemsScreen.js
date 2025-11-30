@@ -4,7 +4,6 @@ import { useRoute } from "@react-navigation/native";
 import styles from "../styles/RegisterStyles";
 import {  useNavigation } from '@react-navigation/native';
 
-
 export default function ShowMyItemsScreen() {
     const { params } = useRoute();
     const items = params?.items ?? [];

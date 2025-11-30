@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { getDatabase, push, ref, onValue } from 'firebase/database';
 import { doc, getDoc } from "firebase/firestore";
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app, auth, database, db } from "../services/config";
 import { useNavigation } from "expo-router";
 
@@ -28,6 +27,8 @@ export default function ProfileScreen() {
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
   // const insets = useSafeAreaInsets();
 
+
+  // kaikkien realtime database tietojen haku
   const getItems = async () => {
     const itemsRef = ref(database, 'items/');
     //   console.log("itemsref", itemsRef);
@@ -62,7 +63,7 @@ export default function ProfileScreen() {
   }
 
   useEffect(() => {
-    getItems();
+ //   getItems();
     getYourInfo();
   }, []);
 
@@ -81,9 +82,8 @@ export default function ProfileScreen() {
       //   This screen is currently being built.
       // </Text>
   return (
-    
-    <View style={[styles.container, { flex: 1 }]}>
 
+    <View style={[styles.container, { flex: 1 }]}>
 
       <View style={[styles.itemTitle, {margin: 20,}]}>
       <Text  style={[styles.itemTitle, {fontSize: 20, fontWeight: "normal"}]}>Your info in Bonakota</Text>
@@ -93,7 +93,7 @@ export default function ProfileScreen() {
       <Text style={[styles.itemTitle, {fontSize: 20}]}>email: {yourInfo.email}</Text>
       </View>
       <Button title="Testaa FireStore yhteys" onPress={handlePressFirestoreTest} />
-  {/* 
+  {/*  Tällä pystyi tarkastamaan kaikki itemit, mitkä realtime databasessa on
       <Button title="REFRESH" onPress={handlePress} />
       <Text>All items in database</Text>
       <FlatList

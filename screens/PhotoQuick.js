@@ -4,6 +4,8 @@ import { Button } from "react-native-paper"
 import * as ImagePicker from "expo-image-picker";
 import { baseURL } from "../services/config";
 
+// en sit saanut tätä toimimaan AddItemScreenin kanssa
+
 export default function PhotoQuick({
   onDone,
   label = "Take Photo",

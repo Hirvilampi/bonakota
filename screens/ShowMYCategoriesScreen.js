@@ -5,7 +5,6 @@ import { useRoute } from "@react-navigation/native";
 import styles from "../styles/RegisterStyles";
 import { useNavigation } from '@react-navigation/native';
 
-
 export default function ShowMYCategoriesScreen() {
     const { params } = useRoute();
     const categories = params.categories ?? [];
@@ -29,7 +28,7 @@ export default function ShowMYCategoriesScreen() {
                 keyExtractor={(item, index) => index.toString()}
                 data={categories}
                 renderItem={({ item }) => (
-                    <View style={{width: "100%", padding: 5,}}>
+                    <View style={{ width: "100%", padding: 5, }}>
                         <Button
                             mode="text"
                             buttonColor="#EAF2EC"
@@ -45,7 +44,7 @@ export default function ShowMYCategoriesScreen() {
                         </Button>
                     </View>
                 )}
-                contentContainerStyle={ { paddingBottom: 100 }}
+                contentContainerStyle={{ paddingBottom: 100 }}
                 ListEmptyComponent={<Text style={{ color: "#777" }}>No categories.</Text>}
             />
 

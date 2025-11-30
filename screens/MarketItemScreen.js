@@ -108,7 +108,6 @@ export default function MarketItemScreen() {
             llyAdjustKeyboardInsets={true}
             contentContainerStyle={styles.scrollContainer}
             maintainVisibleContentPosition={{ minIndexForVisible: 10, }}
-
         >
             <View style={styles.container}>
                 <View style={styles.itembox}>

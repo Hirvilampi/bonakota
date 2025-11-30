@@ -5,9 +5,6 @@ import styles from '../styles/RegisterStyles';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserData } from "../services/firebaseDataBase";
 import Loader from "../components/Loader";
-import { auth } from '../services/config';
-
-
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState("lampinen.timo@gmail.com");
@@ -16,10 +13,8 @@ export default function RegisterScreen() {
     const [loading, setLoading] = useState(false);
     const [firstname, setFirstname] = useState("Timo");
     const [lastname, setLastname] = useState("Lampinen");
-
     const navigation = useNavigation();
-
-
+    
     const handleSignUp = async () => {
         setLoading(true);
         try {

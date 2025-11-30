@@ -5,7 +5,6 @@ import { useRoute } from "@react-navigation/native";
 import styles from "../styles/RegisterStyles";
 import { useNavigation } from '@react-navigation/native';
 
-
 export default function ShowMyLocationsScreen() {
     const { params } = useRoute();
     const locationNames = params?.locations ?? [];
