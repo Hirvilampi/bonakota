@@ -102,7 +102,6 @@ export default function AddItem() {
     return now.toISOString().split('.')[0];
   }
 
-
   // save to firebase
   const handleSave = async () => {
     console.log("tallennusfunktio");
@@ -194,11 +193,18 @@ export default function AddItem() {
   //  setCategory_id={(val) => updateItemData({ category_id: val })}
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F8FBFA' }}>
+    <View style={styles.container}>
+      <View style={{ flexDirection: 'row', marginBottom: 5, gap: 10, paddingTop: 0, marginTop: -10, paddingBottom: 5, }}>
+        <Button mode="contained" style={[styles.camerabutton, { borderRadius: 10, margin: 5 }]} buttonColor="#EAF2EC" textColor="#52946B" onPress={clearItemData}>
+          <Text style={styles.camerabuttontext}>CLEAR</Text></Button>
+        <Button mode="contained" style={[styles.camerabutton, { borderRadius: 10, margin: 5 }]} buttonColor="#EAF2EC" textColor="#52946B" onPress={handleSave}>
+          <Text style={styles.camerabuttontext}>SAVE</Text></Button>
+      </View>
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? insets.top + HEADER_HEIGHT: HEADER_HEIGHT}
+        keyboardVerticalOffset={Platform.OS === "ios" ? insets.top + HEADER_HEIGHT : HEADER_HEIGHT}
       >
         <ScrollView
           style={{ flex: 1, backgroundColor: '#F8FBFA' }}
@@ -206,12 +212,8 @@ export default function AddItem() {
           overScrollMode="never"
           contentContainerStyle={styles.scrollContaineradditem}
         >
-          <View style={styles.innerContainer}>
-            <View style={{ flexDirection: 'row', marginBottom: 5, gap: 10, paddingTop: 15, }}>
-              <Button mode="text" buttonColor="#EAF2EC" textColor="#52946B" onPress={clearItemData}>CLEAR</Button>
-              <Button mode="text" buttonColor="#EAF2EC" textColor="#52946B" onPress={handleSave}>SAVE</Button>
-            </View>
 
+          <View style={styles.innerContainer}>
             <View style={[styles.cameraviewadditem, { flexDirection: 'column', width: '60%', }]}>
 
               {itemData.uri ? (
@@ -293,7 +295,7 @@ export default function AddItem() {
 
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
 
+    </View>
   );
 }

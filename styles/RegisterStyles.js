@@ -164,6 +164,24 @@ export const styles = StyleSheet.create({
         padding: 10,
         justifyContent: 'center',
     },
+    innerContainer: {
+               flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        width: '100%',
+        maxWidth: 500,
+        paddingTop: 0, 
+    },
+        camerabuttontext: {
+        backgroundColor: '#EAF2EC',
+        color: '#52946B',
+        fontWeight: 'bold',
+        padding: 5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
 
 });
 
