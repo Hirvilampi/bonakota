@@ -40,10 +40,7 @@ export default function AddItem() {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user?.uid) {
         setUser_id(user.uid);
-      } else {
-        setUser_id(null);
-        console.log("No user signed in.");
-      }
+      } else  console.log("No user signed in.");
     });
     return unsub;
   }, []);

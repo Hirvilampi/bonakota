@@ -39,7 +39,6 @@ export default function MyItemsScreen() {
     const [updateItems, setUpdateItems] = useState([]);
     const [messages, setMessages] = useState([]);
 
-
     // Get the Authentication instance
     const currentUser = auth.currentUser;
 
@@ -48,17 +47,16 @@ export default function MyItemsScreen() {
             //   console.log("Current user ID:", currentUser.uid);
             setUser_id(currentUser.uid);
             console.log("Current user_ID:", user_id);
-        } else {
-            console.log("No user signed in.");
-        }
+        } else console.log("No user signed in.");
+
     }, [currentUser]);
     console.log("Current user_ID:", user_id);
-
 
     //  const database = getDatabase(app);
     const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
     // const insets = useSafeAreaInsets();
 
+    // tarkastaa onko lokaalisti olemassa image tiedostoa
     const fileExists = async (uri) => {
         if (!uri || !uri.startsWith('file://')) return false;
         try {
@@ -71,6 +69,7 @@ export default function MyItemsScreen() {
         }
     };
 
+    // hakee kaikki käyttäjän itemit sekä etsii käyttäjän lokaatiot ja kategoriat itemeistä
     const getItems = async () => {
         console.log("haetaan itemit");
         console.log("user_id:llä", user_id);
@@ -102,12 +101,12 @@ export default function MyItemsScreen() {
             // tehdään olemassaolevat kategoriat listaksi
             const itemcategories = (itemsList.map(item => item.category_name));
             const uniquecategories = [...new Set((itemsList.map(item => item.category_name)))];
- //           console.log("!! MY CATEGORIES !!", uniquecategories);
+            //           console.log("!! MY CATEGORIES !!", uniquecategories);
             setCategories(uniquecategories);
             // tehdään itemien lokaatiosta lista omista lokaatiosta
             const uniquelocations = [...new Set((itemsList.map(item => item.location)))];
             setLocations(uniquelocations);
- //           console.log("!! MY LOCATIONS !! ", uniquelocations);
+            //           console.log("!! MY LOCATIONS !! ", uniquelocations);
         });
         if (updateItems.length > 0) {
             console.log("Let's save to firebase");
@@ -116,6 +115,8 @@ export default function MyItemsScreen() {
 
     }
 
+    // hakee kategoriat, mutta tällä ei ole mitää käyttöä, koska kaikkia kategorioita ei ole 
+    // järkevää näyttää tässä
     const getCategories = async () => {
         try {
             const catRef = ref(database, 'categories');
@@ -141,7 +142,7 @@ export default function MyItemsScreen() {
         return new Date().toISOString().split('.')[0];
     }
 
-    // save the pics from backend
+    // save local image uri info to backend - this happens if we load pics from backend
     const saveChangedToFirebase = async () => {
         try {
             // updates jaotellaan tiedot muotoon, jota firebase update komennolla ymmärtää
@@ -171,7 +172,7 @@ export default function MyItemsScreen() {
     }
 
     const loadAllCategories = async () => {
-        const cats = await getCategories();
+    //    const cats = await getCategories();
         //      setCategories(cats);
     }
 
@@ -185,9 +186,7 @@ export default function MyItemsScreen() {
     useEffect(() => {
         if (!user_id) return;
         getItems();
-        loadAllCategories();
 
-        console.log('haetaan kerran chat messaged');
     }, [user_id]);
 
     useEffect(() => {
@@ -247,11 +246,13 @@ export default function MyItemsScreen() {
             {/* 🔍 Search */}
             <TextInput
                 style={styles.input}
-                placeholder="Search"
+                placeholder="Search from items"
                 placeholderTextColor="#52946B"
                 onChangeText={setLookingfor}
                 value={lookingfor}
             />
+
+            {/* Tälle ei pitäisi olla käyttöä eikä tarvetta
             <Button
                 mode="text"
                 buttonColor="#EAF2EC"
@@ -259,7 +260,7 @@ export default function MyItemsScreen() {
                 onPress={() => handlePress()} >
                 REFRESS
             </Button>
-
+*/}
             {/* Jos ei haeta → näytetään lohkot */}
             {!lookingfor ? (
                 <>
@@ -271,11 +272,10 @@ export default function MyItemsScreen() {
                     >
                         {/* 🕓 Recent Items */}
                         <View style={styles.section}>
-                            <Pressable
+                        {/*      <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen") ?? console.log("No parent navigator found")}
-                            >
-                                <Text style={styles.sectionTitle}>Recent Items</Text>
-                            </Pressable>
+                            ><Text style={styles.sectionTitle}>Recent Items</Text> </Pressable> */}
+                                <Text style={styles.sectionTitle}>Recent Items</Text>          
                             <FlatList
                                 keyExtractor={(item, index) => item.id.toString()}
                                 data={recentItems}
@@ -290,7 +290,7 @@ export default function MyItemsScreen() {
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
-                               {/*          <Text style={styles.itemCategory}>
+                                        {/*          <Text style={styles.itemCategory}>
                                             {item.category_name || "no category"}
                                         </Text> */}
                                     </Pressable>
@@ -332,12 +332,12 @@ export default function MyItemsScreen() {
 
                         {/* 🗂️ My Categories */}
                         <View style={styles.sectionIons}>
-                                                        <Pressable
+                            <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyCategories", { categories }) ?? console.log("No parent navigator found")}
                             >
                                 <Text style={styles.sectionTitle}>My Categories</Text>
                             </Pressable>
-                            
+
                             <FlatList
                                 keyExtractor={(item, index) => index?.toString()}
                                 data={categories}
@@ -385,7 +385,7 @@ export default function MyItemsScreen() {
                                         <Image source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
-                               {/*          <Text style={styles.itemCategory}>
+                                        {/*          <Text style={styles.itemCategory}>
                                             {item.category_name || "no category"}
                                         </Text> */}
                                     </Pressable>
@@ -394,7 +394,7 @@ export default function MyItemsScreen() {
                             />
                         </View>
 
-{/* Chats */}
+                        {/* Chats */}
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>Chats</Text>
                             <FlatList

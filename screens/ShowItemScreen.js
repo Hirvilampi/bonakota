@@ -49,7 +49,7 @@ export default function ShowItemScreen() {
     if (params?.item) {
       updateItemData(params.item);
       setLocation(params.item.location);
-      console.log("item updated", params.item);
+//      console.log("item updated", params.item);
     }
   }, [params]);
 
@@ -98,11 +98,11 @@ export default function ShowItemScreen() {
   const deleteItem = async () => {
     console.log('trying to delete item from firebase');
     if (itemData.id) {
-      console.log("meillä on poistettavalle itemData.itemName id:llä", itemData.itemName, itemData.id);
+ //     console.log("meillä on poistettavalle itemData.itemName id:llä", itemData.itemName, itemData.id);
       const itemRef = ref(database, `items/${itemData.id}`);
       try {
         await remove(itemRef);
-        console.log("Item poistettu onnistuneesti:", itemData.id);
+ //       console.log("Item poistettu onnistuneesti:", itemData.id);
         Alert.alert("Poistettu", `Item ${itemData.itemName} poistettu.`);
         clearItemData();
         navigation.navigate('MainTabs', { screen: 'My Items' });
@@ -119,14 +119,16 @@ export default function ShowItemScreen() {
 
   const saveItem = async () => {
     console.log('trying to save item');
-    updateItemData({getTimeStamp});
+    const ts = await getTimeStamp();
+    const payload = { ...itemData, timestamp: ts };
+    updateItemData({timestamp : ts});
     const userRef = ref(database, 'users/' + user_id);
-    console.log("Tallennusyritys itemdata", itemData);
-    console.log("userRef - käyttäjän polku", userRef);
+//    console.log("Tallennusyritys itemdata", itemData);
+//    console.log("userRef - käyttäjän polku", userRef);
     if (itemData.itemName) {
       console.log("meillä on itemData.itemName id:llä", itemData.itemName, itemData.id);
       const itemRef = ref(database, `items/${itemData.id}`);
-      update(itemRef, itemData)
+      update(itemRef, payload)
         .then(() => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle onnistui
           //         console.log("Tiedot tallennettu onnistuneesti!");

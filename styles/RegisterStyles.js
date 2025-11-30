@@ -32,11 +32,11 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
         marginTop: 5,
     },
-        sectionIons: {
+    sectionIons: {
         alignSelf: "stretch",
         marginLeft: 20,
-        marginBottom: 25,
-        marginTop: 5,
+        marginBottom: 20,
+        marginTop: 10,
     },
     sectionTitle: {
         fontSize: 22,
@@ -170,14 +170,14 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     innerContainer: {
-               flex: 1,
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: '100%',
         maxWidth: 500,
-        paddingTop: 0, 
+        paddingTop: 0,
     },
-   camerabuttontext: {
+    camerabuttontext: {
         backgroundColor: '#EAF2EC',
         color: '#52946B',
         fontWeight: 'bold',
@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
-        tomarketbutton: {
+    tomarketbutton: {
         backgroundColor: 'lightgreen',
         color: 'white',
         fontWeight: 'bold',
