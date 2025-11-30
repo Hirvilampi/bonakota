@@ -30,6 +30,7 @@ import { CategoryProvider } from './context/CategoryContext';
 import ShowMYCategoriesScreen from './screens/ShowMYCategoriesScreen';
 import ShowMyLocationsScreen from './screens/ShowMyLocationsScreen';
 import YourMarketItemsScreen from './screens/YourMarketItemsScreen';
+import AllChatsScreen from './screens/AllChatsScreen';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -56,8 +57,8 @@ export default function App() {
                 return <Octicons name="diff-added" size={size} color={color} />;
               case 'Market':
                 return <Ionicons name="storefront-outline" size={size} color={color} />;
-              case 'Groups':
-                return <Ionicons name="people" size={size} color={color} />;
+              case 'Chats':
+                return <Ionicons name="chatbubbles-outline" size={size} color={color} />;
               case 'Profile':
                 return <Ionicons name="person" size={size} color={color} />;
               default:
@@ -94,7 +95,7 @@ export default function App() {
         <Tab.Screen name="My Items" component={MyItemsScreen} />
         <Tab.Screen name="Add Item" component={AddItemScreen} />
         <Tab.Screen name="Market" component={MarketScreen} />
-        <Tab.Screen name="Groups" component={GroupsScreen} />
+        <Tab.Screen name="Chats" component={AllChatsScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
 
       </Tab.Navigator>
