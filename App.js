@@ -76,11 +76,11 @@ export default function App() {
           tabBarStyle: {
             backgroundColor: "#F8FBFA",
             height: 80,
-            paddingBottom: 10,
+            paddingBottom: 30,
             paddingTop: 10,
           },
           tabBarItemStyle: {
-            paddingVertical: 15,
+            paddingVertical: 0,
           },
           tabBarLabelStyle: {
             marginBottom: 10,
