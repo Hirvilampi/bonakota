@@ -5,22 +5,26 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import styles from '../styles/RegisterStyles';
 import { useItemData } from "../config/ItemDataState";
 // Import Firebase Authentication if you're getting the user ID from there
-import { getDatabase, ref, push } from "firebase/database";
+import { getDatabase, ref, push, query, orderByChild, equalTo, onValue } from "firebase/database";
 import { ref as storageRef, uploadString, getDownloadURL, uploadBytes } from "firebase/storage";
 import { app, storage, database, db, auth, } from "../services/config";
 import * as ImagePicker from "expo-image-picker";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { doc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { useCategories } from "../context/CategoryContext";
 import CategoryPicker from "../components/CategoryPicker";
+import LocationPicker from "../components/LocationPicker.js";
 
 export default function AddItem() {
   const insets = useSafeAreaInsets();
   const [uploading, setUploading] = useState(false);
   const [user_id, setUser_id] = useState(null);
   const { categories, loading } = useCategories();
+  const [locations, setLocations] = useState();
+  const [location, setLocation] = useState();
   const [category_id, setCategory_id] = useState();
   const HEADER_HEIGHT = 80;
   if (loading || !categories) {
@@ -44,6 +48,56 @@ export default function AddItem() {
     return unsub;
   }, []);
 
+  useEffect(() => {
+    if (currentUser) {
+      //   console.log("Current user ID:", currentUser.uid);
+      setUser_id(currentUser.uid);
+      console.log("Current user_ID:", user_id);
+    } else {
+      console.log("No user signed in.");
+    }
+  }, [currentUser]);
+  console.log("Current user_ID:", user_id);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!user_id) return;
+      console.log("haetaan userin itemit ja eristetään niistä lokaatiot:");
+      const itemsRef = ref(database, "items/");
+      const q = query(itemsRef, orderByChild("owner_id"), equalTo(user_id));
+      const unsubscribe = onValue(q, snap => {
+        const data = snap.val();
+        const list = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
+        const uniquelocations = [...new Set((list.map(item => item.location)))];
+        const hardcodedlocations = [
+          "Carage",
+          "Living Room",
+          "Kitchen",
+          "Walk-in closet",
+          "Kids room",
+          "Study",
+          "Attic",
+          "Basement",
+          "Hall",
+          "Master Bedroom"
+        ];
+        const combinedlocations = [
+          ...uniquelocations,
+          ...hardcodedlocations.filter(loc => !uniquelocations.includes(loc))
+        ];
+        setLocations(
+          combinedlocations.map(loc => ({
+            label: loc,
+            value: loc,
+          })));
+      });
+      return () => unsubscribe();
+    }, [user_id])
+  );
+
+  useEffect(() => {
+    itemData.location=location;
+  }, [location])
 
   // makes image smaller before sending to backend
   async function compressImage(uri) {
@@ -275,7 +329,7 @@ export default function AddItem() {
               value={itemData.size}
             />
 
-            <View style={{ zIndex: 1000, width: '90%', marginVertical: 10, position: 'relative', zIndex: 10, }}>
+            <View style={{ zIndex: 1000, width: '90%', marginVertical: 0, position: 'relative', zIndex: 10, }}>
               <CategoryPicker
                 category_id={itemData.category_id}
                 onChangeCategory={({ id, name }) =>
@@ -283,14 +337,16 @@ export default function AddItem() {
                 }
               />
             </View>
-
-            <TextInput
-              placeholder='Location'
-              placeholderTextColor="#52946B"
-              style={styles.input}
-              onChangeText={(text) => updateItemData({ location: text })}
-              value={itemData.location}
-            />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', width: '90%' }}>
+              <TextInput
+                placeholder='Location'
+                placeholderTextColor="#52946B"
+                style={styles.inputLocation}
+                onChangeText={(text) => updateItemData({ location: text })}
+                value={location}
+              />
+              <LocationPicker locations={locations} location={location} setLocation={setLocation} minheight='35' />
+            </View>
           </View>
 
         </ScrollView>

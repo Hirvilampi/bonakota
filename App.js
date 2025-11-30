@@ -28,6 +28,7 @@ import MarketItemScreen from './screens/MarketItemScreen';
 import ChatScreen from './screens/ChatScreen';
 import { CategoryProvider } from './context/CategoryContext';
 import ShowMYCategoriesScreen from './screens/ShowMYCategoriesScreen';
+import ShowMyLocationsScreen from './screens/ShowMyLocationsScreen';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -102,89 +103,97 @@ export default function App() {
   return (
     //  <SQLiteProvider>
     <CategoryProvider>
-    <PaperProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={user ? "Back" : "LoginScreen"}
-          screenOptions={{ headerRight: () => <LogOutButton /> }}
-        >
-          {/* Always-register detail screens so they can be navigated to from nested navigators */}
-          <Stack.Screen
-            name="ShowItemScreen"
-            component={ShowItemScreen}
-            options={{
-              title: 'Edit item',
-              headerBackTitleVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="LocationScreen"
-            component={LocationScreen}
-            options={{
-              title: 'Locations',
-              headerBackTitleVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="ShowCategory"
-            component={ShowCategoryScreen}
-            options={{
-              title: 'Categories',
-              headerBackTitleVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="ShowMyItemsScreen"
-            component={ShowMyItemsScreen}
-            options={{
-              title: 'My Items',
-              headerBackTitleVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="MarketItemScreen"
-            component={MarketItemScreen}
-            options={{
-              title: 'See item on market',
-              headerBackTitleVisible: false,
-            }}
-          />
+      <PaperProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={user ? "Back" : "LoginScreen"}
+            screenOptions={{ headerRight: () => <LogOutButton /> }}
+          >
+            {/* Always-register detail screens so they can be navigated to from nested navigators */}
             <Stack.Screen
-            name="ShowMyCategories"
-            component={ShowMYCategoriesScreen}
-            options={{
-              title: 'My Categories',
-              headerBackTitleVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="ChatScreen"
-            component={ChatScreen}
-            options={{
-              title: 'Chat screen',
-              headerBackTitleVisible: false,
-            }}
-          />
-          <Stack.Screen name="FirestoreTest" component={FirestoreTest} />
-          {user ? (
-            <>
-              <Stack.Screen
-                name="Back"
-                component={Tabs}
-                options={{ headerShown: false }}
-              />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="LoginScreen" component={LoginScreen} />
-              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-              <Stack.Screen name="MainTabs" component={Tabs} options={{ headerShown: false }} />
-            </>
-          )}
+              name="ShowItemScreen"
+              component={ShowItemScreen}
+              options={{
+                title: 'Edit item',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ShowLocation"
+              component={LocationScreen}
+              options={{
+                title: 'Items in Location',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ShowCategory"
+              component={ShowCategoryScreen}
+              options={{
+                title: 'Categories',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ShowMyItemsScreen"
+              component={ShowMyItemsScreen}
+              options={{
+                title: 'My Items',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="MarketItemScreen"
+              component={MarketItemScreen}
+              options={{
+                title: 'See item on market',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ShowMyCategories"
+              component={ShowMYCategoriesScreen}
+              options={{
+                title: 'My Categories',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ShowMyLocations"
+              component={ShowMyLocationsScreen}
+              options={{
+                title: 'My Locations',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="ChatScreen"
+              component={ChatScreen}
+              options={{
+                title: 'Chat screen',
+                headerBackTitleVisible: false,
+              }}
+            />
+            <Stack.Screen name="FirestoreTest" component={FirestoreTest} />
+            {user ? (
+              <>
+                <Stack.Screen
+                  name="Back"
+                  component={Tabs}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+                <Stack.Screen name="MainTabs" component={Tabs} options={{ headerShown: false }} />
+              </>
+            )}
 
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     </CategoryProvider>
     // </SQLiteProvider>
 

@@ -29,23 +29,6 @@ export default function ShowCategoryScreen() {
     }, [currentUser]);
     console.log("Current user_ID:", user_id);
 
-    const getCategoryItems = async () => {
-        console.log("haetaan itemit categoriasta:");
-        console.log(categoryName);
-        console.log("user_id:llä", user_id);
-        const itemsRef = ref(database, 'items/');
-        const userItemsQuery = query(itemsRef, orderByChild('owner_id'), equalTo(user_id));
-        const unsubscribe = onValue(userItemsQuery, async (snapshot) => {
-            console.log("onValue - on käyty");
-            const data = snapshot.val();
-            const itemsList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
-            const itemsbycategory = itemsList.filter(item => item.category_name?.toLowerCase() === categoryName?.toLowerCase());
-            setItems(itemsbycategory);
-            console.log(" // CATEGORY ITEMS //");
-            console.log(items);
-        });
-    }
-
     useFocusEffect(
         useCallback(() => {
             if (!user_id || !categoryName) return;
