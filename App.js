@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -18,7 +16,6 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { PaperProvider } from "react-native-paper";
 // import { SQLiteProvider } from './services/sqlite';
-import ShowMyCategoriesScreen from './screens/ShowMYCategoriesScreen';
 import ShowCategoryScreen from './screens/ShowCategoryScreen';
 import LocationScreen from './screens/LocationScreen';
 import LogOutButton from "./components/LogOutButton";
@@ -40,9 +37,6 @@ export default function App() {
   const Tab = createBottomTabNavigator();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
-
-
-
 
   function Tabs() {
     return (
@@ -103,7 +97,6 @@ export default function App() {
   }
 
   return (
-    //  <SQLiteProvider>
     <CategoryProvider>
       <PaperProvider>
         <NavigationContainer>
@@ -205,8 +198,6 @@ export default function App() {
         </NavigationContainer>
       </PaperProvider>
     </CategoryProvider>
-    // </SQLiteProvider>
-
   );
 }
 

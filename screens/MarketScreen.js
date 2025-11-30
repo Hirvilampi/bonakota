@@ -2,16 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Pressable, TextInput, Alert, ScrollView } from "react-native";
 import { useFocusEffect, useNavigation, NavigationContainer } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from "react-native-paper";
-// import { useItemsActions, useItemsData } from "../ItemContext";
-// import { useSQLiteContext } from 'expo-sqlite';
-// import Toast from "react-native-toast-message";
 import { app, auth, db, database } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
-import { collection, getDocs } from 'firebase/firestore';
 import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue } from 'firebase/database';
 
 

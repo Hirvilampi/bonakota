@@ -50,7 +50,8 @@ export default function ChatScreen({ route }) {
       keyboardVerticalOffset={Platform.OS === "ios" ? insets.top + HEADER_HEIGHT : HEADER_HEIGHT}
     >
       <View style={{ flex: 1, padding: 10 }}>
-        {/*  Muokataan tämä myöhemmin
+        {/*  Muokataan tämä myöhemmin, että siis pääsee myös katsomaan tietoja suoraan - tämähän toimii muuten, mutta kuvaa ei näy
+        
      
         <Pressable
           onPress={() => navigation.navigate("MarketItemScreen", item ? { item } : { itemId })}

@@ -2,25 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { View, Text, Platform, FlatList, StyleSheet, Image, Pressable, TextInput, Alert, ScrollView } from "react-native";
 import { useFocusEffect, useNavigation, NavigationContainer } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from "react-native-paper";
-import * as FileSystem from 'expo-file-system/legacy';
-import { getInfoAsync } from "expo-file-system/legacy";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import saveImageToPhone from '../components/saveImageToPhone';
-import * as MediaLibrary from 'expo-media-library';
-// import { useItemsActions, useItemsData } from "../ItemContext";
-// import { useSQLiteContext } from 'expo-sqlite';
-import * as SQLite from 'expo-sqlite';
-// import Toast from "react-native-toast-message";
 import { app, auth, db, database, storage } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
-import { collection, getDocs } from 'firebase/firestore';
-import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
 import { fetchUserChats } from "../components/fetchUserChats";
 import { listenToUserChats } from "../components/listenToUserChats";
 

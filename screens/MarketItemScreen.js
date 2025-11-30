@@ -2,16 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Alert, ScrollView, Pressable } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect, useNavigation, NavigationContainer, getParent } from '@react-navigation/native';
-import { TextInput } from "react-native-paper";
-import DropDownPicker from 'react-native-dropdown-picker';
 import { app, database, auth } from "../services/config";
 import { getDatabase, ref, get, push, onValue, update, remove } from "firebase/database";
-import { getAuth } from "firebase/auth";
 import { useItemData, updateItemData, itemData } from "../config/ItemDataState";
 import styles from '../styles/RegisterStyles';
-import { collection, addDoc } from "firebase/firestore";
 import { openChat } from "../components/openChat";
 import { getFirstName } from "../components/getFirstName";
 
