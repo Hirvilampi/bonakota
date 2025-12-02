@@ -105,7 +105,7 @@ export default function MyItemsScreen() {
             console.log("Let's save to firebase");
             await saveChangedToFirebase();
         }
-
+        return () => unsub?.();
     }
 
     // hakee kategoriat, mutta tällä ei ole mitää käyttöä, koska kaikkia kategorioita ei ole 
@@ -165,7 +165,7 @@ export default function MyItemsScreen() {
     }
 
     const loadAllCategories = async () => {
-    //    const cats = await getCategories();
+        //    const cats = await getCategories();
         //      setCategories(cats);
     }
 
@@ -264,10 +264,10 @@ export default function MyItemsScreen() {
                     >
                         {/* 🕓 Recent Items */}
                         <View style={styles.section}>
-                        {/*      <Pressable
+                            {/*      <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen") ?? console.log("No parent navigator found")}
                             ><Text style={styles.sectionTitle}>Recent Items</Text> </Pressable> */}
-                                <Text style={styles.sectionTitle}>Recent Items</Text>          
+                            <Text style={styles.sectionTitle}>Recent Items</Text>
                             <FlatList
                                 keyExtractor={(item, index) => item.id.toString()}
                                 data={recentItems}
