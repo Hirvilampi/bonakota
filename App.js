@@ -16,7 +16,7 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { PaperProvider } from "react-native-paper";
 // import { SQLiteProvider } from './services/sqlite';
-import ShowCategoryScreen from './screens/ShowCategoryScreen';
+import CategoryScreen from './screens/CategoryScreen';
 import LocationScreen from './screens/LocationScreen';
 import LogOutButton from "./components/LogOutButton";
 import ShowMyItemsScreen from "./screens/ShowMyItemsScreen";
@@ -123,7 +123,7 @@ export default function App() {
             />
             <Stack.Screen
               name="ShowCategory"
-              component={ShowCategoryScreen}
+              component={CategoryScreen}
               options={{
                 title: 'Categories',
                 headerBackTitleVisible: false,
@@ -200,5 +200,4 @@ export default function App() {
     </CategoryProvider>
   );
 }
-
 

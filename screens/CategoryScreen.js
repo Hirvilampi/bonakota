@@ -8,7 +8,7 @@ import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, upda
 import ensureLocalImage from "../components/ensureLocalImage";
 
 
-export default function ShowCategoryScreen() {
+export default function CategoryScreen() {
     const { params } = useRoute();
     const categoryName = params?.category ?? [];
     const navigation = useNavigation();
