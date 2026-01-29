@@ -1,8 +1,16 @@
 *** BONAKOTA ***
 
+Manage your stuff with ease! Add items to your inventory with photos, sizes, and locations. Want to declutter? Just list your items on the internal marketplace and set your price. You can also explore what others are selling and message them instantly.
+
+In Finnish:
 Sovellus on tarkoitettu tavaroiden hallintaan. Voit lisätä sovellukseen omia tavaroitasi, ottaa niistä kuvan, laittaa lisätietoja, kategorian, koon sekä säilytyspaikan. Halutessasi voit myös laittaa tuotteen sovelluksen sisäiseen markkinapaikkaan ja määrittää sille hinnan. Markkinapaikan sisällä voi katsella muiden markkinoille laittamia tuotteita ja ottaa yhteyttä myyjään.
 
+--
 
+Started new development on Jan 29th 2026 - version 0.2
+
+
+--
 Käytetyt teknologiat: 
 
 React 19, React Native 0.81.5, React Native Web
