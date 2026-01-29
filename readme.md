@@ -1,4 +1,4 @@
-*** BONAKOTA ***
+# *** BONAKOTA ***
 
 Manage your stuff with ease! Add items to your inventory with photos, sizes, and locations. Want to declutter? Just list your items on the internal marketplace and set your price. You can also explore what others are selling and message them instantly.
 
@@ -7,11 +7,15 @@ Sovellus on tarkoitettu tavaroiden hallintaan. Voit lisätä sovellukseen omia t
 
 --
 
+## Devlopment stage
+Started devlopment on September 2025 as part of course
+
 Started new development on Jan 29th 2026 - version 0.2
 
 
---
-Used technologies: 
+--  
+
+## Used technologies: 
 
 React 19, React Native 0.81.5, React Native Web
 
