@@ -10,6 +10,7 @@ import styles from '../styles/RegisterStyles';
 import { useCategories } from "../context/CategoryContext";
 import CategoryPicker from "../components/CategoryPicker";
 import LocationPicker from "../components/LocationPicker";
+import ensureLocalImage from "../components/ensureLocalImage";
 
 export default function ShowItemScreen() {
   const { params } = useRoute();
@@ -42,6 +43,7 @@ export default function ShowItemScreen() {
 
   const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
   const navigation = useNavigation();
+  const [localUri, setLocalUri] = useState(null);
 
   useEffect(() => {
     if (params?.item) {
@@ -50,6 +52,16 @@ export default function ShowItemScreen() {
 //      console.log("item updated", params.item);
     }
   }, [params]);
+
+  useEffect(() => {
+    let mounted = true;
+    const hydrate = async () => {
+      const uri = await ensureLocalImage(itemData?.downloadURL);
+      if (mounted) setLocalUri(uri);
+    };
+    hydrate();
+    return () => { mounted = false; };
+  }, [itemData?.downloadURL]);
 
     useFocusEffect(
       useCallback(() => {
@@ -186,8 +198,8 @@ export default function ShowItemScreen() {
     >
       <View style={styles.container}>
         <View style={styles.itembox}>
-          {itemData?.uri ? (
-            <Image source={{ uri: itemData.uri }} style={styles.cameraimage} />
+          {itemData?.uri || itemData?.downloadURL || localUri ? (
+            <Image source={{ uri: localUri || itemData.downloadURL || itemData.uri }} style={styles.cameraimage} />
           ) : (
             <Text style={{ color: 'gray' }}>Paikallinen kuva, ei ladattavissa</Text>
           )}

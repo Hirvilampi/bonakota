@@ -11,6 +11,13 @@ export default function ShowMyItemsScreen() {
     console.log(" // MY ITEMS //");
  //   console.log(items);
 
+                        {console.log("ShowMyItemsScreen item", {
+                            id: items[0]?.id,
+                            uri: items[0]?.uri,
+                            downloadURL: items[0]?.downloadURL,
+                            keys: items[0] ? Object.keys(items[0]) : [],
+                        })}
+
   return (
         <View style={styles.container}>
             {/* 🔍 Search 

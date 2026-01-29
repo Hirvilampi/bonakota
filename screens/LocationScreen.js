@@ -5,12 +5,14 @@ import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/nativ
 import styles from "../styles/RegisterStyles";
 import { auth, database } from "../services/config";
 import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
+import ensureLocalImage from "../components/ensureLocalImage";
 
 export default function LocationScreen() {
     const { params } = useRoute();
     const locationName = params?.location ?? [];
     const navigation = useNavigation();
     const [items, setItems] = useState([]);
+    const [displayItems, setDisplayItems] = useState([]);
     const [user_id, setUser_id] = useState(null);
     console.log(" // LOCATION //");
     console.log(locationName);
@@ -43,6 +45,21 @@ export default function LocationScreen() {
         }, [user_id, locationName])
     );
 
+    useEffect(() => {
+        let mounted = true;
+        const hydrate = async () => {
+            const enriched = await Promise.all(
+                (items || []).map(async (item) => {
+                    const localUri = await ensureLocalImage(item.downloadURL);
+                    return { ...item, localUri };
+                })
+            );
+            if (mounted) setDisplayItems(enriched);
+        };
+        hydrate();
+        return () => { mounted = false; };
+    }, [items]);
+
     return (
         <View style={styles.container}>
             {/* 🔍 Search 
@@ -57,7 +74,7 @@ export default function LocationScreen() {
 
             <FlatList
                 keyExtractor={(item) => item.id.toString()}
-                data={items}
+                data={displayItems}
                 numColumns={3}
                 renderItem={({ item }) => (
                     <Pressable
@@ -65,7 +82,7 @@ export default function LocationScreen() {
                         style={styles.itemboxrow}
                     >
                         <View style={{ padding: 5 }}>
-                             <Image source={{ uri: item.uri }} style={styles.showimage} />
+                             <Image source={{ uri: item.localUri || item.downloadURL || item.uri }} style={styles.showimage} />
                             <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                              <Text style={styles.itemCategory}>{item.description}</Text>
                         </View>

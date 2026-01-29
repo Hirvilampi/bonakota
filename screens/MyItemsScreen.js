@@ -54,7 +54,7 @@ export default function MyItemsScreen() {
         if (!uri || !uri.startsWith('file://')) return false;
         try {
             const info = await getInfoAsync(uri);
-            console.log("exits info", info.exists);
+            console.log("exits info", info.exists, info);
             return info.exists;
         } catch (e) {
             console.log('File getInfo failed', e);
