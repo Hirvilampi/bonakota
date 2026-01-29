@@ -7,7 +7,7 @@ Sovellus on tarkoitettu tavaroiden hallintaan. Voit lisätä sovellukseen omia t
 
 --
 
-## Devlopment stage
+## Development stage
 Started devlopment on September 2025 as part of course
 
 Started new development on Jan 29th 2026 - version 0.2
