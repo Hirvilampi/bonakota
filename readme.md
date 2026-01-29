@@ -5,6 +5,8 @@ Manage your stuff with ease! Add items to your inventory with photos, sizes, and
 In Finnish:
 Sovellus on tarkoitettu tavaroiden hallintaan. Voit lisätä sovellukseen omia tavaroitasi, ottaa niistä kuvan, laittaa lisätietoja, kategorian, koon sekä säilytyspaikan. Halutessasi voit myös laittaa tuotteen sovelluksen sisäiseen markkinapaikkaan ja määrittää sille hinnan. Markkinapaikan sisällä voi katsella muiden markkinoille laittamia tuotteita ja ottaa yhteyttä myyjään.
 
+![development picture from iPhone16Pro Max screen](bonakotaver02.png)
+
 --
 
 ## Development stage
