@@ -16,6 +16,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
 import { fetchUserChats } from "../components/fetchUserChats";
 import { listenToUserChats } from "../components/listenToUserChats";
+import { loadImageCache, saveImageCache } from "../services/itemsImageCache";
 
 export default function MyItemsScreen() {
     const [items, setItems] = useState([]);
@@ -30,6 +31,7 @@ export default function MyItemsScreen() {
     const [downloading, setDownloading] = useState(false);
     const [data, setData] = useState([]);
     const [updateItems, setUpdateItems] = useState([]);
+    const [imageCache, setImageCache] = useState({});
     const [messages, setMessages] = useState([]);
 
     // Get the Authentication instance
@@ -75,21 +77,34 @@ export default function MyItemsScreen() {
             console.log("onValue - on käyty");
             const data = snapshot.val();
             const itemsList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
+            const cachedMap = await loadImageCache(user_id);
+            setImageCache(cachedMap);
             setItems(itemsList);
             updateItemData(itemsList);
+            let cacheChanged = false;
             for (const item of itemsList) {
-                const localUri = item.uri; // jos tämä on file://
+                const cachedUri = cachedMap?.[item.id];
+                const localUri = cachedUri || item.uri; // prefer cached per-device uri
                 const remoteUri = item.downloadURL || item.uri; // remote fallback
-                const exists = await fileExists(localUri); // file exists tarkastaa onko lokaalia tiedostoa olemassa
+                const exists = await fileExists(localUri);
+                if (exists) {
+                    if (cachedUri && item.uri !== cachedUri) {
+                        setItems((prev) => prev.map((it) => it.id === item.id ? { ...it, uri: cachedUri } : it));
+                    }
+                    continue;
+                }
                 if (!exists && remoteUri?.startsWith('http')) {
                     const newLocal = await downloadImage(remoteUri);
-                    updateItemData({ ...item, uri: newLocal });
-                    setItems((prev) => prev.map((it) => it.id === item.id ? { ...it, uri: newLocal, timestamp: getTimeStamp() } : it));
-                    // päivitä listaan/DB:hen, esim. setItems(... tai kirjoita databaseen)
-                    // tähän  lisätään, jos juuri tällä kuvalla ei ole paikallista kuvaa, myöhempää kuvan hakua varten
-                    setUpdateItems((prev) => [...prev, { ...item, uri: newLocal, timestamp: getTimeStamp() }]);
-
+                    if (newLocal) {
+                        cacheChanged = true;
+                        cachedMap[item.id] = newLocal;
+                        setItems((prev) => prev.map((it) => it.id === item.id ? { ...it, uri: newLocal, timestamp: getTimeStamp() } : it));
+                    }
                 }
+            }
+            if (cacheChanged) {
+                setImageCache({ ...cachedMap });
+                await saveImageCache(user_id, cachedMap);
             }
             // tehdään olemassaolevat kategoriat listaksi
             const itemcategories = (itemsList.map(item => item.category_name));
@@ -101,10 +116,7 @@ export default function MyItemsScreen() {
             setLocations(uniquelocations);
             //           console.log("!! MY LOCATIONS !! ", uniquelocations);
         });
-        if (updateItems.length > 0) {
-            console.log("Let's save to firebase");
-            await saveChangedToFirebase();
-        }
+        // no firebase update for local cache
         return () => unsub?.();
     }
 
