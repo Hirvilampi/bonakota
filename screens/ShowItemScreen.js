@@ -11,6 +11,7 @@ import { useCategories } from "../context/CategoryContext";
 import CategoryPicker from "../components/CategoryPicker";
 import LocationPicker from "../components/LocationPicker";
 import ensureLocalImage from "../components/ensureLocalImage";
+import Loader from "../components/Loader";
 
 export default function ShowItemScreen() {
   const { params } = useRoute();
@@ -26,7 +27,7 @@ export default function ShowItemScreen() {
   const [ locations, setLocations ] = useState(); 
 
   if (loading || !categories) {
-    return <Text>Loading categories...</Text>
+    return <Loader mode="inline" label="Loading categories..." />
   }
 
   useEffect(() => {

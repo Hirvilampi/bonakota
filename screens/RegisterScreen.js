@@ -48,9 +48,10 @@ export default function RegisterScreen() {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.inputView}>
-                <Image source={require('../assets/bonakota_logo.png')} style={styles.logo} />
+        <View style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.inputView}>
+                    <Image source={require('../assets/bonakota_logo.png')} style={styles.logo} />
 
                 <Text>Register</Text>
                 <TextInput
@@ -87,15 +88,20 @@ export default function RegisterScreen() {
                     onChangeText={setPassword}
                     secureTextEntry
                 />
-                {loading ? (<Loader />) : (<TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                    <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>)}
-                <TouchableOpacity onPress={handleLogin}>
-                    <Text style={styles.linkText}>Already have an account? Log In</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.button, loading && { opacity: 0.7 }]}
+                        onPress={handleSignUp}
+                        disabled={loading}
+                    >
+                        <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleLogin}>
+                        <Text style={styles.linkText}>Already have an account? Log In</Text>
+                    </TouchableOpacity>
 
-            </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
+            <Loader visible={loading} mode="overlay" label="Registering..." />
+        </View>
     );
 };
-

@@ -1,11 +1,12 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
-import { View, Text, FlatList, Pressable, Image } from "react-native";
+import { View, Text, FlatList, Pressable } from "react-native";
 import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import styles from "../styles/RegisterStyles";
 import { auth, database } from "../services/config";
 import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
 import ensureLocalImage from "../components/ensureLocalImage";
+import ImageWithLoader from "../components/ImageWithLoader";
 
 
 export default function CategoryScreen() {
@@ -49,6 +50,7 @@ export default function CategoryScreen() {
 
     useEffect(() => {
         let mounted = true;
+        setDisplayItems(items || []);
         const hydrate = async () => {
             const enriched = await Promise.all(
                 (items || []).map(async (item) => {
@@ -84,7 +86,7 @@ export default function CategoryScreen() {
                         style={styles.itemboxrow}
                     >
                         <View style={{ padding: 5 }}>
-                             <Image source={{ uri: item.localUri || item.downloadURL || item.uri }} style={styles.showimage} />
+                             <ImageWithLoader source={{ uri: item.localUri || item.downloadURL || item.uri }} style={styles.showimage} />
                             <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                              <Text style={styles.itemCategory}>{item.description}</Text>
                         </View>

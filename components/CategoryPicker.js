@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useCategories } from "../context/CategoryContext"; 
+import Loader from "./Loader";
 
 export default function CategoryPicker({ category_id, onChangeCategory, setCategory_id }) {
     const { categories, loading } = useCategories(); // käytetty context
@@ -28,7 +29,7 @@ console.log('-- KATEGORIAT --',arr);
     }, [categories]);
 
     if (loading || !categories) {
-        return <ActivityIndicator size="small" color="#52946B" />;
+        return <Loader mode="inline" label="Loading categories..." />;
     }
 
    // setCategory_id(newVal); // päivitä parentille

@@ -5,6 +5,7 @@ import { auth, app } from "../services/config";
 import styles from "../styles/RegisterStyles";
 import { firstuser, scouttiuser } from "../services/myinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loader from "../components/Loader";
 
 
 // used https://www.youtube.com/watch?v=BsOik6ycGqk to get started
@@ -107,8 +108,9 @@ export default function LoginScreen({ navigation }) {
 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Welcome Back</Text>
 
       <TextInput
         style={styles.input}
@@ -156,15 +158,17 @@ export default function LoginScreen({ navigation }) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
-        onPress={setLoginScoutti}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>
-          {loading ? "Logging in..." : "set Scoutti"}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.loginregisterbutton, loading && { opacity: 0.7 }]}
+          onPress={setLoginScoutti}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? "Logging in..." : "set Scoutti"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <Loader visible={loading} mode="overlay" label="Logging in..." />
     </View>
   );
 

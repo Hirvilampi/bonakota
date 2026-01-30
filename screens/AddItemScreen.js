@@ -16,6 +16,7 @@ import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { useCategories } from "../context/CategoryContext";
 import CategoryPicker from "../components/CategoryPicker";
 import LocationPicker from "../components/LocationPicker.js";
+import Loader from "../components/Loader";
 
 export default function AddItem() {
   const insets = useSafeAreaInsets();
@@ -27,7 +28,7 @@ export default function AddItem() {
   const [category_id, setCategory_id] = useState();
   const HEADER_HEIGHT = 80;
   if (loading || !categories) {
-    return <Text>Loading categories...</Text>
+    return <Loader mode="inline" label="Loading categories..." />
   }
 
   // Get the Authentication instance
@@ -243,6 +244,7 @@ export default function AddItem() {
   //  setCategory_id={(val) => updateItemData({ category_id: val })}
 
   return (
+    <View style={{ flex: 1 }}>
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', marginBottom: 5, gap: 10, paddingTop: 0, marginTop: -10, paddingBottom: 5, }}>
         <Button mode="contained" style={[styles.camerabutton, { borderRadius: 10, margin: 5 }]} buttonColor="#EAF2EC" textColor="#52946B" onPress={clearItemData}>
@@ -348,6 +350,8 @@ export default function AddItem() {
         </ScrollView>
       </KeyboardAvoidingView>
 
+    </View>
+    <Loader visible={uploading} mode="overlay" label="Uploading image..." />
     </View>
   );
 }

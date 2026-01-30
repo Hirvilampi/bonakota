@@ -3,6 +3,7 @@ import { Image, View, Alert, Text, Pressable, StyleSheet, Platform } from "react
 import { Button } from "react-native-paper"
 import * as ImagePicker from "expo-image-picker";
 import { baseURL } from "../services/config";
+import Loader from "../components/Loader";
 
 // en sit saanut tätä toimimaan AddItemScreenin kanssa
 
@@ -24,33 +25,37 @@ export default function PhotoQuick({
   const takePhoto = async () => {
     // console.log("IN PHOTOQUICK!!!! - in take photo");
     setLoading(true);
-    // Kysy kameran käyttöoikeus (iOS/Android)
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Kameran käyttöoikeus tarvitaan.");
-      return;
-    }
+    try {
+      // Kysy kameran käyttöoikeus (iOS/Android)
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Kameran käyttöoikeus tarvitaan.");
+        return;
+      }
 
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 0.7,
-      exif: true,
-    });
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: false,
+        quality: 0.7,
+        exif: true,
+      });
 
-    // console.log("result",result.uri);
-    // console.log("tuliko result, tuliko uri??");
+      // console.log("result",result.uri);
+      // console.log("tuliko result, tuliko uri??");
 
-    if (!result.canceled) {
-      // If an image is selected (not cancelled), 
-      // update the file state variable
-      const newUri = result.assets[0].uri;
-      setUri(newUri);
+      if (!result.canceled) {
+        // If an image is selected (not cancelled), 
+        // update the file state variable
+        const newUri = result.assets[0].uri;
+        setUri(newUri);
         onDone?.({
           newUri,
           fileName: asset.fileName ?? null,
           type: asset.type ?? null,
           exif: asset.exif ?? null
         });
+      }
+    } finally {
+      setLoading(false);
     }
 
   };
@@ -59,40 +64,45 @@ export default function PhotoQuick({
   // https://www.geeksforgeeks.org/react-native/how-to-upload-and-preview-an-image-in-react-native/
   const pickImage = async () => {
     // console.log("IN PHOTOQUICK!!!! - in image picker");
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      // If permission is denied, show an alert
-      Alert.alert(
-        "Permission Denied",
-        `Sorry, we need camera 
+    setLoading(true);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        // If permission is denied, show an alert
+        Alert.alert(
+          "Permission Denied",
+          `Sorry, we need camera 
                  roll permission to upload images.`
-      );
-    } else {
-      // Launch the image library and get
-      // the selected image
-      // console.log("trying to open library image async");
-      const result = await ImagePicker.launchImageLibraryAsync({
-    // only images
-        allowsEditing: true, // Allow basic editing like cropping
-        aspect: [4, 3],// Aspect ratio for cropping
-        quality: 0.7, // Image quality (1 = highest)
-      });
-
-      if (!result.canceled) {
-        // update the file state variable
-        // console.log("result",result);
-        const newUri = result.assets[0].uri;
-        // console.log("newUri",newUri)
-        setUri(newUri);
-        onDone?.({
-          newUri,
-          fileName: asset.fileName ?? null,
-          type: asset.type ?? null,
-          exif: asset.exif ?? null
-        });
+        );
       } else {
-        Alert.alert("no result");
+        // Launch the image library and get
+        // the selected image
+        // console.log("trying to open library image async");
+        const result = await ImagePicker.launchImageLibraryAsync({
+          // only images
+          allowsEditing: true, // Allow basic editing like cropping
+          aspect: [4, 3],// Aspect ratio for cropping
+          quality: 0.7, // Image quality (1 = highest)
+        });
+
+        if (!result.canceled) {
+          // update the file state variable
+          // console.log("result",result);
+          const newUri = result.assets[0].uri;
+          // console.log("newUri",newUri)
+          setUri(newUri);
+          onDone?.({
+            newUri,
+            fileName: asset.fileName ?? null,
+            type: asset.type ?? null,
+            exif: asset.exif ?? null
+          });
+        } else {
+          Alert.alert("no result");
+        }
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,6 +110,7 @@ export default function PhotoQuick({
 
   return (
     <View style={{ padding: padding }}>
+      <Loader visible={loading} mode="overlay" label="Opening image picker..." />
       {label === "Take Photo" ? (
         <Button loading={uploading} mode="contained" style={[styles.camerabutton, { borderRadius: border, margin: margin }]} onPress={takePhoto}>
           <Text style={styles.camerabuttontext}>{label}</Text>
