@@ -86,7 +86,8 @@ export const styles = StyleSheet.create({
         marginLeft: 0,
     },
     categoryButton: {
-        height: 40,
+        width: 100,
+        height: 50,
         borderRadius: 8,
         marginRight: 6,
         marginTop: 5,
@@ -103,13 +104,13 @@ export const styles = StyleSheet.create({
         elevation: 6,
     },
     categoryContent: {
-        height: 40,
+        height: 50,
         paddingVertical: 0,
         alignItems: "center",
         justifyContent: "center",
     },
     categoryContentWide: {
-        height: 40,
+        height: 50,
         width: "100%",
         paddingVertical: 0,
         alignItems: "center",
