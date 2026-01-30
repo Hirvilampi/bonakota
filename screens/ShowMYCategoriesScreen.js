@@ -36,7 +36,7 @@ export default function ShowMYCategoriesScreen() {
                             contentStyle={styles.categoryContentWide}
                             labelStyle={styles.categoryLabel}
                             onPress={() =>
-                                navigation.navigate("ShowCategory", { category: item })
+                                navigation.navigate("CategoryScreen", { category: item })
                             }
                         >
                             <Text style={{ fontWeight: "bold" }}>{item}</Text>

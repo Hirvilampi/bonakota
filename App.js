@@ -114,7 +114,7 @@ export default function App() {
               }}
             />
             <Stack.Screen
-              name="ShowLocation"
+              name="LocationScreen"
               component={LocationScreen}
               options={{
                 title: 'Items in Location',
@@ -122,10 +122,10 @@ export default function App() {
               }}
             />
             <Stack.Screen
-              name="ShowCategory"
+              name="CategoryScreen"
               component={CategoryScreen}
               options={{
-                title: 'Categories',
+                title: 'Category',
                 headerBackTitleVisible: false,
               }}
             />
