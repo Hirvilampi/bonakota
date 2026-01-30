@@ -70,10 +70,12 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginRight: 8,
+       
     },
     itembox: {
         alignItems: "center",
         marginRight: 8,
+        marginTop: 5,
     },
     itemTitle: {
         fontSize: 13,

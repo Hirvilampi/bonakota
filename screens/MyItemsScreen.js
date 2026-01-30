@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, Pressable, TextInput, ScrollView } from "react-native";
+import { View, Text, FlatList, Pressable, TextInput, ScrollView } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Button } from "react-native-paper";
 import { getInfoAsync } from "expo-file-system/legacy";
@@ -7,6 +7,8 @@ import saveImageToPhone from '../components/saveImageToPhone';
 import { auth, database } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
+import Loader from "../components/Loader";
+import ImageWithLoader from "../components/ImageWithLoader";
 // Firestore-funktiot
 import { ref, query, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
 import { onAuthStateChanged } from "firebase/auth";
@@ -170,6 +172,8 @@ export default function MyItemsScreen() {
         } catch (error) {
             console.log('File getInfo failed', error);
             return false;
+        } finally {
+            setDownloading(false);
         }
     }
 
@@ -243,6 +247,7 @@ export default function MyItemsScreen() {
 
 
     return (
+        <View style={{ flex: 1 }}>
         <View style={styles.container}>
             {/* 🔍 Search */}
             <TextInput
@@ -288,7 +293,7 @@ export default function MyItemsScreen() {
                                         onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
                                         style={styles.itembox}
                                     >
-                                        <Image source={{ uri: item.uri }} style={styles.showimage} />
+                                        <ImageWithLoader source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
                                         {/*          <Text style={styles.itemCategory}>
@@ -383,7 +388,7 @@ export default function MyItemsScreen() {
                                         onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
                                         style={styles.itembox}
                                     >
-                                        <Image source={{ uri: item.uri }} style={styles.showimage} />
+                                        <ImageWithLoader source={{ uri: item.uri }} style={styles.showimage} />
                                         <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
                                         <Text style={styles.itemCategory}>{item.description}</Text>
                                         {/*          <Text style={styles.itemCategory}>
@@ -451,13 +456,15 @@ export default function MyItemsScreen() {
                                 onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
                                 style={styles.itemboxrow}
                             >
-                                <Image source={{ uri: item.uri }} style={styles.cameraimage} />
+                                <ImageWithLoader source={{ uri: item.uri }} style={styles.cameraimage} />
                                 <Text style={styles.itemTitle}>{item.itemName}</Text>
                             </Pressable>
                         )}
                     />
                 </>
             )}
+        </View>
+        <Loader visible={downloading} mode="overlay" label="Downloading images..." />
         </View>
 
     );

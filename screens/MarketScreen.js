@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, Pressable, TextInput } from "react-native";
+import { View, Text, FlatList, Pressable, TextInput } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Button } from "react-native-paper";
 import { auth, database } from '../services/config';
@@ -7,10 +7,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
 import { ref, query, orderByChild, equalTo, onValue } from 'firebase/database';
+import ensureLocalImage from "../components/ensureLocalImage";
+import ImageWithLoader from "../components/ImageWithLoader";
 
 
 export default function MarketScreen() {
   const [itemsOnMarket, setItemsOnMarket] = useState([]);
+  const [displayItemsOnMarket, setDisplayItemsOnMarket] = useState([]);
   const [ownItemsOnMarket, setOwnItemsOnMarket] = useState([]);
   const [allMarketItems, setAllMarketItems] = useState([]);
   const [lookingfor, setLookingfor] = useState('');
@@ -64,10 +67,26 @@ export default function MarketScreen() {
     }
   }, [user_id]);
 
+  useEffect(() => {
+    let mounted = true;
+    setDisplayItemsOnMarket(itemsOnMarket || []);
+    const hydrate = async () => {
+      const enriched = await Promise.all(
+        (itemsOnMarket || []).map(async (item) => {
+          const localUri = await ensureLocalImage(item.downloadURL);
+          return { ...item, localUri };
+        })
+      );
+      if (mounted) setDisplayItemsOnMarket(enriched);
+    };
+    hydrate();
+    return () => { mounted = false; };
+  }, [itemsOnMarket]);
+
   // filtteröidään listasta lookingfor stringin mukaan
   const updateSearchList = async (lookingfor) => {
     const looking = lookingfor.toLowerCase();
-    const result = itemsOnMarket.filter(item =>
+    const result = displayItemsOnMarket.filter(item =>
       item.itemName?.toLowerCase().includes(looking) ||
       item.description?.toLowerCase().includes(looking) ||
       item.category_name?.toLowerCase().includes(looking) ||
@@ -79,7 +98,7 @@ export default function MarketScreen() {
 
   useEffect(() => {
     updateSearchList(lookingfor);
-  }, [lookingfor]);
+  }, [lookingfor, displayItemsOnMarket]);
 
 
 
@@ -109,7 +128,7 @@ export default function MarketScreen() {
         allMarketItems?.length > 0 ? (
           <FlatList
             keyExtractor={(item, index) => index.toString()}
-            data={itemsOnMarket}
+            data={displayItemsOnMarket}
             vertical
             showsVerticalScrollIndicator
             showsHorizontalScrollIndicator={false}
@@ -121,7 +140,7 @@ export default function MarketScreen() {
                 style={styles.itembox}
               >
                 <View style={{ flexDirection: "row", padding: 5, }}>
-                  <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
+                  <ImageWithLoader source={{ uri: item.localUri || item.downloadURL || item.uri }} style={styles.showimage} />
                   <View>
                     <Text style={styles.itemTitle}>{item.itemName}</Text>
                     <Text style={styles.itemCategory}>{item.description}</Text>
@@ -156,7 +175,7 @@ export default function MarketScreen() {
                 onPress={() => navigation.navigate("MarketItemScreen", { item }) ?? console.log("No parent navigator found")}
                 style={styles.itembox}
               >
-                <Image source={{ uri: item.downloadURL }} style={styles.showimage} />
+                <ImageWithLoader source={{ uri: item.localUri || item.downloadURL || item.uri }} style={styles.showimage} />
                 <Text style={styles.itemTitle}>{item.itemName}</Text>
                 <Text style={styles.itemCategory}>{item.description}</Text>
                 <Text style={styles.itemCategory}>price: {item.price} €</Text>
@@ -178,4 +197,3 @@ export default function MarketScreen() {
     </View>
   );
 }
-
