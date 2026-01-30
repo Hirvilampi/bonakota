@@ -1,11 +1,10 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import { View, Text, Button } from "react-native";
 import styles from "../styles/RegisterStyles";
 import { useState, useEffect } from 'react';
-import { getDatabase, push, ref, onValue } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { doc, getDoc } from "firebase/firestore";
-import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
-import { app, auth, database, db } from "../services/config";
+import { useItemData } from "../config/ItemDataState";
+import { auth, database, db } from "../services/config";
 import { useNavigation } from "expo-router";
 
 export default function ProfileScreen() {
@@ -54,7 +53,7 @@ export default function ProfileScreen() {
   if (snap.exists()) {
     const data = snap.data();
     setYourInfo(data);
-    console.log("data:", data);
+    // console.log("data:", data);
   } else {
     console.log("No such document");
     setYourInfo(null);

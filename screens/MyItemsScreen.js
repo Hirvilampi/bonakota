@@ -1,19 +1,16 @@
-import React from "react";
 import { useState, useEffect } from "react";
-import { View, Text, Platform, FlatList, StyleSheet, Image, Pressable, TextInput, Alert, ScrollView } from "react-native";
+import { View, Text, FlatList, Image, Pressable, TextInput, ScrollView } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Button } from "react-native-paper";
-import * as FileSystem from 'expo-file-system/legacy';
 import { getInfoAsync } from "expo-file-system/legacy";
 import saveImageToPhone from '../components/saveImageToPhone';
-import * as MediaLibrary from 'expo-media-library';
-import { app, auth, db, database, storage } from '../services/config';
+import { auth, database } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
-import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useItemData, clearItemData, updateItemData } from "../config/ItemDataState";
+import { ref, query, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
+import { onAuthStateChanged } from "firebase/auth";
+import { useItemData} from "../config/ItemDataState";
 import { fetchUserChats } from "../components/fetchUserChats";
 import { listenToUserChats } from "../components/listenToUserChats";
 import { loadImageCache, saveImageCache } from "../services/itemsImageCache";
@@ -45,7 +42,7 @@ export default function MyItemsScreen() {
         } else console.log("No user signed in.");
 
     }, [currentUser]);
-    console.log("Current user_ID:", user_id);
+    // console.log("Current user_ID:", user_id);
 
     //  const database = getDatabase(app);
     const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
@@ -56,7 +53,7 @@ export default function MyItemsScreen() {
         if (!uri || !uri.startsWith('file://')) return false;
         try {
             const info = await getInfoAsync(uri);
-            console.log("exits info", info.exists, info);
+            // console.log("exits info", info.exists, info);
             return info.exists;
         } catch (e) {
             console.log('File getInfo failed', e);
@@ -67,14 +64,14 @@ export default function MyItemsScreen() {
     // hakee kaikki käyttäjän itemit sekä etsii käyttäjän lokaatiot ja kategoriat itemeistä
     const getItems = async () => {
         console.log("haetaan itemit");
-        console.log("user_id:llä", user_id);
+        // console.log("user_id:llä", user_id);
         const itemsRef = ref(database, 'items/');
-        console.log("we have user id");
-        console.log("typeof user_id:", typeof user_id);
-        console.log("user_id:", JSON.stringify(user_id))
+        // console.log("we have user id");
+        // console.log("typeof user_id:", typeof user_id);
+        // console.log("user_id:", JSON.stringify(user_id))
         const userItemsQuery = query(itemsRef, orderByChild('owner_id'), equalTo(user_id));
         const unsubscribe = onValue(userItemsQuery, async (snapshot) => {
-            console.log("onValue - on käyty");
+            // console.log("onValue - on käyty");
             const data = snapshot.val();
             const itemsList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];
             const cachedMap = await loadImageCache(user_id);
@@ -155,7 +152,7 @@ export default function MyItemsScreen() {
                 acc[`items/${item.id}`] = item;      // tai valitse vain päivitettävät kentät
                 return acc;
             }, {});
-            console.log("updates", updates);
+            // console.log("updates", updates);
             await update(ref(database), updates); // updatetaan olemassa olevat tiedot
             console.log('updated info to firebase');
         } catch (e) {
@@ -168,7 +165,7 @@ export default function MyItemsScreen() {
         setDownloading(true);
         try {
             const url = await saveImageToPhone(uri);
-            console.log('downloaded image from storage');
+            // console.log('downloaded image from storage');
             return url;
         } catch (error) {
             console.log('File getInfo failed', error);
@@ -196,16 +193,16 @@ export default function MyItemsScreen() {
 
     useEffect(() => {
         if (!user_id) return;
-        console.log('haetaan kerran chat messaged');
+        // console.log('haetaan kerran chat messaged');
         //     const chats = listenToUserChats(user_id);
         fetchUserChats(user_id).then(setMessages).catch(console.log);
 
-        console.log('pistetään kuuntelija hommiiin');
-        console.log('chatit', messages);
+        // console.log('pistetään kuuntelija hommiiin');
+        // console.log('chatit', messages);
         // realtime-kuuntelu
         const unsub = listenToUserChats(user_id, chats => setMessages(chats));
-        console.log(" ### MESSAGES ###");
-        console.log(messages);
+        // console.log(" ### MESSAGES ###");
+        // console.log(messages);
         return () => unsub?.();
     }, [user_id]);
 
@@ -222,7 +219,7 @@ export default function MyItemsScreen() {
 
     const handlePress = () => {
         console.log("Refreshing items...");
-        console.log("Haetaan itemit user_id:llä:", user_id);
+        // console.log("Haetaan itemit user_id:llä:", user_id);
         getItems();
         //        console.log('==== ITEMS ====', items);
     }

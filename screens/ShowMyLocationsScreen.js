@@ -10,7 +10,7 @@ export default function ShowMyLocationsScreen() {
     const locationNames = params?.locations ?? [];
     const navigation = useNavigation();
     console.log(" // MY LOCATIONS //");
-    console.log(locationNames);
+    // console.log(locationNames);
 
     return (
         <View style={styles.container}>

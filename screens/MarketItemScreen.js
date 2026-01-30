@@ -35,7 +35,7 @@ export default function MarketItemScreen() {
     useEffect(() => {
         if (params?.item) {
             updateItemData(params.item);
-            console.log("item updated", params.item);
+            // console.log("item updated", params.item);
         }
     }, [params]);
 
@@ -69,9 +69,9 @@ export default function MarketItemScreen() {
     }, [itemData.downloadURL]);
 
     const chatWithUser = async () => {
-        console.log('sending you to chatscreen - hopefully');
+        // console.log('sending you to chatscreen - hopefully');
         const title = `About ${itemData.itemName}`;
-        console.log('about title', title);
+        // console.log('about title', title);
         const itemId = itemData.id ?? itemData.item_id;
         const ownerId = itemData.owner_id;
 
@@ -89,7 +89,7 @@ export default function MarketItemScreen() {
             currentUserFirstName,
             ownerFirstName
         );
-        console.log('sit navigoidaan chatscreeniin');
+        // console.log('sit navigoidaan chatscreeniin');
         navigation.navigate("ChatScreen", {
             chatId,
             title,

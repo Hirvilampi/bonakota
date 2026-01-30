@@ -37,12 +37,12 @@ export default function ChatScreen({ route }) {
     const now = new Date();
     const ts = `${now.getDate()}/${now.getMonth() + 1} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
     const time = `${ts}-${now.getTime()}`;
-    console.log("you're sending", ts, "You", text);
+    // console.log("you're sending", ts, "You", text);
     setMessages(prev => [
       ...prev, { id: ts, senderId: "You", text }
     ]);
     setText("");
-    console.log(messages);
+    // console.log(messages);
   };
 
   return (

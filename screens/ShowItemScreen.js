@@ -66,7 +66,7 @@ export default function ShowItemScreen() {
     useFocusEffect(
       useCallback(() => {
         if (!user_id) return;
-        console.log("haetaan userin itemit ja eristetään niistä lokaatiot:");
+        // console.log("haetaan userin itemit ja eristetään niistä lokaatiot:");
         const itemsRef = ref(database, "items/");
         const q = query(itemsRef, orderByChild("owner_id"), equalTo(user_id));
         const unsubscribe = onValue(q, snap => {
@@ -106,7 +106,7 @@ export default function ShowItemScreen() {
     }, [location, itemData.location]);
 
   const deleteItem = async () => {
-    console.log('trying to delete item from firebase');
+    // console.log('trying to delete item from firebase');
     if (itemData.id) {
  //     console.log("meillä on poistettavalle itemData.itemName id:llä", itemData.itemName, itemData.id);
       const itemRef = ref(database, `items/${itemData.id}`);
@@ -123,12 +123,11 @@ export default function ShowItemScreen() {
   const getTimeStamp = async () => {
     let now = new Date();
     const newtimestamp = now.toISOString().split('.')[0];
-    console.log('newtimestamp', newtimestamp);
     return newtimestamp;
   }
 
   const saveItem = async () => {
-    console.log('trying to save item');
+    // console.log('trying to save item');
     const ts = await getTimeStamp();
     const payload = { ...itemData, timestamp: ts };
     updateItemData({timestamp : ts});
@@ -136,7 +135,7 @@ export default function ShowItemScreen() {
 //    console.log("Tallennusyritys itemdata", itemData);
 //    console.log("userRef - käyttäjän polku", userRef);
     if (itemData.itemName) {
-      console.log("meillä on itemData.itemName id:llä", itemData.itemName, itemData.id);
+//      console.log("meillä on itemData.itemName id:llä", itemData.itemName, itemData.id);
       const itemRef = ref(database, `items/${itemData.id}`);
       update(itemRef, payload)
         .then(() => {
