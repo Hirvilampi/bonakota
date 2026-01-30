@@ -45,8 +45,8 @@ export default function ShowMyLocationsScreen() {
       Alert.alert("Error", "No user signed in.");
       return;
     }
+    if (oldLocation === null || oldLocation === undefined) return;
     const oldKey = normalizeKey(oldLocation);
-    if (!oldKey) return;
 
     const itemsRef = ref(database, "items/");
     const q = query(itemsRef, orderByChild("owner_id"), equalTo(userId));
@@ -80,7 +80,7 @@ export default function ShowMyLocationsScreen() {
   const saveEdit = async () => {
     const oldLocation = editingLocation;
     const newLocation = (editValue ?? "").trim();
-    if (!oldLocation) return;
+    if (oldLocation === null || oldLocation === undefined) return;
     if (!newLocation) {
       Alert.alert("Error", "Location name cannot be empty.");
       return;
@@ -190,7 +190,7 @@ export default function ShowMyLocationsScreen() {
         data={locations}
         renderItem={({ item }) => (
           <View style={{ padding: 5 }}>
-            {editingLocation && normalizeKey(editingLocation) === normalizeKey(item) ? (
+            {editingLocation !== null && normalizeKey(editingLocation) === normalizeKey(item) ? (
               <View style={{ gap: 8 }}>
                 <TextInput
                   style={styles.input}
@@ -222,7 +222,7 @@ export default function ShowMyLocationsScreen() {
                 >
                   <Text style={{ fontWeight: "bold" }}>{item}</Text>
                 </Button>
-                {activeActionsFor && normalizeKey(activeActionsFor) === normalizeKey(item) ? (
+                {activeActionsFor !== null && normalizeKey(activeActionsFor) === normalizeKey(item) ? (
                   <View style={{ flexDirection: "row", gap: 8 }}>
                     <Button mode="text" onPress={() => startEdit(item)} textColor="#52946B">
                       Edit
