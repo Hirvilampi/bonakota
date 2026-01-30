@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
         alignSelf: "stretch",
         marginLeft: 20,
         marginBottom: 20,
-        marginTop: 10,
+        marginTop: 15,
     },
     sectionTitle: {
         fontSize: 22,
@@ -89,6 +89,18 @@ export const styles = StyleSheet.create({
         height: 40,
         borderRadius: 8,
         marginRight: 6,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 2,
+
+        // iOS shadow
+        shadowColor: "#000",
+        shadowOffset: { width: 1, height:2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+
+        // Android shadow
+        elevation: 6,
     },
     categoryContent: {
         height: 40,
@@ -104,9 +116,12 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
     },
     categoryLabel: {
-        fontSize: 14,
+        fontSize: 13,
+        fontWeight: 'bold',
         lineHeight: 18,
+        // color: "#0D1A12",
     },
+
     inputdescription: {
         height: 120,
         backgroundColor: '#EAF2EC',
