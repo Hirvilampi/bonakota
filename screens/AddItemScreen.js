@@ -48,17 +48,17 @@ export default function AddItem() {
     if (currentUser) {
       //   console.log("Current user ID:", currentUser.uid);
       setUser_id(currentUser.uid);
-      console.log("Current user_ID:", user_id);
+      // console.log("Current user_ID:", user_id);
     } else {
       console.log("No user signed in.");
     }
   }, [currentUser]);
-  console.log("Current user_ID:", user_id);
+  // console.log("Current user_ID:", user_id);
 
   useFocusEffect(
     useCallback(() => {
       if (!user_id) return;
-      console.log("haetaan userin itemit ja eristetään niistä lokaatiot:");
+      // console.log("haetaan userin itemit ja eristetään niistä lokaatiot:");
       const itemsRef = ref(database, "items/");
       const q = query(itemsRef, orderByChild("owner_id"), equalTo(user_id));
       const unsubscribe = onValue(q, snap => {
@@ -104,7 +104,7 @@ export default function AddItem() {
       const result = await image.saveAsync({ compress: 0.7, format: SaveFormat.JPEG });
       context?.release?.();
       image?.release?.();
-      console.log('Compressed image URI', result.uri);
+      // console.log('Compressed image URI', result.uri);
       return result.uri;
     }
     catch (e) {
@@ -125,10 +125,10 @@ export default function AddItem() {
       const filename = `${user_id ?? "missing-user"}/${Date.now()}.jpg`;
       const imgRef = storageRef(storage, filename);
 
-      console.log("uploadImage uploading", filename);
+      // console.log("uploadImage uploading", filename);
       await uploadBytes(imgRef, blob);
       const url = await getDownloadURL(imgRef);
-      console.log("uploadImage done", url);
+      // console.log("uploadImage done", url);
       return url;
     } catch (err) {
       console.log("uploadImage error", err);
@@ -148,13 +148,13 @@ export default function AddItem() {
 
   const getTimeStamp = () => {
     const now = new Date();
-    console.log('newtimestamp', now.toISOString().split('.')[0]);
+    // console.log('newtimestamp', now.toISOString().split('.')[0]);
     return now.toISOString().split('.')[0];
   }
 
   // save to firebase
   const handleSave = async () => {
-    console.log("tallennusfunktio");
+    // console.log("tallennusfunktio");
     if (!user_id) {
       console.log("No user_id, aborting save");
       return;
@@ -164,7 +164,7 @@ export default function AddItem() {
     if (itemData.uri) {
       //      console.log("tallennusfunktio 3");
       dloadURL = await uploadImage(itemData.uri);
-      console.log("tallennusfunktio 4", dloadURL);
+      // console.log("tallennusfunktio 4", dloadURL);
     }
     //  updateItemData({ downloadURL: dloadURL, timestamp: getTimeStamp() });
     console.log("Tallennusyritys");
@@ -176,11 +176,11 @@ export default function AddItem() {
     };
 
     if (finalData.itemName) {
-      console.log("meillä on itemData.itemName");
+      // console.log("meillä on itemData.itemName");
       push(ref(database, 'items/'), finalData)
         .then((newRef) => {
           // Tähän koodiin tullaan, jos kirjoitus palvelimelle onnistui
-          console.log("Tiedot tallennettu onnistuneesti!");
+          // console.log("Tiedot tallennettu onnistuneesti!");
           //          console.log("Uusi avain (push ID):", newRef.key);
           //          console.log("Tallenneetu data:", itemData);
           clearItemData();
@@ -200,14 +200,14 @@ export default function AddItem() {
     console.log("IN PICK IMAGE");
     let result;
     if (pick === "library") {
-      console.log("LIBRARY SELECTION");
+      // console.log("LIBRARY SELECTION");
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         // If permission is denied, show an alert
         Alert.alert("Permission Denied", "Sorry, we need library permission to upload images.");
       } else {
         // Launch the image library and getthe selected image
-        console.log("trying to open library image async");
+        // console.log("trying to open library image async");
         result = await ImagePicker.launchImageLibraryAsync({
           allowsEditing: true, // Allow basic editing like cropping
           aspect: [4, 3],// Aspect ratio for cropping
@@ -215,7 +215,7 @@ export default function AddItem() {
         });
       }
     } else {
-      console.log("CAMERA MODE");
+      // console.log("CAMERA MODE");
       // Kysy kameran käyttöoikeus 
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
@@ -231,9 +231,9 @@ export default function AddItem() {
     }
     if (!result.canceled) {
       // update the file state variable
-      console.log("result", result);
+      // console.log("result", result);
       const newUri = result.assets[0].uri;
-      console.log("newUri", newUri)
+      // console.log("newUri", newUri)
       updateItemData({ uri: newUri });
     } else {
       Alert.alert("no result");

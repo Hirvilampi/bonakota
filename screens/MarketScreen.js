@@ -1,13 +1,12 @@
-import React from "react";
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, Image, Pressable, TextInput, Alert, ScrollView } from "react-native";
-import { useFocusEffect, useNavigation, NavigationContainer } from '@react-navigation/native';
+import { View, Text, FlatList, Image, Pressable, TextInput } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import { Button } from "react-native-paper";
-import { app, auth, db, database } from '../services/config';
+import { auth, database } from '../services/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 // Firestore-funktiot
-import { getDatabase, ref, query, set, get, orderByChild, equalTo, onValue } from 'firebase/database';
+import { ref, query, orderByChild, equalTo, onValue } from 'firebase/database';
 
 
 export default function MarketScreen() {
@@ -26,7 +25,7 @@ export default function MarketScreen() {
     if (currentUser) {
       //   console.log("Current user ID:", currentUser.uid);
       setUser_id(currentUser.uid);
-      console.log("GOT Current user_ID:", user_id);
+      // console.log("GOT Current user_ID:", user_id);
     } else {
       console.log("No user signed in.");
     }
@@ -38,12 +37,12 @@ export default function MarketScreen() {
   // tää kaatoi koko homman aiemmin const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
 
   const getItemsOnMarket = async () => {
-    console.log("haetaan itemit, jotka on asetettu marketplazelle");
-    console.log("user_id:llä", user_id);
+    // console.log("haetaan itemit, jotka on asetettu marketplazelle");
+    // console.log("user_id:llä", user_id);
     const itemsRef = ref(database, 'items/');
     const marketItemsQuery = query(itemsRef, orderByChild('on_market_place'), equalTo(1));
     const kaavin = onValue(marketItemsQuery, async (snapshot) => {
-      console.log("Market On value");
+      // console.log("Market On value");
       const data = snapshot.val();
       //      console.log("=== MARKETTIDATA ===",data);
       const marketList = data ? Object.entries(data).map(([id, item]) => ({ id, ...item })) : [];

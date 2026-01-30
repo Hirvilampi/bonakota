@@ -27,7 +27,7 @@ export default function AllChatsScreen() {
         if (currentUser) {
             //   console.log("Current user ID:", currentUser.uid);
             setUser_id(currentUser.uid);
-            console.log("Current user_ID:", user_id);
+            // console.log("Current user_ID:", user_id);
         } else  console.log("No user signed in.");   
     }, [currentUser]);
     console.log("Current user_ID:", user_id);
@@ -35,16 +35,16 @@ export default function AllChatsScreen() {
 
     useEffect(() => {
         if (!user_id) return;
-        console.log('haetaan kerran chat messaged');
+        // console.log('haetaan kerran chat messaged');
         //     const chats = listenToUserChats(user_id);
         fetchUserChats(user_id).then(setMessages).catch(console.log);
 
-        console.log('pistetään kuuntelija hommiiin');
-        console.log('chatit', messages);
+        // console.log('pistetään kuuntelija hommiiin');
+        // console.log('chatit', messages);
         // realtime-kuuntelu
         const unsub = listenToUserChats(user_id, chats => setMessages(chats));
-        console.log(" ### MESSAGES ###");
-        console.log(messages);
+        // console.log(" ### MESSAGES ###");
+        // console.log(messages);
         return () => unsub?.();
     }, [user_id]);
 

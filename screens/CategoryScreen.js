@@ -16,7 +16,7 @@ export default function CategoryScreen() {
     const [displayItems, setDisplayItems] = useState([]);
     const [user_id, setUser_id] = useState(null);
     console.log(" // CATEGORY //");
-    console.log(categoryName);
+    // console.log(categoryName);
     // Get the Authentication instance
     const currentUser = auth.currentUser;
 
@@ -24,17 +24,17 @@ export default function CategoryScreen() {
         if (currentUser) {
             //   console.log("Current user ID:", currentUser.uid);
             setUser_id(currentUser.uid);
-            console.log("Current user_ID:", user_id);
+            // console.log("Current user_ID:", user_id);
         } else {
             console.log("No user signed in.");
         }
     }, [currentUser]);
-    console.log("Current user_ID:", user_id);
+    // console.log("Current user_ID:", user_id);
 
     useFocusEffect(
         useCallback(() => {
             if (!user_id || !categoryName) return;
-            console.log("haetaan itemit categoriasta:", categoryName);
+            // console.log("haetaan itemit categoriasta:", categoryName);
             const itemsRef = ref(database, "items/");
             const q = query(itemsRef, orderByChild("owner_id"), equalTo(user_id));
             const unsubscribe = onValue(q, snap => {

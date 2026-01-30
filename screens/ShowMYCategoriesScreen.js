@@ -10,7 +10,6 @@ export default function ShowMYCategoriesScreen() {
     const categories = params.categories ?? [];
     const navigation = useNavigation();
     console.log(" // SHOW CATEGORIES //");
-    console.log(categories);
 
     return (
         <View style={styles.container}>

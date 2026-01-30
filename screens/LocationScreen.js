@@ -15,7 +15,6 @@ export default function LocationScreen() {
     const [displayItems, setDisplayItems] = useState([]);
     const [user_id, setUser_id] = useState(null);
     console.log(" // LOCATION //");
-    console.log(locationName);
     // Get the Authentication instance
     const currentUser = auth.currentUser;
 
@@ -23,17 +22,17 @@ export default function LocationScreen() {
         if (currentUser) {
             //   console.log("Current user ID:", currentUser.uid);
             setUser_id(currentUser.uid);
-            console.log("Current user_ID:", user_id);
+            // console.log("Current user_ID:", user_id);
         } else {
             console.log("No user signed in.");
         }
     }, [currentUser]);
-    console.log("Current user_ID:", user_id);
+    // console.log("Current user_ID:", user_id);
 
     useFocusEffect(
         useCallback(() => {
             if (!user_id || !locationName) return;
-            console.log("haetaan itemit lokaatiosta:", locationName);
+            // console.log("haetaan itemit lokaatiosta:", locationName);
             const itemsRef = ref(database, "items/");
             const q = query(itemsRef, orderByChild("owner_id"), equalTo(user_id));
             const unsubscribe = onValue(q, snap => {

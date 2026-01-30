@@ -22,7 +22,7 @@ export default function PhotoQuick({
 
   // function to launch the camera
   const takePhoto = async () => {
-    console.log("IN PHOTOQUICK!!!! - in take photo");
+    // console.log("IN PHOTOQUICK!!!! - in take photo");
     setLoading(true);
     // Kysy kameran käyttöoikeus (iOS/Android)
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -37,8 +37,8 @@ export default function PhotoQuick({
       exif: true,
     });
 
-    console.log("result",result.uri);
-    console.log("tuliko result, tuliko uri??");
+    // console.log("result",result.uri);
+    // console.log("tuliko result, tuliko uri??");
 
     if (!result.canceled) {
       // If an image is selected (not cancelled), 
@@ -58,7 +58,7 @@ export default function PhotoQuick({
   // Function to pick an image from the device's media library
   // https://www.geeksforgeeks.org/react-native/how-to-upload-and-preview-an-image-in-react-native/
   const pickImage = async () => {
-    console.log("IN PHOTOQUICK!!!! - in image picker");
+    // console.log("IN PHOTOQUICK!!!! - in image picker");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       // If permission is denied, show an alert
@@ -70,7 +70,7 @@ export default function PhotoQuick({
     } else {
       // Launch the image library and get
       // the selected image
-      console.log("trying to open library image async");
+      // console.log("trying to open library image async");
       const result = await ImagePicker.launchImageLibraryAsync({
     // only images
         allowsEditing: true, // Allow basic editing like cropping
@@ -80,9 +80,9 @@ export default function PhotoQuick({
 
       if (!result.canceled) {
         // update the file state variable
-        console.log("result",result);
+        // console.log("result",result);
         const newUri = result.assets[0].uri;
-        console.log("newUri",newUri)
+        // console.log("newUri",newUri)
         setUri(newUri);
         onDone?.({
           newUri,
