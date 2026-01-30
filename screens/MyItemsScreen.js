@@ -326,7 +326,7 @@ export default function MyItemsScreen() {
                                             contentStyle={styles.categoryContent}
                                             labelStyle={styles.categoryLabel}
                                             onPress={() =>
-                                                navigation.navigate("ShowLocation", { location: item })
+                                                navigation.navigate("LocationScreen", { location: item })
                                             }
                                         >
                                             {item}
@@ -359,7 +359,7 @@ export default function MyItemsScreen() {
                                             contentStyle={styles.categoryContent}
                                             labelStyle={styles.categoryLabel}
                                             onPress={() =>
-                                                navigation.navigate("ShowCategory", { category: item })
+                                                navigation.navigate("CategoryScreen", { category: item })
                                             }
                                         >
                                             <Text>{item}</Text>

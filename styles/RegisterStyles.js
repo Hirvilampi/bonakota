@@ -228,6 +228,21 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
+    addNewLocButton: {
+        // backgroundColor: "#EAF2EC", 
+        // color: "#52946B", 
+        borderRadius: 10, 
+        fontWeight:'bold',
+
+        // iOS shadow
+        shadowColor: "#000",
+        shadowOffset: { width: 1, height:2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+ 
+        // Android shadow
+        elevation: 6,
+    }
 });
 
 export default styles;
