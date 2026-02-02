@@ -102,7 +102,10 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName={user ? "Back" : "LoginScreen"}
-            screenOptions={{ headerRight: () => <LogOutButton /> }}
+            screenOptions={{
+              headerRight: () => <LogOutButton />,
+            }}
+
           >
             {/* Always-register detail screens so they can be navigated to from nested navigators */}
             <Stack.Screen
@@ -110,7 +113,8 @@ export default function App() {
               component={ShowItemScreen}
               options={{
                 title: 'Edit item',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -118,7 +122,8 @@ export default function App() {
               component={LocationScreen}
               options={{
                 title: 'Items in Location',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -126,7 +131,8 @@ export default function App() {
               component={CategoryScreen}
               options={{
                 title: 'Category',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -134,7 +140,8 @@ export default function App() {
               component={ShowMyItemsScreen}
               options={{
                 title: 'My Items',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -142,7 +149,8 @@ export default function App() {
               component={MarketItemScreen}
               options={{
                 title: 'See item on market',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -150,7 +158,8 @@ export default function App() {
               component={ShowMYCategoriesScreen}
               options={{
                 title: 'My Categories',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -158,7 +167,17 @@ export default function App() {
               component={ShowMyLocationsScreen}
               options={{
                 title: 'My Locations',
+                headerStyle: {
+                  backgroundColor: "#F8FBFA",
+                },
                 headerBackTitleVisible: false,
+                headerBackTitle: "Back",
+
+                headerBackTitleStyle: {
+                  backgroundColor: "#F8FBFA",
+                  
+                },
+
               }}
             />
             <Stack.Screen
@@ -166,7 +185,8 @@ export default function App() {
               component={ChatScreen}
               options={{
                 title: 'Chat screen',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen
@@ -174,7 +194,8 @@ export default function App() {
               component={YourMarketItemsScreen}
               options={{
                 title: 'Your Items On Market',
-                headerBackTitleVisible: false,
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
               }}
             />
             <Stack.Screen name="FirestoreTest" component={FirestoreTest} />
