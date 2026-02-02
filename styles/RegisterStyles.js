@@ -1,6 +1,11 @@
 import { StyleSheet } from "react-native";
 // our styles for the project
 
+const tumma = "#0D1A12";
+const vaalea = "#F8FBFA";
+const vaalvihrea = "#EAF2EC";
+const vihrea = "#52946B";
+
 
 export const styles = StyleSheet.create({
     scrollContainer: {
@@ -12,8 +17,8 @@ export const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "flex-start",
-        paddingTop: 10,
-        backgroundColor: "#F8FBFA",
+        paddingTop: 5,
+        backgroundColor: vaalea,
     },
     inputView: {
         width: '100%',
@@ -41,15 +46,16 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 22,
         fontWeight: "bold",
-        color: "#52946B",
+        color: tumma,
         marginBottom: 10,
     },
+
     input: {
         height: 40,
-        backgroundColor: "#EAF2EC",
+        backgroundColor: vaalvihrea,
         borderWidth: 0,
         paddingHorizontal: 10,
-        color: "#52946B",
+        color: vihrea,
         width: "90%",
         borderRadius: 5,
         margin: 10,
@@ -70,7 +76,7 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginRight: 8,
-       
+
     },
     itembox: {
         alignItems: "center",
@@ -98,10 +104,10 @@ export const styles = StyleSheet.create({
 
         // iOS shadow
         shadowColor: "#000",
-        shadowOffset: { width: 1, height:2 },
+        shadowOffset: { width: 1, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 0,
- 
+
         // Android shadow
         elevation: 6,
     },
@@ -157,7 +163,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         paddingHorizontal: 12,
         paddingBottom: 250,
-        backgroundColor: '#F8FBFA',
+        backgroundColor: vaalea,
     },
     loginregisterbutton: {
         backgroundColor: '#EAF2EC',
@@ -231,18 +237,56 @@ export const styles = StyleSheet.create({
     addNewLocButton: {
         // backgroundColor: "#EAF2EC", 
         // color: "#52946B", 
-        borderRadius: 10, 
-        fontWeight:'bold',
+        borderRadius: 10,
+        fontWeight: 'bold',
 
         // iOS shadow
         shadowColor: "#000",
-        shadowOffset: { width: 1, height:2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 0,
- 
+        shadowOffset: { width: 1, height: 6 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+
         // Android shadow
         elevation: 6,
-    }
+    },
+    sectionButton: {
+        height: 55,
+        backgroundColor: '#EAF2EC',
+        // backgroundColor: '#52946B',
+        borderWidth: 0,
+        paddingHorizontal: 15,
+        // color: '#52946B', // Text color
+        width: '70%',
+        justifyContent: 'center',
+        marginBottom: 20,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+    },
+    sectionButtonTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: vihrea,
+        // color: "white",
+
+    },
+    sectionNoButtonTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: tumma,
+        marginRight: 10,
+    },
+    sectionNoButton: {
+        flexDirection: "row",
+        alignItems: 'center',
+        marginBottom: 15,
+    },
 });
 
 export default styles;
