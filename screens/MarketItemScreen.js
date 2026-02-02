@@ -31,7 +31,7 @@ export default function MarketItemScreen() {
     const { itemData, updateItemData, clearItemData } = useItemData(currentUser?.uid ?? null);
     const [currentUserFirstName, setCurrentUserFirstName] = useState(null);
     const [ownerFirstName, setOwnerFirstName] = useState(null);
-    
+
     useEffect(() => {
         if (params?.item) {
             updateItemData(params.item);
@@ -112,7 +112,17 @@ export default function MarketItemScreen() {
             <View style={styles.container}>
                 <View style={styles.itembox}>
                     {itemData?.downloadURL ? (
-                        <Image source={{ uri: itemData.downloadURL }} style={styles.cameraimage} />
+                        <Pressable
+                            onPress={() =>
+                                navigation.navigate("ShowImageScreen", {
+                                    itemData,
+                                    imageUri: itemData.downloadURL || itemData.uri,
+                                })
+                            }
+                        >
+                            <Image source={{ uri: itemData.downloadURL }} style={styles.cameraimage} />
+                        </Pressable>
+
                     ) : (
                         <Text style={{ color: 'gray' }}>No picture available</Text>
                     )}

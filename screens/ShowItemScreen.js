@@ -199,7 +199,16 @@ export default function ShowItemScreen() {
       <View style={styles.container}>
         <View style={styles.itembox}>
           {itemData?.uri || itemData?.downloadURL || localUri ? (
+                                <Pressable
+                                    onPress={() =>
+                                      navigation.navigate("ShowImageScreen", {
+                                        itemData,
+                                        imageUri: localUri || itemData.downloadURL || itemData.uri,
+                                      })
+                                    }
+                                >
             <Image source={{ uri: localUri || itemData.downloadURL || itemData.uri }} style={styles.cameraimage} />
+         </Pressable>
           ) : (
             <Text style={{ color: 'gray' }}>Paikallinen kuva, ei ladattavissa</Text>
           )}
