@@ -10,6 +10,7 @@ import { ref, query, orderByChild, equalTo, get, update } from "firebase/databas
 export default function ShowMyLocationsScreen() {
   const { params } = useRoute();
   const locationNames = params?.locations ?? [];
+  console.log('-- locations --',locationNames);
   const navigation = useNavigation();
   const currentUser = auth.currentUser;
   const [locations, setLocations] = useState([]);

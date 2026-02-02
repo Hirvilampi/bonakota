@@ -28,6 +28,7 @@ import ShowMYCategoriesScreen from './screens/ShowMYCategoriesScreen';
 import ShowMyLocationsScreen from './screens/ShowMyLocationsScreen';
 import YourMarketItemsScreen from './screens/YourMarketItemsScreen';
 import AllChatsScreen from './screens/AllChatsScreen';
+import ShowImageScreen from './screens/ShowImageScreen';
 
 // for authorization used info from https://www.youtube.com/watch?v=a0KJ7l5sNGw&t=29s
 
@@ -175,7 +176,7 @@ export default function App() {
 
                 headerBackTitleStyle: {
                   backgroundColor: "#F8FBFA",
-                  
+
                 },
 
               }}
@@ -194,6 +195,15 @@ export default function App() {
               component={YourMarketItemsScreen}
               options={{
                 title: 'Your Items On Market',
+                headerBackTitleVisible: true,
+                headerBackTitle: "Back"
+              }}
+            />
+            <Stack.Screen
+              name="ShowImageScreen"
+              component={ShowImageScreen}
+              options={{
+                title: 'Image',
                 headerBackTitleVisible: true,
                 headerBackTitle: "Back"
               }}
