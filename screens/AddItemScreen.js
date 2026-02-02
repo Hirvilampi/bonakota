@@ -100,9 +100,9 @@ export default function AddItem() {
   async function compressImage(uri) {
     try {
       const context = ImageManipulator.manipulate(uri);
-      context.resize({ width: 800 });
+      context.resize({ width: 400 });
       const image = await context.renderAsync();
-      const result = await image.saveAsync({ compress: 0.7, format: SaveFormat.JPEG });
+      const result = await image.saveAsync({ compress: 0.5, format: SaveFormat.JPEG });
       context?.release?.();
       image?.release?.();
       // console.log('Compressed image URI', result.uri);
