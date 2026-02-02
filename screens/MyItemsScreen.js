@@ -9,10 +9,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from '../styles/RegisterStyles';
 import Loader from "../components/Loader";
 import ImageWithLoader from "../components/ImageWithLoader";
+import Ionicons from '@expo/vector-icons/Ionicons';
 // Firestore-funktiot
 import { ref, query, get, orderByChild, equalTo, onValue, update } from 'firebase/database';
 import { onAuthStateChanged } from "firebase/auth";
-import { useItemData} from "../config/ItemDataState";
+import { useItemData } from "../config/ItemDataState";
 import { fetchUserChats } from "../components/fetchUserChats";
 import { listenToUserChats } from "../components/listenToUserChats";
 import { loadImageCache, saveImageCache } from "../services/itemsImageCache";
@@ -32,6 +33,11 @@ export default function MyItemsScreen() {
     const [updateItems, setUpdateItems] = useState([]);
     const [imageCache, setImageCache] = useState({});
     const [messages, setMessages] = useState([]);
+
+    const tumma = "#0D1A12";
+    const vaalea = "#F8FBFA";
+    const vaalvihrea = "#EAF2EC";
+    const vihrea = "#52946B";
 
     // Get the Authentication instance
     const currentUser = auth.currentUser;
@@ -248,17 +254,17 @@ export default function MyItemsScreen() {
 
     return (
         <View style={{ flex: 1 }}>
-        <View style={styles.container}>
-            {/* 🔍 Search */}
-            <TextInput
-                style={styles.input}
-                placeholder="Search from items"
-                placeholderTextColor="#52946B"
-                onChangeText={setLookingfor}
-                value={lookingfor}
-            />
+            <View style={styles.container}>
+                {/* 🔍 Search */}
+                <TextInput
+                    style={styles.input}
+                    placeholder="Search from items"
+                    placeholderTextColor={vihrea}
+                    onChangeText={setLookingfor}
+                    value={lookingfor}
+                />
 
-            {/* Tälle ei pitäisi olla käyttöä eikä tarvetta
+                {/* Tälle ei pitäisi olla käyttöä eikä tarvetta
             <Button
                 mode="text"
                 buttonColor="#EAF2EC"
@@ -267,204 +273,214 @@ export default function MyItemsScreen() {
                 REFRESS
             </Button>
 */}
-            {/* Jos ei haeta → näytetään lohkot */}
-            {!lookingfor ? (
-                <>
-                    <ScrollView
-                        style={{ backgroundColor: "#F8FBFA" }}
-                        bounces={false}
-                        overScrollMode="never"
-                        contentContainerStyle={styles.scrollContainer}
-                    >
-                        {/* 🕓 Recent Items */}
-                        <View style={styles.section}>
-                            {/*      <Pressable
+                {/* Jos ei haeta → näytetään lohkot */}
+                {!lookingfor ? (
+                    <>
+                        <ScrollView
+                            style={{ backgroundColor: "#F8FBFA" }}
+                            bounces={false}
+                            overScrollMode="never"
+                            contentContainerStyle={styles.scrollContainer}
+                        >
+                            {/* 🕓 Recent Items */}
+                            <View style={styles.section}>
+                                {/*      <Pressable
                                 onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen") ?? console.log("No parent navigator found")}
                             ><Text style={styles.sectionTitle}>Recent Items</Text> </Pressable> */}
-                            <Text style={styles.sectionTitle}>Recent Items</Text>
-                            <FlatList
-                                keyExtractor={(item, index) => item.id.toString()}
-                                data={recentItems}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{ paddingRight: 20 }}
-                                renderItem={({ item }) => (
-                                    <Pressable
-                                        onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
-                                        style={styles.itembox}
-                                    >
-                                        <ImageWithLoader source={{ uri: item.uri }} style={styles.showimage} />
-                                        <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
-                                        <Text style={styles.itemCategory}>{item.description}</Text>
-                                        {/*          <Text style={styles.itemCategory}>
+                                <Text style={styles.sectionTitle}>Recent Items</Text>
+                                <FlatList
+                                    keyExtractor={(item, index) => item.id.toString()}
+                                    data={recentItems}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{ paddingRight: 20 }}
+                                    renderItem={({ item }) => (
+                                        <Pressable
+                                            onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+                                            style={styles.itembox}
+                                        >
+                                            <ImageWithLoader source={{ uri: item.uri }} style={styles.showimage} />
+                                            <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
+                                            <Text style={styles.itemCategory}>{item.description}</Text>
+                                            {/*          <Text style={styles.itemCategory}>
                                             {item.category_name || "no category"}
                                         </Text> */}
-                                    </Pressable>
-                                )}
-                            />
-                        </View>
+                                        </Pressable>
+                                    )}
+                                />
+                            </View>
 
-                        {/* 📍 My Locations */}
-                        <View style={styles.sectionIons}>
-                            <Pressable
-                                onPress={() => navigation.getParent()?.navigate("ShowMyLocations", { locations })}
-                            >
-                                <Text style={styles.sectionTitle}>My Locations</Text>
-                            </Pressable>
-                            <FlatList
-                                keyExtractor={(item, index) => index.toString()}
-                                data={locations}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                renderItem={({ item }) => (
-                                    <View style={styles.itemboxrow}>
-                                        <Button
-                                            mode="text"
-                                            buttonColor="#EAF2EC"
-                                            textColor="#52946B"
-                                            style={styles.categoryButton}
-                                            contentStyle={styles.categoryContent}
-                                            labelStyle={styles.categoryLabel}
-                                            onPress={() =>
-                                                navigation.navigate("LocationScreen", { location: item })
-                                            }
-                                        >
-                                            {item}
-                                        </Button>
+                            {/* 📍 My Locations */}
+                            <View style={styles.sectionIons}>
+                                <Pressable
+                                    onPress={() => navigation.getParent()?.navigate("ShowMyLocations", { locations })}
+
+                                >
+                                    <View style={styles.sectionNoButton}>
+                                        <Text style={styles.sectionNoButtonTitle}>My Locations</Text>
+                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
                                     </View>
-                                )}
-                            />
-                        </View>
+                                </Pressable>
+                                <FlatList
+                                    keyExtractor={(item, index) => index.toString()}
+                                    data={locations}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.itemboxrow}>
+                                            <Button
+                                                mode="text"
+                                                buttonColor="#EAF2EC"
+                                                textColor="#52946B"
+                                                style={styles.categoryButton}
+                                                contentStyle={styles.categoryContent}
+                                                labelStyle={styles.categoryLabel}
+                                                onPress={() =>
+                                                    navigation.navigate("LocationScreen", { location: item })
+                                                }
+                                            >
+                                                {item}
+                                            </Button>
+                                        </View>
+                                    )}
+                                />
+                            </View>
 
-                        {/* 🗂️ My Categories */}
-                        <View style={styles.sectionIons}>
-                            <Pressable
-                                onPress={() => navigation.getParent()?.navigate("ShowMyCategories", { categories }) ?? console.log("No parent navigator found")}
-                            >
-                                <Text style={styles.sectionTitle}>My Categories</Text>
-                            </Pressable>
-
-                            <FlatList
-                                keyExtractor={(item, index) => index?.toString()}
-                                data={categories}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                renderItem={({ item }) => (
-                                    <View style={styles.itemboxrow}>
-                                        <Button
-                                            mode="text"
-                                            buttonColor="#EAF2EC"
-                                            textColor="#52946B"
-                                            style={styles.categoryButton}
-                                            contentStyle={styles.categoryContent}
-                                            labelStyle={styles.categoryLabel}
-                                            onPress={() =>
-                                                navigation.navigate("CategoryScreen", { category: item })
-                                            }
-                                        >
-                                            <Text>{item}</Text>
-                                        </Button>
+                            {/* 🗂️ My Categories */}
+                            <View style={styles.sectionIons}>
+                                <Pressable
+                                    onPress={() => navigation.getParent()?.navigate("ShowMyCategories", { categories }) ?? console.log("No parent navigator found")}
+                                >
+                                    <View style={styles.sectionNoButton}>
+                                        <Text style={styles.sectionNoButtonTitle}>My Categories</Text>
+                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
                                     </View>
-                                )}
-                            />
-                        </View>
 
-                        {/* My Items */}
-                        <View style={styles.section}>
-                            <Pressable
-                                onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen", { items }) ?? console.log("No parent navigator found")}
-                            >
-                                <Text style={styles.sectionTitle}>My Items</Text>
+                                </Pressable>
 
-                            </Pressable>
-                            <FlatList
-                                keyExtractor={(item, index) => index.toString()}
-                                data={items}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{ paddingRight: 20 }}
-                                renderItem={({ item }) => (
-                                    <Pressable
-                                        onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
-                                        style={styles.itembox}
-                                    >
-                                        <ImageWithLoader source={{ uri: item.uri }} style={styles.showimage} />
-                                        <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
-                                        <Text style={styles.itemCategory}>{item.description}</Text>
-                                        {/*          <Text style={styles.itemCategory}>
+                                <FlatList
+                                    keyExtractor={(item, index) => index?.toString()}
+                                    data={categories}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.itemboxrow}>
+                                            <Button
+                                                mode="text"
+                                                buttonColor="#EAF2EC"
+                                                textColor="#52946B"
+                                                style={styles.categoryButton}
+                                                contentStyle={styles.categoryContent}
+                                                labelStyle={styles.categoryLabel}
+                                                onPress={() =>
+                                                    navigation.navigate("CategoryScreen", { category: item })
+                                                }
+                                            >
+                                                <Text>{item}</Text>
+                                            </Button>
+                                        </View>
+                                    )}
+                                />
+                            </View>
+
+                            {/* My Items */}
+                            <View style={styles.section}>
+                                <Pressable
+                                    onPress={() => navigation.getParent()?.navigate("ShowMyItemsScreen", { items }) ?? console.log("No parent navigator found")}
+                                >
+                                    <View style={styles.sectionNoButton}>
+                                        <Text style={styles.sectionNoButtonTitle}>My Items</Text>
+                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
+                                    </View>
+                                </Pressable>
+                                <FlatList
+                                    keyExtractor={(item, index) => index.toString()}
+                                    data={items}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{ paddingRight: 20 }}
+                                    renderItem={({ item }) => (
+                                        <Pressable
+                                            onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+                                            style={styles.itembox}
+                                        >
+                                            <ImageWithLoader source={{ uri: item.uri }} style={styles.showimage} />
+                                            <Text style={styles.itemTitle}>{item.itemName.slice(0, 17)}</Text>
+                                            <Text style={styles.itemCategory}>{item.description}</Text>
+                                            {/*          <Text style={styles.itemCategory}>
                                             {item.category_name || "no category"}
                                         </Text> */}
-                                    </Pressable>
-                                )}
+                                        </Pressable>
+                                    )}
 
-                            />
-                        </View>
+                                />
+                            </View>
 
-                        {/* Chats */}
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Chats</Text>
-                            <FlatList
-                                data={messages}
-                                keyExtractor={item => item.id}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{ paddingRight: 20 }}
-                                renderItem={({ item }) => {
-                                    const chatItem = items.find((it) => it.id === item.itemId || it.item_id === item.itemId);
-                                    const otherUserId = item.members.find((m) => m !== user_id);
-                                    return (
-                                        <Button
-                                            mode="text"
-                                            buttonColor="#EAF2EC"
-                                            textColor="#52946B"
-                                            style={styles.categoryButton}
-                                            contentStyle={styles.categoryContent}
-                                            labelStyle={styles.categoryLabel}
-                                            onPress={() =>
-                                                navigation.navigate("ChatScreen", {
-                                                    chatId: item.id,
-                                                    itemId: item.itemId,
-                                                    itemName: item.itemName,
-                                                    title: item.itemName ?? "Chat",
-                                                    otherUserId,
-                                                    item: chatItem,
-                                                })
-                                            }
-                                        >
-                                            <Text>{item.itemName ?? item.itemId}</Text>
-                                        </Button>
-                                    );
-                                }}
-                            />
+                            {/* Chats */}
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>Chats</Text>
+                                <FlatList
+                                    data={messages}
+                                    keyExtractor={item => item.id}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{ paddingRight: 20 }}
+                                    renderItem={({ item }) => {
+                                        const chatItem = items.find((it) => it.id === item.itemId || it.item_id === item.itemId);
+                                        const otherUserId = item.members.find((m) => m !== user_id);
+                                        return (
+                                            <Button
+                                                mode="text"
+                                                buttonColor="#EAF2EC"
+                                                textColor="#52946B"
+                                                style={styles.categoryButton}
+                                                contentStyle={styles.categoryContent}
+                                                labelStyle={styles.categoryLabel}
+                                                onPress={() =>
+                                                    navigation.navigate("ChatScreen", {
+                                                        chatId: item.id,
+                                                        itemId: item.itemId,
+                                                        itemName: item.itemName,
+                                                        title: item.itemName ?? "Chat",
+                                                        otherUserId,
+                                                        item: chatItem,
+                                                    })
+                                                }
+                                            >
+                                                <Text>{item.itemName ?? item.itemId}</Text>
+                                            </Button>
+                                        );
+                                    }}
+                                />
 
-                        </View>
+                            </View>
 
 
-                    </ScrollView>
+                        </ScrollView>
 
-                </>
-            ) : (
-                // 🔍 Hakutulos
-                <>
-                    <Text>Hakutulos</Text>
-                    <FlatList
-                        keyExtractor={(item, index) => index.toString()}
-                        data={searchItems}
-                        contentContainerStyle={{ paddingBottom: 100 }}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
-                                style={styles.itemboxrow}
-                            >
-                                <ImageWithLoader source={{ uri: item.uri }} style={styles.cameraimage} />
-                                <Text style={styles.itemTitle}>{item.itemName}</Text>
-                            </Pressable>
-                        )}
-                    />
-                </>
-            )}
-        </View>
-        <Loader visible={downloading} mode="overlay" label="Downloading images..." />
+                    </>
+                ) : (
+                    // 🔍 Hakutulos
+                    <>
+                        <Text>Hakutulos</Text>
+                        <FlatList
+                            keyExtractor={(item, index) => index.toString()}
+                            data={searchItems}
+                            contentContainerStyle={{ paddingBottom: 100 }}
+                            renderItem={({ item }) => (
+                                <Pressable
+                                    onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
+                                    style={styles.itemboxrow}
+                                >
+                                    <ImageWithLoader source={{ uri: item.uri }} style={styles.cameraimage} />
+                                    <Text style={styles.itemTitle}>{item.itemName}</Text>
+                                </Pressable>
+                            )}
+                        />
+                    </>
+                )}
+            </View>
+            <Loader visible={downloading} mode="overlay" label="Downloading images..." />
         </View>
 
     );
