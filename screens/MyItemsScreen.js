@@ -314,13 +314,27 @@ export default function MyItemsScreen() {
                             <View style={styles.sectionIons}>
                                 <Pressable
                                     onPress={() => navigation.getParent()?.navigate("ShowMyLocations", { locations })}
-
+                                    style={styles.sectionNoButton}
                                 >
-                                    <View style={styles.sectionNoButton}>
-                                        <Text style={styles.sectionNoButtonTitle}>My Locations</Text>
-                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
-                                    </View>
+                                    {/* <View style={styles.sectionaaButton}> */}
+                                    <Text style={styles.sectionNoButtonTitle}>My Locations</Text>
+                                    {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
+                                    {/* </View> */}
+                                    <Button
+                                        mode="text"
+                                        buttonColor="#EAF2EC"
+                                        textColor="#52946B"
+                                        style={styles.locationButton}
+                                        contentStyle={styles.categoryContent}
+                                        labelStyle={styles.categoryLabel}
+                                        onPress={() =>
+                                            navigation.navigate("ShowMyLocations", { locations })
+                                        }
+                                    >
+                                        <Text style={styles.locationButton}>See all locations</Text>
+                                    </Button>
                                 </Pressable>
+
                                 <FlatList
                                     keyExtractor={(item, index) => index.toString()}
                                     data={locations}
