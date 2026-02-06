@@ -114,8 +114,8 @@ export const styles = StyleSheet.create({
     categoryContent: {
         height: 50,
         paddingVertical: 0,
-        alignItems: "center",
-        justifyContent: "center",
+    //    alignItems: "center",
+        // justifyContent: "center",
     },
     categoryContentWide: {
         height: 50,
@@ -287,6 +287,49 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
     },
+        allButton: {
+        width: 70,
+        height: 50,
+        borderRadius: 8,
+        marginRight: 6,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 2,
+        color: tumma,
+        backgroundColor: vihrea,
+
+        // iOS shadow
+        shadowColor: "#000",
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+
+        // Android shadow
+        elevation: 6,
+    },
+        allImageButton: {
+        width: 70,
+        height: 100,
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: "center",
+        borderRadius: 8,
+        marginRight: 6,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 2,
+        color: vaalea,
+        backgroundColor: vihrea,
+
+        // iOS shadow
+        shadowColor: "#000",
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+
+        // Android shadow
+        elevation: 6,
+    }, 
 });
 
 export default styles;
