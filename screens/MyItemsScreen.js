@@ -38,6 +38,7 @@ export default function MyItemsScreen() {
     const vaalea = "#F8FBFA";
     const vaalvihrea = "#EAF2EC";
     const vihrea = "#52946B";
+    const allcolor = vaalea;
 
     // Get the Authentication instance
     const currentUser = auth.currentUser;
@@ -318,7 +319,7 @@ export default function MyItemsScreen() {
                                 >
                                     <View style={styles.sectionNoButton}>
                                         <Text style={styles.sectionNoButtonTitle}>My Locations</Text>
-                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
+                                        {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
                                     </View>
                                 </Pressable>
                                 <FlatList
@@ -326,6 +327,21 @@ export default function MyItemsScreen() {
                                     data={locations}
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
+                                    ListHeaderComponent={() =>
+                                        <Button
+                                            mode="text"
+                                            buttonColor="#EAF2EC"
+                                            textColor="#52946B"
+                                            style={styles.allButton}
+                                            contentStyle={styles.categoryContent}
+                                            labelStyle={styles.categoryLabel}
+                                            onPress={() =>
+                                                navigation.navigate("ShowMyLocations", { locations })
+                                            }
+                                        >
+                                            <Text style={{ color: allcolor }}>all</Text>
+                                        </Button>
+                                    }
                                     renderItem={({ item }) => (
                                         <View style={styles.itemboxrow}>
                                             <Button
@@ -353,7 +369,7 @@ export default function MyItemsScreen() {
                                 >
                                     <View style={styles.sectionNoButton}>
                                         <Text style={styles.sectionNoButtonTitle}>My Categories</Text>
-                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
+                                        {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
                                     </View>
 
                                 </Pressable>
@@ -363,6 +379,21 @@ export default function MyItemsScreen() {
                                     data={categories}
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
+                                    ListHeaderComponent={() =>
+                                        <Button
+                                            mode="text"
+                                            buttonColor="#EAF2EC"
+                                            textColor="#52946B"
+                                            style={styles.allButton}
+                                            contentStyle={styles.categoryContent}
+                                            labelStyle={styles.categoryLabel}
+                                            onPress={() =>
+                                                navigation.getParent()?.navigate("ShowMyCategories", { categories })
+                                            }
+                                        >
+                                            <Text style={{ color: allcolor }}>all</Text>
+                                        </Button>
+                                    }
                                     renderItem={({ item }) => (
                                         <View style={styles.itemboxrow}>
                                             <Button
@@ -390,7 +421,7 @@ export default function MyItemsScreen() {
                                 >
                                     <View style={styles.sectionNoButton}>
                                         <Text style={styles.sectionNoButtonTitle}>My Items</Text>
-                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
+                                        {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
                                     </View>
                                 </Pressable>
                                 <FlatList
@@ -399,6 +430,22 @@ export default function MyItemsScreen() {
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
                                     contentContainerStyle={{ paddingRight: 20 }}
+                                    ListHeaderComponent={() =>
+                                        <Button
+                                            mode="text"
+                                            buttonColor="#EAF2EC"
+                                            textColor="#52946B"
+                                            style={styles.allImageButton}
+                                            contentStyle={[styles.categoryContent, {alignContent: 'center'}]}
+                                            labelStyle={styles.categoryLabel}
+                                            onPress={() =>
+                                                navigation.getParent()?.navigate("ShowMyItemsScreen", { items })
+                                            }
+                                        >
+                                            <Ionicons name="list" size={22} color={allcolor} /> 
+                                            {/* <Text style={{ color: vaalea }}>all</Text> */}
+                                        </Button>
+                                    }
                                     renderItem={({ item }) => (
                                         <Pressable
                                             onPress={() => navigation.navigate("ShowItemScreen", { item }) ?? console.log("No parent navigator found")}
