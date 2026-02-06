@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     },
     sectionIons: {
         alignSelf: "stretch",
-        marginLeft: 20,
+        paddingLeft: 20,
         marginBottom: 20,
         marginTop: 15,
     },
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginRight: 8,
-
+        width: '100%',
     },
     itembox: {
         alignItems: "center",
@@ -138,6 +138,26 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
         marginLeft: 2,
         color: vihrea,
+
+        // iOS shadow
+        shadowColor: "#000",
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+
+        // Android shadow
+        elevation: 6,
+    },
+    allButton: {
+        width: 70,
+        height: 50,
+        borderRadius: 8,
+        marginRight: 6,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 2,
+        color: vaalea,
+        backgroundColor: vihrea,
 
         // iOS shadow
         shadowColor: "#000",
@@ -273,10 +293,10 @@ export const styles = StyleSheet.create({
         // borderWidth: 1,
         // borderColor: tumma,
         flexDirection: "row",
-         alignItems: 'center',
+        alignItems: 'center',
         // paddingHorizontal: 15,
         // color: '#52946B', // Text color
-        width: '90%',
+        // width: '90%',
         // justifyContent: 'center',
         marginBottom: 10,
         // borderTopLeftRadius: 50,
@@ -310,8 +330,18 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         marginBottom: 15,
-                justifyContent: 'space-between',
+        justifyContent: 'space-between',
         marginRight: 10,
+    },
+    list: {
+        flexGrow: 0,
+        flexShrink: 1,
+        minWidth: 0, // tärkeä joissain layout-tilanteissa
+    },
+
+    listContent: {
+        paddingRight: 0,
+        // älä laita width: "100%" tänne
     },
 });
 

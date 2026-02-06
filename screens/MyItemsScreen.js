@@ -320,44 +320,64 @@ export default function MyItemsScreen() {
                                     <Text style={styles.sectionNoButtonTitle}>My Locations</Text>
                                     {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
                                     {/* </View> */}
-                                    <Button
+
+                                </Pressable>
+
+                                {/* <View style={[styles.itemboxrow]}> */}
+                                    {/* <Button
                                         mode="text"
                                         buttonColor="#EAF2EC"
                                         textColor="#52946B"
-                                        style={styles.locationButton}
+                                        style={styles.allButton}
                                         contentStyle={styles.categoryContent}
                                         labelStyle={styles.categoryLabel}
                                         onPress={() =>
                                             navigation.navigate("ShowMyLocations", { locations })
                                         }
                                     >
-                                        <Text style={styles.locationButton}>See all locations</Text>
-                                    </Button>
-                                </Pressable>
-
-                                <FlatList
-                                    keyExtractor={(item, index) => index.toString()}
-                                    data={locations}
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    renderItem={({ item }) => (
-                                        <View style={styles.itemboxrow}>
-                                            <Button
-                                                mode="text"
-                                                buttonColor="#EAF2EC"
-                                                textColor="#52946B"
-                                                style={styles.categoryButton}
-                                                contentStyle={styles.categoryContent}
-                                                labelStyle={styles.categoryLabel}
-                                                onPress={() =>
-                                                    navigation.navigate("LocationScreen", { location: item })
-                                                }
-                                            >
-                                                {item}
-                                            </Button>
-                                        </View>
-                                    )}
-                                />
+                                        <Text style={{ color: vaalea }}>all</Text>
+                                    </Button> */}
+                                    <View style={{ width: "100%", overflow: "hidden" }}>
+                                        <FlatList
+                                            keyExtractor={(item, index) => index.toString()}
+                                            data={locations}
+                                            horizontal
+                                            showsHorizontalScrollIndicator={false}
+                                            // style={styles.list}
+                                            // contentContainerStyle={styles.listContent}
+                                            ListHeaderComponent={() =>
+                                                <Button
+                                                    mode="text"
+                                                    buttonColor="#EAF2EC"
+                                                    textColor="#52946B"
+                                                    style={styles.allButton}
+                                                    contentStyle={styles.categoryContent}
+                                                    labelStyle={styles.categoryLabel}
+                                                    onPress={() =>
+                                                        navigation.navigate("ShowMyLocations", { locations })
+                                                    }
+                                                >
+                                                    <Text style={{ color: vaalea }}>all</Text>
+                                                </Button>
+                                            }
+                                            renderItem={({ item }) => (
+                                                <Button
+                                                    mode="text"
+                                                    buttonColor="#EAF2EC"
+                                                    textColor="#52946B"
+                                                    style={styles.categoryButton}
+                                                    contentStyle={styles.categoryContent}
+                                                    labelStyle={styles.categoryLabel}
+                                                    onPress={() =>
+                                                        navigation.navigate("LocationScreen", { location: item })
+                                                    }
+                                                >
+                                                    {item}
+                                                </Button>
+                                            )}
+                                        />
+                                    </View>
+                                {/* </View> */}
                             </View>
 
                             {/* 🗂️ My Categories */}
@@ -367,18 +387,33 @@ export default function MyItemsScreen() {
                                 >
                                     <View style={styles.sectionNoButton}>
                                         <Text style={styles.sectionNoButtonTitle}>My Categories</Text>
-                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
+                                        {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
                                     </View>
 
                                 </Pressable>
+                                <View style={styles.itemboxrow}>
+                                    <FlatList
+                                        keyExtractor={(item, index) => index?.toString()}
+                                        data={categories}
+                                        horizontal
+                                        showsHorizontalScrollIndicator={false}
+                                        ListHeaderComponent={() =>
+                                                <Button
+                                                    mode="text"
+                                                    buttonColor="#EAF2EC"
+                                                    textColor="#52946B"
+                                                    style={styles.allButton}
+                                                    contentStyle={styles.categoryContent}
+                                                    labelStyle={styles.categoryLabel}
+                                                    onPress={() =>
+                                                        navigation.navigate("ShowMyLocations", { locations })
+                                                    }
+                                                >
+                                                    <Text style={{ color: vaalea }}>all</Text>
+                                                </Button>
+                                            }
+                                        renderItem={({ item }) => (
 
-                                <FlatList
-                                    keyExtractor={(item, index) => index?.toString()}
-                                    data={categories}
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    renderItem={({ item }) => (
-                                        <View style={styles.itemboxrow}>
                                             <Button
                                                 mode="text"
                                                 buttonColor="#EAF2EC"
@@ -392,9 +427,10 @@ export default function MyItemsScreen() {
                                             >
                                                 <Text>{item}</Text>
                                             </Button>
-                                        </View>
-                                    )}
-                                />
+
+                                        )}
+                                    />
+                                </View>
                             </View>
 
                             {/* My Items */}
@@ -404,9 +440,11 @@ export default function MyItemsScreen() {
                                 >
                                     <View style={styles.sectionNoButton}>
                                         <Text style={styles.sectionNoButtonTitle}>My Items</Text>
-                                        <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} />
+                                        {/* <Ionicons name="arrow-forward-circle-outline" size={30} color={tumma} /> */}
                                     </View>
                                 </Pressable>
+
+
                                 <FlatList
                                     keyExtractor={(item, index) => index.toString()}
                                     data={items}
