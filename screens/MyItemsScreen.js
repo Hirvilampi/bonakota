@@ -431,7 +431,8 @@ export default function MyItemsScreen() {
                                     showsHorizontalScrollIndicator={false}
                                     contentContainerStyle={{ paddingRight: 20 }}
                                     ListHeaderComponent={() =>
-                                        <Button
+                                        <>
+                                                 <Button
                                             mode="text"
                                             buttonColor="#EAF2EC"
                                             textColor="#52946B"
@@ -445,6 +446,10 @@ export default function MyItemsScreen() {
                                             <Ionicons name="list" size={22} color={allcolor} /> 
                                             {/* <Text style={{ color: vaalea }}>all</Text> */}
                                         </Button>
+
+                                        <Text style={[styles.itemTitle, {marginLeft: 5}]}>All</Text>
+                                        </>
+                               
                                     }
                                     renderItem={({ item }) => (
                                         <Pressable

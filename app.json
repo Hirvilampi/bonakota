@@ -43,7 +43,8 @@
           "cameraPermission": "The app accesses your camera to let you share images with your friends."
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-font"
     ],
     "extra": {
       "router": {},

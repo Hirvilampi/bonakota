@@ -49,4 +49,6 @@ FirebaseConfig.js
 results/
 
 google-services.json
-GoogleService-Info.plist
+
+# allow Firebase iOS config for EAS builds
+!GoogleService-Info.plist

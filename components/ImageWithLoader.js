@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, ActivityIndicator, StyleSheet } from "react-native";
 
 export default function ImageWithLoader({ source, style, loaderColor = "#52946B", loaderSize = "small" }) {
   const [loading, setLoading] = useState(false);
   const uri = source?.uri;
+
+  useEffect(() => {
+    setLoading(true);
+  }, [uri]);
 
   if (!uri) {
     return <View style={[styles.container, style]} />;
@@ -16,9 +20,11 @@ export default function ImageWithLoader({ source, style, loaderColor = "#52946B"
         style={[StyleSheet.absoluteFillObject, style]}
         onLoadStart={() => setLoading(true)}
         onLoadEnd={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
         onError={() => setLoading(false)}
         resizeMode="cover"
       />
+      
       {loading ? (
         <View style={styles.loader}>
           <ActivityIndicator size={loaderSize} color={loaderColor} />
